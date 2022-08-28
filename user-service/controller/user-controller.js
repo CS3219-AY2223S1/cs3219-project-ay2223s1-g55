@@ -21,6 +21,30 @@ export async function createUser(req, res) {
     }
 }
 
+export async function getSession(req, res) {
+    try {
+        if (!(req.headers?.authorization?.split(' ')[0] === 'Bearer')) {
+            return res.status(401).send({ message: "Bearer Token not found!"})
+        }
+
+        const token = req.headers.authorization.split(' ')[1];
+        const decode = jwt.verify(token, process.env.JWT_SECRET);
+
+        if (!decode.username) {
+            res.status(401).send({ message: 'Invalid Bearer Token!'})
+        }
+
+        console.log(`User ${decode.username} logged in successfully!`)
+        return res.status(200).send({ 
+            message: `User session for ${decode.username} found!`, 
+            _id: decode._id,
+            username: decode.username, 
+        });
+    } catch (err) {
+        return res.status(500).json({ message: "Failed to retrieve session!" })
+    }
+}
+
 export async function loginUser(req, res) {
     try {
         const { username, password } = req.body;

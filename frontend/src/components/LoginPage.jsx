@@ -13,6 +13,7 @@ import {
 import axios from 'axios';
 import {URL_USER_LOGIN} from "../configs";
 import {STATUS_CODE_LOGIN_FAILED, STATUS_CODE_LOGGED_IN} from "../constants";
+import { saveJwt } from '../lib/jwt';
 
 const LoginPage = () => {
     const [username, setUsername] = useState('');
@@ -32,6 +33,7 @@ const LoginPage = () => {
             })
         if (res && res.status === STATUS_CODE_LOGGED_IN) {
             setSuccessDialog('Successfully logged in!')
+            saveJwt(res.data.token);
         }
     }
 
