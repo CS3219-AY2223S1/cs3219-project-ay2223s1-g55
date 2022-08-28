@@ -1,4 +1,5 @@
 import { ormCreateUser as _createUser, ormLoginUser as _loginUser } from '../model/user-orm.js'
+import jwt from 'jsonwebtoken'
 
 export async function createUser(req, res) {
     try {
@@ -29,15 +30,19 @@ export async function loginUser(req, res) {
         }
 
         const resp = await _loginUser(username, password);
-
         if (!resp) {
             return res.status(401).json({ message: 'Username does not exist or invalid Password!'})
         }
         if (resp.err) {
             return res.status(401).json({message: 'Could not login user!'});
         } else {
+            const token = jwt.sign({ username: resp.username, _id: resp._id }, process.env.JWT_SECRET);
+
             console.log(`User ${username} logged in successfully!`)
-            return res.status(200).json({message: `User ${username} logged in successfully!`});
+            return res.status(200).json({
+                message: `User ${username} logged in successfully!`, 
+                token,
+            });
         }
     } catch (err) {
         console.error(err)

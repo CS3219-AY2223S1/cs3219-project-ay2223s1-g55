@@ -17,13 +17,11 @@ import {STATUS_CODE_LOGIN_FAILED, STATUS_CODE_LOGGED_IN} from "../constants";
 const LoginPage = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-    const [isLoginSuccess, setIsLoginSuccess] = useState(false);
     const [isDialogOpen, setIsDialogOpen] = useState(false)
     const [dialogTitle, setDialogTitle] = useState("")
     const [dialogMsg, setDialogMsg] = useState("")
 
     const handleLogin = async () => {
-        setIsLoginSuccess(false)
         const res = await axios.post(URL_USER_LOGIN, { username, password })
             .catch((err) => {
                 if (err.response.status === STATUS_CODE_LOGIN_FAILED) {
@@ -34,7 +32,6 @@ const LoginPage = () => {
             })
         if (res && res.status === STATUS_CODE_LOGGED_IN) {
             setSuccessDialog('Successfully logged in!')
-            setIsLoginSuccess(true)
         }
     }
 
