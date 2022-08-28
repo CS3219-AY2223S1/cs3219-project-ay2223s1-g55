@@ -10,15 +10,47 @@ import {
     TextField,
     Typography
 } from "@mui/material";
+import axios from 'axios';
+import {URL_USER_LOGIN} from "../configs";
+import {STATUS_CODE_LOGIN_FAILED, STATUS_CODE_LOGGED_IN} from "../constants";
 
 const LoginPage = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const [isLoginSuccess, setIsLoginSuccess] = useState(false);
+    const [isDialogOpen, setIsDialogOpen] = useState(false)
+    const [dialogTitle, setDialogTitle] = useState("")
+    const [dialogMsg, setDialogMsg] = useState("")
 
-    const handleLogin = () => {
-
+    const handleLogin = async () => {
+        setIsLoginSuccess(false)
+        const res = await axios.post(URL_USER_LOGIN, { username, password })
+            .catch((err) => {
+                if (err.response.status === STATUS_CODE_LOGIN_FAILED) {
+                    setErrorDialog('Failed to login user')
+                } else {
+                    setErrorDialog('Please try again later')
+                }
+            })
+        if (res && res.status === STATUS_CODE_LOGGED_IN) {
+            setSuccessDialog('Successfully logged in!')
+            setIsLoginSuccess(true)
+        }
     }
 
+    const closeDialog = () => setIsDialogOpen(false)
+
+    const setSuccessDialog = (msg) => {
+        setIsDialogOpen(true)
+        setDialogTitle('Success')
+        setDialogMsg(msg)
+    }
+
+    const setErrorDialog = (msg) => {
+        setIsDialogOpen(true)
+        setDialogTitle('Error')
+        setDialogMsg(msg)
+    }
 
     return (
         <Box display={"flex"} flexDirection={"column"} width={"30%"}>
@@ -43,7 +75,7 @@ const LoginPage = () => {
                 <Button variant={"outlined"} onClick={handleLogin}>Log in</Button>
             </Box>
 
-            {/* <Dialog
+            <Dialog
                 open={isDialogOpen}
                 onClose={closeDialog}
             >
@@ -52,12 +84,9 @@ const LoginPage = () => {
                     <DialogContentText>{dialogMsg}</DialogContentText>
                 </DialogContent>
                 <DialogActions>
-                    {isSignupSuccess
-                        ? <Button component={Link} to="/login">Log in</Button>
-                        : <Button onClick={closeDialog}>Done</Button>
-                    }
+                    <Button onClick={closeDialog}>Close</Button>
                 </DialogActions>
-            </Dialog> */}
+            </Dialog>
         </Box>
     )
 }

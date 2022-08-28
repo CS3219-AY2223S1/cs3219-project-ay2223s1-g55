@@ -37,7 +37,7 @@ export async function loginUser(req, res) {
             return res.status(401).json({message: 'Could not login user!'});
         } else {
             console.log(`User ${username} logged in successfully!`)
-            return res.status(201).json({message: `User ${username} logged in successfully!`});
+            return res.status(200).json({message: `User ${username} logged in successfully!`});
         }
     } catch (err) {
         console.error(err)
