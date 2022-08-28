@@ -1,7 +1,8 @@
 import {BrowserRouter as Router, Routes, Route, Navigate} from "react-router-dom";
+import {Box} from "@mui/material";
 import SignupPage from './components/SignupPage';
 import NotFoundPage from './components/NotFoundPage'
-import {Box} from "@mui/material";
+import LoginPage from './components/LoginPage'
 
 function App() {
     return (
@@ -11,6 +12,7 @@ function App() {
                     <Routes>
                         <Route exact path="/" element={<Navigate replace to="/signup" />}></Route>
                         <Route path="/signup" element={<SignupPage/>}/>
+                        <Route path="/login" element={<LoginPage />}/>
                         <Route path="*" element={<NotFoundPage />} />
                     </Routes>
                 </Router>
