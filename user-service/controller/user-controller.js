@@ -1,13 +1,10 @@
 import { ormCreateUser as _createUser } from '../model/user-orm.js'
-import bcrypt from 'bcryptjs';
 
 export async function createUser(req, res) {
     try {
         const { username, password } = req.body;
         if (username && password) {
-            const salt = await bcrypt.genSalt(10);
-            const hashedPassword = await bcrypt.hash(password, salt);
-            const resp = await _createUser(username, hashedPassword);
+            const resp = await _createUser(username, password);
             console.log(resp);
             if (resp.err) {
                 return res.status(400).json({ message: 'Could not create a new user!' });
