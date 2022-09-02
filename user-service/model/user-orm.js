@@ -1,4 +1,4 @@
-import { createUser } from './repository.js';
+import { createUser, loginUser } from './repository.js';
 import bcrypt from 'bcryptjs';
 
 //need to separate orm functions from repository to decouple business logic from persistence
@@ -16,3 +16,11 @@ export async function ormCreateUser(username, password) {
     }
 }
 
+export async function ormLoginUser(username, password) {
+    try {
+        return await loginUser({ username, password });
+    } catch (err) {
+        console.log("ERROR: Could not login user");
+        return { err }
+    }
+}
