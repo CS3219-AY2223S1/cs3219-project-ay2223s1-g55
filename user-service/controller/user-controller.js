@@ -1,20 +1,19 @@
-import userModel from "../model/user-model.js";
-import { ormCreateUser as _createUser } from "../model/user-orm.js";
+import {
+  ormCheckUserExists as _checkUserExists,
+  ormCreateUser as _createUser,
+} from "../model/user-orm.js";
 
 export async function createUser(req, res) {
   try {
     const { username, password } = req.body;
-    const usernameExists = await userModel
-      .find({ username: username })
-      .limit(1)
-      .size();
-    console.log(username);
+    const usernameExists = await _checkUserExists(username);
+    console.log(usernameExists);
     if (username && password) {
-      if (usernameExists.length > 0) {
+      if (usernameExists) {
         return res.status(409).json({ message: "Username already in use!" });
       }
       const resp = await _createUser(username, password);
-      console.log(resp);
+      // console.log(resp);
       if (resp.err) {
         return res
           .status(400)
