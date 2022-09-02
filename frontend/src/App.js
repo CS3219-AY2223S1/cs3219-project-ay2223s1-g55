@@ -4,8 +4,10 @@ import {
   Route,
   Navigate,
 } from 'react-router-dom';
-import SignupPage from './components/SignupPage';
 import { Box } from '@mui/material';
+import SignupPage from './components/SignupPage';
+import NotFoundPage from './components/NotFoundPage';
+import LoginPage from './components/LoginPage';
 import Dashboard from './components/Dashboard';
 
 function App() {
@@ -20,7 +22,9 @@ function App() {
               element={<Navigate replace to="/signup" />}
             ></Route>
             <Route path="/signup" element={<SignupPage />} />
+            <Route path="/login" element={<LoginPage />} />
             <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="*" element={<NotFoundPage />} />
           </Routes>
         </Router>
       </Box>
