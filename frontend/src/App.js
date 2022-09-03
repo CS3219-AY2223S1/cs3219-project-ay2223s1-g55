@@ -1,8 +1,8 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
-import { Box } from '@mui/material'
-import SignupPage from './components/SignupPage'
-import NotFoundPage from './components/NotFoundPage'
-import LoginPage from './components/LoginPage'
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { Box } from '@mui/material';
+import SignupPage from './components/SignupPage';
+import NotFoundPage from './components/NotFoundPage';
+import LoginPage from './components/LoginPage';
 
 function App() {
   return (
@@ -18,7 +18,7 @@ function App() {
         </Router>
       </Box>
     </div>
-  )
+  );
 }
 
-export default App
+export default App;
