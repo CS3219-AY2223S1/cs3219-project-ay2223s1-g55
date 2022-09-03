@@ -17,7 +17,6 @@ const getJwtCookie = () => {
 };
 
 const clearJwt = () => {
-  console.log('cleared jwt');
   document.cookie = 'jwt=;expires=Thu, 01 Jan 1970 00:00:00 GMT';
 };
 
