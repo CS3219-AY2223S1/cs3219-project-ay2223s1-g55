@@ -1,5 +1,5 @@
 import UserModel from './user-model.js';
-import { createUser, loginUser } from './repository.js';
+import { createUser, loginUser, logoutUser } from './repository.js';
 import bcrypt from 'bcryptjs';
 
 //need to separate orm functions from repository to decouple business logic from persistence
@@ -27,4 +27,13 @@ export async function ormLoginUser(username, password) {
         console.log("ERROR: Could not login user");
         return { err }
     }
+}
+
+export async function ormLogoutUser(username) {
+  try {
+    return await logoutUser({ username });
+  } catch (e) {
+    console.log('ERROR: Could not log user out');
+    return { e };
+  }
 }
