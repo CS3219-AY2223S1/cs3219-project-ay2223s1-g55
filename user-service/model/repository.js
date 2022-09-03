@@ -16,6 +16,6 @@ export async function createUser(params) {
 }
 
 export async function loginUser(params) {
-    const user = await UserModel.findOne(params);
-    return user;
+  const user = await UserModel.findOne(params);
+  return user;
 }
