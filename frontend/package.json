@@ -21,8 +21,8 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "lint": "eslint . --ext .js,.jsx",
-    "lint:fix": "DO NOT RUN FIRST eslint --fix ."
+    "lint": "npx eslint .",
+    "lint:fix": "eslint . --fix"
   },
   "eslintConfig": {
     "extends": [
