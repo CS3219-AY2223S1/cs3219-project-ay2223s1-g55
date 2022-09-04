@@ -18,6 +18,11 @@ export async function createUser(params) {
   return new UserModel(params);
 }
 
+export async function findUser(username) {
+  const foundUser = await UserModel.findOne({ username: username });
+  return foundUser;
+}
+
 export async function loginUser(params) {
   const user = await UserModel.findOne(params);
   return user;
