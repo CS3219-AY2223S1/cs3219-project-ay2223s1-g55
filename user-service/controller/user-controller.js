@@ -1,37 +1,35 @@
 import {
   ormCheckUserExists as _checkUserExists,
   ormCreateUser as _createUser,
-} from "../model/user-orm.js";
+} from '../model/user-orm.js'
 
 export async function createUser(req, res) {
   try {
-    const { username, password } = req.body;
-    const usernameExists = await _checkUserExists(username);
-    console.log(usernameExists);
+    const { username, password } = req.body
+    const usernameExists = await _checkUserExists(username)
+    console.log(usernameExists)
     if (username && password) {
       if (usernameExists) {
-        return res.status(409).json({ message: "Username already in use!" });
+        return res.status(409).json({ message: 'Username already in use!' })
       }
-      const resp = await _createUser(username, password);
+      const resp = await _createUser(username, password)
       // console.log(resp);
       if (resp.err) {
-        return res
-          .status(400)
-          .json({ message: "Could not create a new user!" });
+        return res.status(400).json({ message: 'Could not create a new user!' })
       } else {
-        console.log(`Created new user ${username} successfully!`);
+        console.log(`Created new user ${username} successfully!`)
         return res
           .status(201)
-          .json({ message: `Created new user ${username} successfully!` });
+          .json({ message: `Created new user ${username} successfully!` })
       }
     } else {
       return res
         .status(400)
-        .json({ message: "Username and/or Password are missing!" });
+        .json({ message: 'Username and/or Password are missing!' })
     }
   } catch (err) {
     return res
       .status(500)
-      .json({ message: "Database failure when creating new user!" });
+      .json({ message: 'Database failure when creating new user!' })
   }
 }
