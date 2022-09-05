@@ -1,8 +1,9 @@
 import UserModel from './user-model.js';
 import { createUser, findUser, loginUser, logoutUser } from './repository.js';
 import bcrypt from 'bcryptjs';
+import { createUser, loginUser } from './repository.js';
 
-//need to separate orm functions from repository to decouple business logic from persistence
+// need to separate orm functions from repository to decouple business logic from persistence
 export async function ormCreateUser(username, password) {
     try {
         const salt = await bcrypt.genSalt(10);

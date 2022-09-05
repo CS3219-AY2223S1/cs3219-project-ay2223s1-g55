@@ -10,12 +10,12 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 import { STATUS_CODE_LOGIN_FAILED, STATUS_CODE_LOGGED_IN } from '../constants';
 import { useSession } from '../context/session.context';
 import DefaultLayout from '../layouts/DefaultLayout';
-import { useNavigate } from 'react-router-dom';
 
-const LoginPage = () => {
+function LoginPage() {
   const navigate = useNavigate();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -58,8 +58,8 @@ const LoginPage = () => {
 
   return (
     <DefaultLayout>
-      <Box display={'flex'} flexDirection={'column'} width={'30%'}>
-        <Typography variant={'h3'} marginBottom={'2rem'}>
+      <Box display="flex" flexDirection="column" width="30%">
+        <Typography variant="h3" marginBottom="2rem">
           Log In
         </Typography>
         <TextField
@@ -78,8 +78,8 @@ const LoginPage = () => {
           onChange={(e) => setPassword(e.target.value)}
           sx={{ marginBottom: '2rem' }}
         />
-        <Box display={'flex'} flexDirection={'row'} justifyContent={'flex-end'}>
-          <Button variant={'outlined'} onClick={handleLogin}>
+        <Box display="flex" flexDirection="row" justifyContent="flex-end">
+          <Button variant="outlined" onClick={handleLogin}>
             Log in
           </Button>
         </Box>
@@ -96,6 +96,6 @@ const LoginPage = () => {
       </Box>
     </DefaultLayout>
   );
-};
+}
 
 export default LoginPage;

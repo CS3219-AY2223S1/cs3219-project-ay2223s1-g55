@@ -1,7 +1,7 @@
 import UserModel from './user-model.js';
-import 'dotenv/config';
+import 'dotenv/config.js';
 
-//Set up mongoose connection
+// Set up mongoose connection
 import mongoose from 'mongoose';
 
 let mongoDB =
@@ -11,7 +11,7 @@ let mongoDB =
 
 mongoose.connect(mongoDB, { useNewUrlParser: true, useUnifiedTopology: true });
 
-let db = mongoose.connection;
+const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
 export async function createUser(params) {

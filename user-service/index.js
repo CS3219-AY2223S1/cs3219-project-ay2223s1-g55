@@ -13,7 +13,7 @@ import {
   logoutUser,
 } from './controller/user-controller.js'
 
-const router = express.Router()
+const router = express.Router();
 
 // Controller will contain all the User-defined Routes
 router.get('/', (_, res) => res.send('Hello World from user-service'))

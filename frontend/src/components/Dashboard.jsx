@@ -1,18 +1,11 @@
 import { useState } from 'react';
-import {
-  Button,
-  FormControl,
-  Grid,
-  InputLabel,
-  MenuItem,
-  Select,
-} from '@mui/material';
+import { Button, FormControl, Grid, InputLabel, MenuItem, Select } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 import { useSession } from '../context/session.context';
 import DefaultLayout from '../layouts/DefaultLayout';
 import { STATUS_CODE_LOGGED_OUT } from '../constants';
-import { useNavigate } from 'react-router-dom';
 
-const Dashboard = () => {
+function Dashboard() {
   const navigate = useNavigate();
   const [difficulty, setDifficulty] = useState('');
   const { user, logout } = useSession();
@@ -42,9 +35,9 @@ const Dashboard = () => {
                 label="Difficulty"
                 onChange={handleDifficultyChange}
               >
-                <MenuItem value={'Easy'}>Easy</MenuItem>
-                <MenuItem value={'Medium'}>Medium</MenuItem>
-                <MenuItem value={'Hard'}>Hard</MenuItem>
+                <MenuItem value="Easy">Easy</MenuItem>
+                <MenuItem value="Medium">Medium</MenuItem>
+                <MenuItem value="Hard">Hard</MenuItem>
               </Select>
             </FormControl>
           </div>
@@ -67,6 +60,6 @@ const Dashboard = () => {
       </Grid>
     </DefaultLayout>
   );
-};
+}
 
 export default Dashboard;
