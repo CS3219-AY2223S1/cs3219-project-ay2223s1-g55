@@ -57,9 +57,9 @@ function SessionProvider({ children }) {
 
   const logout = async (username) => {
     try {
-      const res = await axios.get(URL_USER_LOGOUT, {
-        headers: { username },
-      });
+      const token = getJwtCookie();
+      const res = await axios.post(URL_USER_LOGOUT, { username, token });
+
       if (res.status === STATUS_CODE_LOGGED_OUT) {
         clearJwt();
         setUser();

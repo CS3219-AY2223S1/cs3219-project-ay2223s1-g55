@@ -15,7 +15,7 @@ function Dashboard() {
   };
 
   const handleLogout = async () => {
-    const res = await logout(user?.username);
+    const res = await logout();
     if (res?.status === STATUS_CODE_LOGGED_OUT) {
       navigate('/login');
     }
