@@ -23,7 +23,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "lint": "npx eslint . --ext .js,.jsx,.ts,.tsx",
-    "lint:fix": "eslint . --fix"
+    "lint:fix": "eslint . --fix --ext .js,.jsx,.ts,.tsx"
   },
   "eslintConfig": {
     "extends": [

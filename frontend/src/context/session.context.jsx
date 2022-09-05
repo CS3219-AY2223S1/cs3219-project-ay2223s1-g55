@@ -1,6 +1,6 @@
 import { useState, createContext, useEffect, useContext } from 'react';
-import { URL_USER_SESSION, URL_USER_LOGIN, URL_USER_LOGOUT } from '../configs';
 import axios from 'axios';
+import { URL_USER_SESSION, URL_USER_LOGIN, URL_USER_LOGOUT } from '../configs';
 import { STATUS_CODE_LOGGED_OUT } from '../constants';
 
 const saveJwtCookie = (jwt) => {
@@ -23,7 +23,7 @@ const clearJwt = () => {
 const SessionContext = createContext();
 export const useSession = () => useContext(SessionContext);
 
-const SessionProvider = ({ children }) => {
+function SessionProvider({ children }) {
   const [user, setUser] = useState();
 
   useEffect(() => {
@@ -34,7 +34,7 @@ const SessionProvider = ({ children }) => {
   const updateSession = async (jwt) => {
     const res = await axios.get(URL_USER_SESSION, {
       headers: {
-        Authorization: 'Bearer ' + jwt,
+        Authorization: `Bearer ${jwt}`,
       },
     });
 
@@ -58,7 +58,7 @@ const SessionProvider = ({ children }) => {
   const logout = async (username) => {
     try {
       const res = await axios.get(URL_USER_LOGOUT, {
-        headers: { username: username },
+        headers: { username },
       });
       if (res.status === STATUS_CODE_LOGGED_OUT) {
         clearJwt();
@@ -71,10 +71,8 @@ const SessionProvider = ({ children }) => {
   };
 
   return (
-    <SessionContext.Provider value={{ user, login, logout }}>
-      {children}
-    </SessionContext.Provider>
+    <SessionContext.Provider value={{ user, login, logout }}>{children}</SessionContext.Provider>
   );
-};
+}
 
-export default SessionProvider
+export default SessionProvider;

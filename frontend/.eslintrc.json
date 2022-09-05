@@ -54,6 +54,7 @@
         "no-unused-vars": "warn",
         "no-use-before-define": "warn",
         "no-underscore-dangle": "warn",
+        "consistent-return": "warn",
         "jsx-quotes": [
             "error",
             "prefer-double"

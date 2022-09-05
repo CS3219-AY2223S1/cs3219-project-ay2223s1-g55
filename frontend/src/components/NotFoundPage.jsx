@@ -1,5 +1,5 @@
-import { Button, Grid, Typography } from '@mui/material'
-import { Link } from 'react-router-dom'
+import { Button, Grid, Typography } from '@mui/material';
+import { Link } from 'react-router-dom';
 
 function NotFoundPage() {
   return (
@@ -11,7 +11,7 @@ function NotFoundPage() {
         Back to Home Page
       </Button>
     </Grid>
-  )
+  );
 }
 
-export default NotFoundPage
+export default NotFoundPage;
