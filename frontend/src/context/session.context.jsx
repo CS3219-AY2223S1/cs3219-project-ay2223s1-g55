@@ -1,6 +1,6 @@
 import { useState, createContext, useEffect, useContext } from 'react';
 import axios from 'axios';
-import { URL_USER_SESSION, URL_USER_LOGIN, URL_USER_LOGOUT } from '../configs';
+import { URL_USER_SESSION, URL_USER_LOGIN, URL_USER_LOGOUT, URL_USER_SVC } from '../configs';
 import { STATUS_CODE_LOGGED_OUT } from '../constants';
 
 const saveJwtCookie = (jwt) => {
@@ -70,8 +70,27 @@ function SessionProvider({ children }) {
     }
   };
 
+  const deleteUser = async () => {
+    try {
+      const token = getJwtCookie();
+      const res = await axios.delete(URL_USER_SVC, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (res.status === 200) {
+        clearJwt();
+        setUser();
+      }
+
+      return res;
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   return (
-    <SessionContext.Provider value={{ user, login, logout }}>{children}</SessionContext.Provider>
+    <SessionContext.Provider value={{ user, login, logout, deleteUser }}>
+      {children}
+    </SessionContext.Provider>
   );
 }
 

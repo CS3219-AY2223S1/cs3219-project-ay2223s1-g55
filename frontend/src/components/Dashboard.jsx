@@ -8,7 +8,7 @@ import { STATUS_CODE_LOGGED_OUT } from '../constants';
 function Dashboard() {
   const navigate = useNavigate();
   const [difficulty, setDifficulty] = useState('');
-  const { user, logout } = useSession();
+  const { user, logout, deleteUser } = useSession();
 
   const handleDifficultyChange = (e) => {
     setDifficulty(e.target.value);
@@ -18,6 +18,20 @@ function Dashboard() {
     const res = await logout(user?.username);
     if (res?.status === STATUS_CODE_LOGGED_OUT) {
       navigate('/login');
+    }
+  };
+
+  const handleDeleteUser = async () => {
+    // console.log('delete');
+    // const res = await axios.delete(URL_USER_DELETE, { username: user });
+    // if (res?.status === STATUS_CODE_LOGGED_OUT) {
+    //   navigate('/');
+    // }
+
+    console.log('handling delete');
+    const res = await deleteUser();
+    if (res?.status === 200) {
+      navigate('/signup');
     }
   };
 
@@ -43,19 +57,42 @@ function Dashboard() {
           </div>
         </Grid>
         <Grid
+          container
           item
           xs={6}
           justifySelf="flex-end"
           sx={{ display: 'flex', justifyContent: 'flex-end' }}
         >
-          <Button
-            id="logout_button"
-            variant="contained"
-            onClick={handleLogout}
-            sx={{ height: '100%' }}
+          <Grid
+            item
+            xs={12}
+            justifySelf="center"
+            sx={{ display: 'flex', justifyContent: 'center' }}
           >
-            LOG OUT
-          </Button>
+            <Button
+              id="logout_button"
+              variant="contained"
+              onClick={handleLogout}
+              sx={{ height: '100%' }}
+            >
+              LOG OUT
+            </Button>
+          </Grid>
+          <Grid
+            item
+            xs={12}
+            justifySelf="center"
+            sx={{ display: 'flex', justifyContent: 'center' }}
+          >
+            <Button
+              id="delete_account_button"
+              variant="contained"
+              onClick={handleDeleteUser}
+              sx={{ height: '100%' }}
+            >
+              DELETE
+            </Button>
+          </Grid>
         </Grid>
       </Grid>
     </DefaultLayout>
