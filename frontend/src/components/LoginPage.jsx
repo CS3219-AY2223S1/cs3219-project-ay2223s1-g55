@@ -56,6 +56,8 @@ function LoginPage() {
     setDialogMsg(msg);
   };
 
+  const handleSignupClick = () => navigate('/signup');
+
   return (
     <DefaultLayout>
       <Box display="flex" flexDirection="column" width="30%">
@@ -93,6 +95,10 @@ function LoginPage() {
             <Button onClick={closeDialog}>Close</Button>
           </DialogActions>
         </Dialog>
+      </Box>
+
+      <Box display="flex" flexDirection="row" justifyContent="flex-start">
+        <Button onClick={handleSignupClick}>No account? Create one here!</Button>
       </Box>
     </DefaultLayout>
   );
