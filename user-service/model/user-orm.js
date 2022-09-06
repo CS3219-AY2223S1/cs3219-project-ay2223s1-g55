@@ -66,7 +66,7 @@ export async function ormDeleteUser(username) {
 
 export async function ormBlacklistUser(token) {
   try {
-    return blacklistUser(token);
+    return await blacklistUser(token);
   } catch (err) {
     console.log('ERROR: Could not blacklist user');
     return { err };
