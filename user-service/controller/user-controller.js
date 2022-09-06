@@ -39,7 +39,6 @@ export async function createUser(req, res) {
 }
 
 export async function getSession(req, res) {
-    console.log(res)
   try {
     const currentUser = decodeBearerToken(req);
 

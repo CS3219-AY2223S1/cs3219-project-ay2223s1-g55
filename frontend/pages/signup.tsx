@@ -16,7 +16,7 @@ import { STATUS_CODE_CONFLICT, STATUS_CODE_CREATED } from '@/lib/constants';
 import Link from 'next/link';
 import DefaultLayout from '@/layouts/DefaultLayout';
 
-function SignupPage() {
+const SignupPage = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -99,6 +99,6 @@ function SignupPage() {
       </Box>
     </DefaultLayout>
   );
-}
+};
 
 export default SignupPage;

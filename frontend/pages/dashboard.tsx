@@ -13,7 +13,7 @@ import DefaultLayout from '@/layouts/DefaultLayout';
 import { STATUS_CODE_LOGGED_OUT } from '@/lib/constants';
 import { useRouter } from 'next/router';
 
-function Dashboard() {
+const Dashboard = () => {
   const router = useRouter();
   const [difficulty, setDifficulty] = useState('');
   const { user, logout } = useSession();
@@ -68,6 +68,6 @@ function Dashboard() {
       </Grid>
     </DefaultLayout>
   );
-}
+};
 
 export default Dashboard;
