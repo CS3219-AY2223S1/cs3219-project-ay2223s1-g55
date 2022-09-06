@@ -1,5 +1,5 @@
 import UserModel from './user-model.js';
-import { createUser, findUser, loginUser, logoutUser } from './repository.js';
+import { createUser, findUser, loginUser, logoutUser, deleteUser } from './repository.js';
 import bcrypt from 'bcryptjs';
 import { createUser, loginUser } from './repository.js';
 
@@ -33,9 +33,9 @@ export async function ormLoginUser(username, password) {
 export async function ormLogoutUser(username) {
   try {
     return await logoutUser({ username });
-  } catch (e) {
+  } catch (err) {
     console.log('ERROR: Could not log user out');
-    return { e };
+    return { err };
   }
 }
 
@@ -47,4 +47,13 @@ export async function ormCheckUserExists(username) {
     console.log('ERROR: Error occured when finding users');
     return { err };
   }
+}
+
+export async function ormDeleteUser(username) {
+    try {
+        return await deleteUser({ username });
+    } catch (err) {
+        console.log("ERROR: Could not delete user");
+        return { err };
+    }
 }

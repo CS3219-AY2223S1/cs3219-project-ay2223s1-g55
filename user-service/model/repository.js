@@ -32,3 +32,8 @@ export async function logoutUser(params) {
   const user = await UserModel.findOne(params);
   return user;
 }
+
+export async function deleteUser(params) {
+    await UserModel.deleteOne(params);
+    return;
+}
