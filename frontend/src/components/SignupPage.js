@@ -11,12 +11,13 @@ import {
 } from '@mui/material';
 import { useState } from 'react';
 import axios from 'axios';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { URL_USER_SVC } from '../configs';
 import { STATUS_CODE_CONFLICT, STATUS_CODE_CREATED } from '../constants';
 import DefaultLayout from '../layouts/DefaultLayout';
 
 function SignupPage() {
+  const navigate = useNavigate();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -53,6 +54,7 @@ function SignupPage() {
     setDialogMsg(msg);
   };
 
+  const handleLoginClick = () => navigate('/login');
   return (
     <DefaultLayout>
       <Box display="flex" flexDirection="column" width="30%">
@@ -96,6 +98,10 @@ function SignupPage() {
             )}
           </DialogActions>
         </Dialog>
+      </Box>
+
+      <Box display="flex" flexDirection="row" justifyContent="flex-start">
+        <Button onClick={handleLoginClick}>Have an account? Login here!</Button>
       </Box>
     </DefaultLayout>
   );
