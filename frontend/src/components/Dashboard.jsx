@@ -22,13 +22,6 @@ function Dashboard() {
   };
 
   const handleDeleteUser = async () => {
-    // console.log('delete');
-    // const res = await axios.delete(URL_USER_DELETE, { username: user });
-    // if (res?.status === STATUS_CODE_LOGGED_OUT) {
-    //   navigate('/');
-    // }
-
-    console.log('handling delete');
     const res = await deleteUser();
     if (res?.status === 200) {
       navigate('/signup');
