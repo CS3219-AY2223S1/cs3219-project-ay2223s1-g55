@@ -5,6 +5,7 @@ import {
   ormLogoutUser as _logoutUser,
   ormDeleteUser as _deleteUser,
   ormBlacklistUser as _blacklistUser,
+  ormCheckTokenExists as _checkTokenExists,
 } from '../model/user-orm.js';
 import { decodeBearerToken } from './helpers.js';
 import jwt from 'jsonwebtoken';
@@ -61,7 +62,13 @@ export async function getSession(req, res) {
 
 export async function loginUser(req, res) {
   try {
-    const { username, password } = req.body;
+    const { username, password, currToken } = req.body;
+    const tokenExists = await _checkTokenExists(currToken);
+
+    if (tokenExists) {
+      console.log('This account was previously deleted!');
+      return res.status(401).json({ message: 'This account does not exist!' });
+    }
 
     if (!username || !password) {
       return res.status(401).json({ message: 'Username and/or Password are missing!' });
@@ -142,7 +149,7 @@ export async function deleteUser(req, res) {
 
     // Add jwt token to blacklist
     const token = req.headers.authorization.split(' ')[1];
-    _blacklistUser(token);
+    await _blacklistUser(token);
 
     console.log(`User ${user.username} has been successfully deleted!`);
     return res

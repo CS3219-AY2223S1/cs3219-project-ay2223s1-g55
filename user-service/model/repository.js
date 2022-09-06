@@ -57,3 +57,15 @@ export async function blacklistUser(token) {
   await redisClient.lPush('blacklist_jwt', token);
   return;
 }
+
+export async function findToken(token) {
+  let tokens = [];
+
+  try {
+    const res = await redisClient.lRange('blacklist_jwt', 0, -1);
+    res.forEach((t) => (tokens = [...tokens, t]));
+    return tokens.includes(token);
+  } catch (err) {
+    console.error(err);
+  }
+}

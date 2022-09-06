@@ -47,7 +47,8 @@ function SessionProvider({ children }) {
   };
 
   const login = async (username, password) => {
-    const res = await axios.post(URL_USER_LOGIN, { username, password });
+    const currToken = getJwtCookie();
+    const res = await axios.post(URL_USER_LOGIN, { username, password, currToken });
     if (res.data.token) {
       saveJwtCookie(res.data.token);
       updateSession(res.data.token);

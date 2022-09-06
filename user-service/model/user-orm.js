@@ -6,6 +6,7 @@ import {
   logoutUser,
   deleteUser,
   blacklistUser,
+  findToken,
 } from './repository.js';
 import bcrypt from 'bcryptjs';
 
@@ -69,6 +70,15 @@ export async function ormBlacklistUser(token) {
     return await blacklistUser(token);
   } catch (err) {
     console.log('ERROR: Could not blacklist user');
+    return { err };
+  }
+}
+
+export async function ormCheckTokenExists(token) {
+  try {
+    return await findToken(token);
+  } catch (err) {
+    console.log('ERROR: Error occured when finding token');
     return { err };
   }
 }
