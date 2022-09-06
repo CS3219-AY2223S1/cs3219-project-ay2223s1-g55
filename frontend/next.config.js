@@ -9,8 +9,8 @@ const nextConfig = {
         destination: '/signup',
         permanent: true,
       },
-    ]
+    ];
   },
-}
+};
 
-module.exports = nextConfig
+module.exports = nextConfig;
