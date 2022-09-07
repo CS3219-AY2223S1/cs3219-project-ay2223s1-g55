@@ -3,7 +3,11 @@ import {
   ormCreateUser as _createUser,
   ormLoginUser as _loginUser,
   ormLogoutUser as _logoutUser,
+  ormDeleteUser as _deleteUser,
+  ormBlacklistUser as _blacklistUser,
+  ormCheckTokenExists as _checkTokenExists,
 } from '../model/user-orm.js';
+import { decodeBearerToken } from './helpers.js';
 import jwt from 'jsonwebtoken';
 
 export async function createUser(req, res) {
@@ -16,7 +20,7 @@ export async function createUser(req, res) {
         return res.status(409).json({ message: 'Username already in use!' });
       }
       const resp = await _createUser(username, password);
-      // console.log(resp);
+
       if (resp.err) {
         return res.status(400).json({ message: 'Could not create a new user!' });
       } else {
@@ -33,22 +37,24 @@ export async function createUser(req, res) {
 
 export async function getSession(req, res) {
   try {
-    if (!(req.headers?.authorization?.split(' ')[0] === 'Bearer')) {
-      return res.status(401).send({ message: 'Bearer Token not found!' });
+    const currentUser = decodeBearerToken(req);
+
+    if (!currentUser) {
+      return res.status(401).send({ message: 'Invalid Bearer Token!' });
     }
 
-    const token = req.headers.authorization.split(' ')[1];
-    const decode = jwt.verify(token, process.env.JWT_SECRET);
+    const { username, _id } = currentUser;
 
-    if (!decode.username) {
-      res.status(401).send({ message: 'Invalid Bearer Token!' });
+    const usernameExists = await _checkUserExists(username);
+    if (!usernameExists) {
+      return res.status(404).send({ message: 'Username not found!' });
     }
 
-    console.log(`User ${decode.username} logged in successfully!`);
+    console.log(`User ${username} logged in successfully!`);
     return res.status(200).send({
-      message: `User session for ${decode.username} found!`,
-      _id: decode._id,
-      username: decode.username,
+      message: `User session for ${username} found!`,
+      _id,
+      username,
     });
   } catch (err) {
     return res.status(500).json({ message: 'Failed to retrieve session!' });
@@ -57,7 +63,13 @@ export async function getSession(req, res) {
 
 export async function loginUser(req, res) {
   try {
-    const { username, password } = req.body;
+    const { username, password, currToken } = req.body;
+    const tokenExists = await _checkTokenExists(currToken);
+
+    if (tokenExists) {
+      console.log('This account was previously deleted!');
+      return res.status(401).json({ message: 'This account does not exist!' });
+    }
 
     if (!username || !password) {
       return res.status(401).json({ message: 'Username and/or Password are missing!' });
@@ -116,5 +128,40 @@ export async function logoutUser(req, res) {
   } catch (e) {
     console.log(e);
     return res.status(500).json({ message: 'Database failure when trying to log out!' });
+  }
+}
+
+export async function deleteUser(req, res) {
+  try {
+    const user = decodeBearerToken(req);
+
+    if (!user) {
+      console.log('You are not authorized to perform this action!');
+      return res.status(401).json({ message: 'You are not authorized to perform this action!' });
+    }
+
+    const usernameExists = await _checkUserExists(user.username);
+    if (!usernameExists) {
+      console.log('Unable to find user in database!');
+      return res.status(404).send({ message: 'Unable to find user in database!' });
+    }
+
+    const resp = await _deleteUser(user.username);
+    if (resp?.err) {
+      console.error(resp.err);
+      return res.status(500).json({ message: 'Failed to delete user', err: resp.err });
+    }
+
+    // Add jwt token to blacklist
+    const token = req.headers.authorization.split(' ')[1];
+    await _blacklistUser(token);
+
+    console.log(`User ${user.username} has been successfully deleted!`);
+    return res
+      .status(200)
+      .json({ message: `User ${user.username} has been successfully deleted!` });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ message: 'Database failure when trying to delete user!' });
   }
 }

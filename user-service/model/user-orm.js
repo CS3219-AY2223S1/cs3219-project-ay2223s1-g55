@@ -1,5 +1,13 @@
 import UserModel from './user-model.js';
-import { createUser, findUser, loginUser, logoutUser } from './repository.js';
+import {
+  createUser,
+  findUser,
+  loginUser,
+  logoutUser,
+  deleteUser,
+  blacklistUser,
+  findToken,
+} from './repository.js';
 import bcrypt from 'bcryptjs';
 
 // need to separate orm functions from repository to decouple business logic from persistence
@@ -32,9 +40,9 @@ export async function ormLoginUser(username, password) {
 export async function ormLogoutUser(username) {
   try {
     return await logoutUser({ username });
-  } catch (e) {
+  } catch (err) {
     console.log('ERROR: Could not log user out');
-    return { e };
+    return { err };
   }
 }
 
@@ -44,6 +52,33 @@ export async function ormCheckUserExists(username) {
     return userFound != null;
   } catch (err) {
     console.log('ERROR: Error occured when finding users');
+    return { err };
+  }
+}
+
+export async function ormDeleteUser(username) {
+  try {
+    return await deleteUser({ username });
+  } catch (err) {
+    console.log('ERROR: Could not delete user');
+    return { err };
+  }
+}
+
+export async function ormBlacklistUser(token) {
+  try {
+    return await blacklistUser(token);
+  } catch (err) {
+    console.log('ERROR: Could not blacklist user');
+    return { err };
+  }
+}
+
+export async function ormCheckTokenExists(token) {
+  try {
+    return await findToken(token);
+  } catch (err) {
+    console.log('ERROR: Error occured when finding token');
     return { err };
   }
 }
