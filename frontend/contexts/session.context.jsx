@@ -47,7 +47,8 @@ function SessionProvider({ children }) {
   };
 
   const login = async (username, password) => {
-    const res = await axios.post(URL_USER_LOGIN, { username, password });
+    const currToken = getJwtCookie();
+    const res = await axios.post(URL_USER_LOGIN, { username, password, currToken });
     if (res.data.token) {
       saveJwtCookie(res.data.token);
       updateSession(res.data.token);
@@ -55,11 +56,11 @@ function SessionProvider({ children }) {
     return res;
   };
 
-  const logout = async (username) => {
+  const logout = async () => {
     try {
-      const res = await axios.get(URL_USER_LOGOUT, {
-        headers: { username },
-      });
+      const token = getJwtCookie();
+      const res = await axios.post(URL_USER_LOGOUT, { token });
+
       if (res.status === STATUS_CODE_LOGGED_OUT) {
         clearJwt();
         setUser();
@@ -70,8 +71,27 @@ function SessionProvider({ children }) {
     }
   };
 
+  const deleteUser = async () => {
+    try {
+      const token = getJwtCookie();
+      const res = await axios.delete(URL_USER_SVC, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (res.status === 200) {
+        clearJwt();
+        setUser();
+      }
+
+      return res;
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   return (
-    <SessionContext.Provider value={{ user, login, logout }}>{children}</SessionContext.Provider>
+    <SessionContext.Provider value={{ user, login, logout, deleteUser }}>
+      {children}
+    </SessionContext.Provider>
   );
 }
 

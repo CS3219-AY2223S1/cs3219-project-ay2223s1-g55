@@ -10,22 +10,28 @@ import {
 } from '@mui/material';
 import { useSession } from '@/contexts/session.context';
 import DefaultLayout from '@/layouts/DefaultLayout';
-import { STATUS_CODE_LOGGED_OUT } from '@/lib/constants';
-import { useRouter } from 'next/router';
+import { STATUS_CODE_LOGGED_OUT, STATUS_CODE_DELETED } from '@/lib/constants';
+import router from 'next/router';
 
 const Dashboard = () => {
-  const router = useRouter();
   const [difficulty, setDifficulty] = useState('');
-  const { user, logout } = useSession();
+  const { user, logout, deleteUser } = useSession();
 
   const handleDifficultyChange = (e: SelectChangeEvent<string>) => {
     setDifficulty(e.target.value);
   };
 
   const handleLogout = async () => {
-    const res = await logout(user?.username);
+    const res = await logout();
     if (res?.status === STATUS_CODE_LOGGED_OUT) {
       router.push('/login');
+    }
+  };
+
+  const handleDeleteUser = async () => {
+    const res = await deleteUser();
+    if (res?.status === STATUS_CODE_DELETED) {
+      router.push('/signup');
     }
   };
 
@@ -51,19 +57,42 @@ const Dashboard = () => {
           </div>
         </Grid>
         <Grid
+          container
           item
           xs={6}
           justifySelf="flex-end"
           sx={{ display: 'flex', justifyContent: 'flex-end' }}
         >
-          <Button
-            id="logout_button"
-            variant="contained"
-            onClick={handleLogout}
-            sx={{ height: '100%' }}
+          <Grid
+            item
+            xs={12}
+            justifySelf="center"
+            sx={{ display: 'flex', justifyContent: 'center' }}
           >
-            LOG OUT
-          </Button>
+            <Button
+              id="logout_button"
+              variant="contained"
+              onClick={handleLogout}
+              sx={{ height: '100%' }}
+            >
+              LOG OUT
+            </Button>
+          </Grid>
+          <Grid
+            item
+            xs={12}
+            justifySelf="center"
+            sx={{ display: 'flex', justifyContent: 'center' }}
+          >
+            <Button
+              id="delete_account_button"
+              variant="contained"
+              onClick={handleDeleteUser}
+              sx={{ height: '100%' }}
+            >
+              DELETE
+            </Button>
+          </Grid>
         </Grid>
       </Grid>
     </DefaultLayout>

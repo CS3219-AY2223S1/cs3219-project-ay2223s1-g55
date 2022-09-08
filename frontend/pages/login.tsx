@@ -13,10 +13,9 @@ import {
 import { STATUS_CODE_LOGIN_FAILED, STATUS_CODE_LOGGED_IN } from '@/lib/constants';
 import { useSession } from '@/contexts/session.context';
 import DefaultLayout from '@/layouts/DefaultLayout';
-import { useRouter } from 'next/router';
+import router from 'next/router';
 
 const LoginPage = () => {
-  const router = useRouter();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -58,6 +57,8 @@ const LoginPage = () => {
     setDialogMsg(msg);
   };
 
+  const handleSignupClick = () => router.push('/signup');
+
   return (
     <DefaultLayout>
       <Box display="flex" flexDirection="column" width="30%">
@@ -95,6 +96,10 @@ const LoginPage = () => {
             <Button onClick={closeDialog}>Close</Button>
           </DialogActions>
         </Dialog>
+      </Box>
+
+      <Box display="flex" flexDirection="row" justifyContent="flex-start">
+        <Button onClick={handleSignupClick}>No account? Create one here!</Button>
       </Box>
     </DefaultLayout>
   );
