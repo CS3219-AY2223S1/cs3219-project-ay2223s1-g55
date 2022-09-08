@@ -4,6 +4,7 @@ import SignupPage from './components/SignupPage';
 import NotFoundPage from './components/NotFoundPage';
 import LoginPage from './components/LoginPage';
 import Dashboard from './components/Dashboard';
+import ChangePasswordPage from './components/ChangePasswordPage';
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
             <Route path="/signup" element={<SignupPage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/change-password" element={<ChangePasswordPage />} />
             <Route path="*" element={<NotFoundPage />} />
           </Routes>
         </Router>

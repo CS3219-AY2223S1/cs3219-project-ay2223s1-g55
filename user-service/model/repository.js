@@ -69,3 +69,14 @@ export async function findToken(token) {
     console.error(err);
   }
 }
+
+export async function updateUser(username, newPassword) {
+  try {
+    const filter = { username };
+    const update = { password: newPassword };
+    const doc = await UserModel.findOneAndUpdate(filter, update);
+    return doc;
+  } catch (err) {
+    console.log(err);
+  }
+}

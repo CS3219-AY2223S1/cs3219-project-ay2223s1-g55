@@ -12,6 +12,7 @@ import {
   getSession,
   logoutUser,
   deleteUser,
+  updateUser,
 } from './controller/user-controller.js';
 
 const router = express.Router();
@@ -23,6 +24,7 @@ router.delete('/', deleteUser);
 router.post('/login', loginUser);
 router.get('/session', getSession);
 router.get('/logout', logoutUser);
+router.put('/password', updateUser);
 
 app.use('/api/user', router).all((_, res) => {
   res.setHeader('content-type', 'application/json');

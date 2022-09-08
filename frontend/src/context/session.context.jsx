@@ -7,7 +7,7 @@ const saveJwtCookie = (jwt) => {
   document.cookie = `jwt=${jwt}`;
 };
 
-const getJwtCookie = () => {
+export const getJwtCookie = () => {
   const cookies = document.cookie;
   const jwtToken = cookies
     .split('; ')

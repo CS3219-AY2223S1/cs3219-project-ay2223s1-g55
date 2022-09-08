@@ -28,6 +28,10 @@ function Dashboard() {
     }
   };
 
+  const handleChangePassword = () => {
+    navigate('/change-password');
+  };
+
   return (
     <DefaultLayout>
       <Grid container alignItems="center" justifyContent="center">
@@ -84,6 +88,21 @@ function Dashboard() {
               sx={{ height: '100%' }}
             >
               DELETE
+            </Button>
+          </Grid>
+          <Grid
+            item
+            xs={12}
+            justifySelf="center"
+            sx={{ display: 'flex', justifyContent: 'center' }}
+          >
+            <Button
+              id="change_password_button"
+              variant="contained"
+              onClick={handleChangePassword}
+              sx={{ height: '100%' }}
+            >
+              Change Password
             </Button>
           </Grid>
         </Grid>

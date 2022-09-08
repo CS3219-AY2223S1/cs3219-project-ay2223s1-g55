@@ -6,6 +6,8 @@ import {
   ormDeleteUser as _deleteUser,
   ormBlacklistUser as _blacklistUser,
   ormCheckTokenExists as _checkTokenExists,
+  ormCompareOldPassword as _compareOldPassword,
+  ormUpdateUser as _updateUser,
 } from '../model/user-orm.js';
 import { decodeBearerToken } from './helpers.js';
 import jwt from 'jsonwebtoken';
@@ -23,7 +25,6 @@ export async function createUser(req, res) {
       if (resp.err) {
         return res.status(400).json({ message: 'Could not create a new user!' });
       } else {
-        console.log(`Created new user ${username} successfully!`);
         return res.status(201).json({ message: `Created new user ${username} successfully!` });
       }
     } else {
@@ -158,5 +159,35 @@ export async function deleteUser(req, res) {
   } catch (err) {
     console.error(err);
     return res.status(500).json({ message: 'Database failure when trying to delete user!' });
+  }
+}
+
+export async function updateUser(req, res) {
+  try {
+    const user = decodeBearerToken(req);
+    if (!user) {
+      console.log('You are not authorized to perform this action!');
+      return res.status(401).json({ message: 'You are not authorized to perform this action!' });
+    }
+
+    const usernameExists = await _checkUserExists(user.username);
+    if (!usernameExists) {
+      console.log('Unable to find user in database!');
+      return res.status(404).send({ message: 'Unable to find user in database!' });
+    }
+    const isPasswordMatch = await _compareOldPassword(user.username, req.body.oldPassword);
+    if (!isPasswordMatch) {
+      console.log('Old password does not match!');
+      return res.status(409).json({ message: 'Old password does not match!' });
+    }
+    const resp = await _updateUser(user.username, req.body.newPassword);
+    if (resp?.err) {
+      console.error(resp.err);
+      return res.status(500).json({ message: 'Failed to update user', err: resp.err });
+    }
+    return res.status(200).json({ message: `User ${user.username}'s password has been updated!` });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ message: 'Database failure when trying to update user!' });
   }
 }
