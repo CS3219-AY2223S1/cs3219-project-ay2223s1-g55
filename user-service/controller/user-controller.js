@@ -20,6 +20,7 @@ export async function createUser(req, res) {
         return res.status(409).json({ message: 'Username already in use!' });
       }
       const resp = await _createUser(username, password);
+
       if (resp.err) {
         return res.status(400).json({ message: 'Could not create a new user!' });
       } else {
@@ -97,12 +98,16 @@ export async function loginUser(req, res) {
 
 export async function logoutUser(req, res) {
   try {
-    const username = req.headers?.username;
+    const { token } = req.body;
 
-    if (!username) {
+    const decode = jwt.verify(token, process.env.JWT_SECRET);
+
+    if (!decode.username) {
       console.log('Missing username!');
       return res.status(401).json({ message: 'Missing username!' });
     }
+
+    const username = decode.username;
 
     const resp = await _logoutUser(username);
 

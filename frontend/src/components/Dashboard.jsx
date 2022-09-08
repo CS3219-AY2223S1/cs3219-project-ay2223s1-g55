@@ -3,7 +3,7 @@ import { Button, FormControl, Grid, InputLabel, MenuItem, Select } from '@mui/ma
 import { useNavigate } from 'react-router-dom';
 import { useSession } from '../context/session.context';
 import DefaultLayout from '../layouts/DefaultLayout';
-import { STATUS_CODE_LOGGED_OUT } from '../constants';
+import { STATUS_CODE_DELETED, STATUS_CODE_LOGGED_OUT } from '../constants';
 
 function Dashboard() {
   const navigate = useNavigate();
@@ -15,7 +15,7 @@ function Dashboard() {
   };
 
   const handleLogout = async () => {
-    const res = await logout(user?.username);
+    const res = await logout();
     if (res?.status === STATUS_CODE_LOGGED_OUT) {
       navigate('/login');
     }
@@ -23,7 +23,7 @@ function Dashboard() {
 
   const handleDeleteUser = async () => {
     const res = await deleteUser();
-    if (res?.status === 200) {
+    if (res?.status === STATUS_CODE_DELETED) {
       navigate('/signup');
     }
   };
