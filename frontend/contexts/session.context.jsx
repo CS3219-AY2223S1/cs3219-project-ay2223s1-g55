@@ -1,7 +1,7 @@
 import { useState, createContext, useEffect, useContext } from 'react';
+import { URL_USER_SESSION, URL_USER_LOGIN, URL_USER_LOGOUT } from '@/lib/configs';
 import axios from 'axios';
-import { URL_USER_SESSION, URL_USER_LOGIN, URL_USER_LOGOUT, URL_USER_SVC } from '../configs';
-import { STATUS_CODE_LOGGED_OUT } from '../constants';
+import { STATUS_CODE_LOGGED_OUT } from '@/lib/constants';
 
 const saveJwtCookie = (jwt) => {
   document.cookie = `jwt=${jwt}`;

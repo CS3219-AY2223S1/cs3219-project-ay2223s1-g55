@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import {
   Box,
   Button,
@@ -9,57 +10,60 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { useState } from 'react';
-import axios from 'axios';
-import { Link, useNavigate } from 'react-router-dom';
-import { URL_USER_SVC } from '../configs';
-import { STATUS_CODE_CONFLICT, STATUS_CODE_CREATED } from '../constants';
-import DefaultLayout from '../layouts/DefaultLayout';
+import { STATUS_CODE_LOGIN_FAILED, STATUS_CODE_LOGGED_IN } from '@/lib/constants';
+import { useSession } from '@/contexts/session.context';
+import DefaultLayout from '@/layouts/DefaultLayout';
+import router from 'next/router';
 
-function SignupPage() {
-  const navigate = useNavigate();
+const LoginPage = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [dialogTitle, setDialogTitle] = useState('');
   const [dialogMsg, setDialogMsg] = useState('');
-  const [isSignupSuccess, setIsSignupSuccess] = useState(false);
+  const { login } = useSession();
 
-  const handleSignup = async () => {
-    setIsSignupSuccess(false);
-    const res = await axios.post(URL_USER_SVC, { username, password }).catch((err) => {
-      if (err.response.status === STATUS_CODE_CONFLICT) {
-        setErrorDialog('This username already exists');
+  const handleLogin = async () => {
+    try {
+      const res = await login(username, password);
+      if (res && res.status === STATUS_CODE_LOGGED_IN) {
+        setSuccessDialog('Successfully logged in!');
+      }
+    } catch (err: any) {
+      if (err.response.status === STATUS_CODE_LOGIN_FAILED) {
+        setErrorDialog('Failed to login user');
       } else {
         setErrorDialog('Please try again later');
       }
-    });
-    if (res && res.status === STATUS_CODE_CREATED) {
-      setSuccessDialog('Account successfully created');
-      setIsSignupSuccess(true);
     }
   };
 
-  const closeDialog = () => setIsDialogOpen(false);
+  const closeDialog = () => {
+    setIsDialogOpen(false);
+    if (dialogTitle === 'Success') {
+      router.push('/dashboard');
+    }
+  };
 
-  const setSuccessDialog = (msg) => {
+  const setSuccessDialog = (msg: string) => {
     setIsDialogOpen(true);
     setDialogTitle('Success');
     setDialogMsg(msg);
   };
 
-  const setErrorDialog = (msg) => {
+  const setErrorDialog = (msg: string) => {
     setIsDialogOpen(true);
     setDialogTitle('Error');
     setDialogMsg(msg);
   };
 
-  const handleLoginClick = () => navigate('/login');
+  const handleSignupClick = () => router.push('/signup');
+
   return (
     <DefaultLayout>
       <Box display="flex" flexDirection="column" width="30%">
         <Typography variant="h3" marginBottom="2rem">
-          Sign Up
+          Log In
         </Typography>
         <TextField
           label="Username"
@@ -78,8 +82,8 @@ function SignupPage() {
           sx={{ marginBottom: '2rem' }}
         />
         <Box display="flex" flexDirection="row" justifyContent="flex-end">
-          <Button variant="outlined" onClick={handleSignup}>
-            Sign up
+          <Button variant="outlined" onClick={handleLogin}>
+            Log in
           </Button>
         </Box>
 
@@ -89,22 +93,16 @@ function SignupPage() {
             <DialogContentText>{dialogMsg}</DialogContentText>
           </DialogContent>
           <DialogActions>
-            {isSignupSuccess ? (
-              <Button component={Link} to="/login">
-                Log in
-              </Button>
-            ) : (
-              <Button onClick={closeDialog}>Done</Button>
-            )}
+            <Button onClick={closeDialog}>Close</Button>
           </DialogActions>
         </Dialog>
       </Box>
 
       <Box display="flex" flexDirection="row" justifyContent="flex-start">
-        <Button onClick={handleLoginClick}>Have an account? Login here!</Button>
+        <Button onClick={handleSignupClick}>No account? Create one here!</Button>
       </Box>
     </DefaultLayout>
   );
-}
+};
 
-export default SignupPage;
+export default LoginPage;

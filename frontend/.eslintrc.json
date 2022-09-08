@@ -4,8 +4,7 @@
         "es2021": true
     },
     "extends": [
-        "react-app",
-        "plugin:react/recommended",
+        "next/core-web-vitals",
         "plugin:@typescript-eslint/eslint-recommended",
         "plugin:@typescript-eslint/recommended",
         "airbnb",
@@ -58,6 +57,8 @@
         "jsx-quotes": [
             "error",
             "prefer-double"
-        ]
+        ],
+        "import/extensions": "off",
+        "react/jsx-props-no-spreading": "off"
     }
 }

@@ -1,30 +1,37 @@
-import { useState } from 'react';
-import { Button, FormControl, Grid, InputLabel, MenuItem, Select } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
-import { useSession } from '../context/session.context';
-import DefaultLayout from '../layouts/DefaultLayout';
-import { STATUS_CODE_DELETED, STATUS_CODE_LOGGED_OUT } from '../constants';
+import { SetStateAction, useState } from 'react';
+import {
+  Button,
+  FormControl,
+  Grid,
+  InputLabel,
+  MenuItem,
+  Select,
+  SelectChangeEvent,
+} from '@mui/material';
+import { useSession } from '@/contexts/session.context';
+import DefaultLayout from '@/layouts/DefaultLayout';
+import { STATUS_CODE_LOGGED_OUT, STATUS_CODE_DELETED } from '@/lib/constants';
+import router from 'next/router';
 
-function Dashboard() {
-  const navigate = useNavigate();
+const Dashboard = () => {
   const [difficulty, setDifficulty] = useState('');
   const { user, logout, deleteUser } = useSession();
 
-  const handleDifficultyChange = (e) => {
+  const handleDifficultyChange = (e: SelectChangeEvent<string>) => {
     setDifficulty(e.target.value);
   };
 
   const handleLogout = async () => {
     const res = await logout();
     if (res?.status === STATUS_CODE_LOGGED_OUT) {
-      navigate('/login');
+      router.push('/login');
     }
   };
 
   const handleDeleteUser = async () => {
     const res = await deleteUser();
     if (res?.status === STATUS_CODE_DELETED) {
-      navigate('/signup');
+      router.push('/signup');
     }
   };
 
@@ -90,6 +97,6 @@ function Dashboard() {
       </Grid>
     </DefaultLayout>
   );
-}
+};
 
 export default Dashboard;

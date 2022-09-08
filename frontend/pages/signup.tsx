@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import {
   Box,
   Button,
@@ -10,59 +9,57 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
-import { STATUS_CODE_LOGIN_FAILED, STATUS_CODE_LOGGED_IN } from '../constants';
-import { useSession } from '../context/session.context';
-import DefaultLayout from '../layouts/DefaultLayout';
+import { useState } from 'react';
+import axios from 'axios';
+import { URL_USER_SVC } from '@/lib/configs';
+import { STATUS_CODE_CONFLICT, STATUS_CODE_CREATED } from '@/lib/constants';
+import Link from 'next/link';
+import DefaultLayout from '@/layouts/DefaultLayout';
+import router from 'next/router';
 
-function LoginPage() {
-  const navigate = useNavigate();
+const SignupPage = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [dialogTitle, setDialogTitle] = useState('');
   const [dialogMsg, setDialogMsg] = useState('');
-  const { login } = useSession();
+  const [isSignupSuccess, setIsSignupSuccess] = useState(false);
 
-  const handleLogin = async () => {
-    const res = await login(username, password).catch((err) => {
-      if (err.response.status === STATUS_CODE_LOGIN_FAILED) {
-        setErrorDialog('Failed to login user');
+  const handleSignup = async () => {
+    setIsSignupSuccess(false);
+    const res = await axios.post(URL_USER_SVC, { username, password }).catch((err) => {
+      if (err.response.status === STATUS_CODE_CONFLICT) {
+        setErrorDialog('This username already exists');
       } else {
         setErrorDialog('Please try again later');
       }
     });
-    if (res && res.status === STATUS_CODE_LOGGED_IN) {
-      setSuccessDialog('Successfully logged in!');
+    if (res && res.status === STATUS_CODE_CREATED) {
+      setSuccessDialog('Account successfully created');
+      setIsSignupSuccess(true);
     }
   };
 
-  const closeDialog = () => {
-    setIsDialogOpen(false);
-    if (dialogTitle === 'Success') {
-      navigate('/dashboard');
-    }
-  };
+  const closeDialog = () => setIsDialogOpen(false);
 
-  const setSuccessDialog = (msg) => {
+  const setSuccessDialog = (msg: string) => {
     setIsDialogOpen(true);
     setDialogTitle('Success');
     setDialogMsg(msg);
   };
 
-  const setErrorDialog = (msg) => {
+  const setErrorDialog = (msg: string) => {
     setIsDialogOpen(true);
     setDialogTitle('Error');
     setDialogMsg(msg);
   };
 
-  const handleSignupClick = () => navigate('/signup');
-
+  const handleLoginClick = () => router.push('/login');
   return (
     <DefaultLayout>
       <Box display="flex" flexDirection="column" width="30%">
         <Typography variant="h3" marginBottom="2rem">
-          Log In
+          Sign Up
         </Typography>
         <TextField
           label="Username"
@@ -81,8 +78,8 @@ function LoginPage() {
           sx={{ marginBottom: '2rem' }}
         />
         <Box display="flex" flexDirection="row" justifyContent="flex-end">
-          <Button variant="outlined" onClick={handleLogin}>
-            Log in
+          <Button variant="outlined" onClick={handleSignup}>
+            Sign up
           </Button>
         </Box>
 
@@ -92,16 +89,22 @@ function LoginPage() {
             <DialogContentText>{dialogMsg}</DialogContentText>
           </DialogContent>
           <DialogActions>
-            <Button onClick={closeDialog}>Close</Button>
+            {isSignupSuccess ? (
+              <Link href="/login" passHref>
+                <Button>Log in</Button>
+              </Link>
+            ) : (
+              <Button onClick={closeDialog}>Done</Button>
+            )}
           </DialogActions>
         </Dialog>
       </Box>
 
       <Box display="flex" flexDirection="row" justifyContent="flex-start">
-        <Button onClick={handleSignupClick}>No account? Create one here!</Button>
+        <Button onClick={handleLoginClick}>Have an account? Login here!</Button>
       </Box>
     </DefaultLayout>
   );
-}
+};
 
-export default LoginPage;
+export default SignupPage;
