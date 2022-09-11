@@ -21,6 +21,10 @@ const Dashboard = () => {
     setDifficulty(e.target.value);
   };
 
+  const handleMatching = async () => {
+    router.push('/matching');
+  };
+
   const handleLogout = async () => {
     const res = await logout();
     if (res?.status === STATUS_CODE_LOGGED_OUT) {
@@ -91,6 +95,21 @@ const Dashboard = () => {
               sx={{ height: '100%' }}
             >
               DELETE
+            </Button>
+          </Grid>
+          <Grid
+            item
+            xs={12}
+            justifySelf="center"
+            sx={{ display: 'flex', justifyContent: 'center', marginTop: '10px' }}
+          >
+            <Button
+              id="matching_button"
+              variant="contained"
+              onClick={handleMatching}
+              sx={{ height: '100%' }}
+            >
+              Match
             </Button>
           </Grid>
         </Grid>
