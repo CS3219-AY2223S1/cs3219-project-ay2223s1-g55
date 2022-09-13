@@ -4,7 +4,12 @@ import cors from 'cors';
 import { createServer } from 'http';
 import { Server } from 'socket.io';
 import { instrument } from '@socket.io/admin-ui';
-import { createMatchRequest, findMatch } from './controller/matching-controller.js';
+import {
+  createMatchRequest,
+  findMatch,
+  pendingMatchRequest,
+  deleteMatchRequest,
+} from './controller/matching-controller.js';
 
 const app = express();
 app.use(express.urlencoded({ extended: true }));
@@ -18,6 +23,8 @@ app.get('/', (req, res) => {
 
 app.post('/match', createMatchRequest);
 app.get('/match', findMatch);
+app.get('/pending', pendingMatchRequest);
+app.delete('/match', deleteMatchRequest);
 const router = express.Router();
 
 app.use('/api/match', router).all((_, res) => {
@@ -36,10 +43,13 @@ const io = new Server(httpServer, {
   },
 });
 // users in current server
-let users = [];
+let users = {};
 
 // users in current Room
-let roomUsers = [];
+let roomUsers = {};
+
+// dictionary of rooms in current server
+let rooms = {};
 // Run when clinet connects
 // socket is the client
 let messages = {
@@ -48,76 +58,47 @@ let messages = {
 };
 
 // middlewarre to check username and allow connection
-// io.use((socket, next) => {
-//   const username = socket.handshake.auth.username;
-//   if (!username) {
-//     return next(new Error('invalid username'));
-//   }
-//   socket.username = username;
-//   next();
-// });
+io.use((socket, next) => {
+  const username = socket.handshake.auth.username;
+  if (!username) {
+    return next(new Error('invalid username'));
+  }
+  socket.username = username;
+  next();
+});
 
+// Run when client connects
 io.on('connection', (socket) => {
-  const users = [];
+  // static id everytime we refresh page
+  // const id = socket.handshake.query.id;
+  // socket.join(id);
   console.log('New WS Connection...', socket.id);
 
-  socket.on('connect', () => {
-    socket.emit('message', 'connected to server');
-    // io.emit('message', 'A user has joined the chat');
-  });
+  // annoucement when user connects
   socket.emit('message', 'Welcome to Server!');
-  // for (let [id, socket] of io.of('/').sockets) {
-  //   users.push({
-  //     userID: id,
-  //     username: socket.username,
-  //   });
-  // }
-  // socket.emit('users', users);
 
-  // socket.broadcast.emit('user connected', {
-  //   userID: socket.id,
-  //   username: socket.username,
-  // });
-
-  // socket.on('private message', ({ content, to }) => {
-  //   socket.to(to).emit('private message', {
-  //     content,
-  //     from: socket.id,
-  //   });
-  // });
-  // [to] is either the roomId/chatname/socketID
-  // socket.on('receiveMessage', (payload) => {
-  //   console.log('payload', payload);
-  //   const { roomId, content } = payload;
-  //   socket.to(roomId).emit('receiveMessage', {
-  //     content,
-  //     from: roomId,
-  //   });
-  // });
-  //  socket.broadcast.to('rlch2E1W3Mm2QYVYAAAb').emit('receiveMessage', 'HEllo world');
-
-  socket.on('sendMessage', (data) => {
+  socket.on('send-message', (data) => {
     console.log('SEND MESSAGE EVENT', data.content);
     const { content, sender, roomId, chatName } = data;
-    console.log('payload roomID', roomId);
-    console.log('payload content', content);
-    console.log('send message event payload:', data);
+    console.log(`payload is ${data.content}`);
+    // Send to global room or server?
     if (roomId === '') {
-      socket.broadcast.emit('sendMessage', data);
+      socket.broadcast.emit('send-message', data);
       // individual socket sned only to that room/socket in [to]
     } else {
       // socket.emit('sendMessage', data.payload);
       console.log('sending Message from index');
       // to same roomId does not seem to work
-      socket.to(roomId).emit('sendMessage', data);
-      console.log('payload is: ', data);
+      console.log(`data is ${data.content}`);
+      socket.to(roomId).emit('receive-message', data);
     }
   });
   // callback function from client side
-  socket.on('joinRoom', ({ username, matchRoomID }, callback) => {
-    console.log('server recevied joinRoom', matchRoomID + ' ' + username);
+  socket.on('join-room', ({ username, matchRoomID }, callback) => {
+    console.log('server received join Room', matchRoomID + ' ' + username);
     socket.join(matchRoomID);
-    callback(`Joined ${matchRoomID}`);
+    console.log(socket.rooms);
+    callback(`${username} joined room ${matchRoomID}`);
 
     const payload = {
       message: `${username} has joined the room ${matchRoomID}`,
@@ -129,57 +110,37 @@ io.on('connection', (socket) => {
     };
     // roomUsers.push(user);
     // io.to(roomId).emit('newUser', `${username} has joined the room ${roomId}`);
-    socket.to(matchRoomID).emit('joinRoom', payload);
+    socket.to(matchRoomID).emit('join-room', payload);
     // socket.emit('joinSuccess', `You have joined the room ${roomId}`);
   });
+
+  socket.on('leave-room', ({ username, room }, callback) => {
+    console.log('server received leave-room', room + ' ' + username);
+    socket.leave(room);
+    console.log(socket.rooms);
+    callback(`${username} left the room ${room}`);
+
+    const payload = {
+      message: `${username} has left the room ${room}`,
+      username: `${username}`,
+    };
+    const user = {
+      username,
+      id: socket.id,
+    };
+    socket.to(room).emit('leave-room', payload);
+    // socket.emit('joinSuccess', `You have joined the room ${roomId}`);
+  });
+
   // Runs when client disconnects
   socket.on('disconnect', () => {
     io.emit('message', 'A user has left the chat');
   });
 });
-// socket.on('join server', (username) => {
-//   console.log('username is: ', username);
-//   const user = {
-//     username,
-//     id: socket.id,
-//   };
-//   users.push(user);
-//   io.emit('new users', users);
-// });
-
-// // socket.emit('message', 'Welcome to Matching Service');
-// // message is a string
-// // Listen for message
-
-// // socket.on('message', ({ data }) => {
-// //   console.log(data);
-// //   // broadcast to all clients listening to this event
-// //   io.emit('message', `${data} from ${socket.id}`);
-// // });
-
-// // socket.emit('message');
-// // socket.on('messa')
-// // Broadcast when a user connects
-// // inform everyone(all other clients) except user thats connecting
-// // socket.broadcast.emit('message', 'A user has joined the chat');
-
-// // emit to all the clients
-// // io.emit()
-// socket.on('connect', () => {
-//   socket.emit('message', 'connected to server');
-//   // io.emit('message', 'A user has joined the chat');
-// });
-
-// Room == socket id
-// });
 
 // TODO: Create a event listener 'match' that creates a new match in the database when provided with the
 // TODO: Correct details (so dont use app, use socket instead?)
 httpServer.listen(PORT, () => console.log(`matching-service listening on port ${PORT}`));
-// app.listen(8002, () => console.log('matching-service listening on port 8002'));
-// TODO: Create a socket.io server instance
-// TODO: Log something to console upon socket connection for a sense
-// TODO: Run matching-service and test connection by using Postman
-// httpServer.listen(8001);
+
 // Admin Dashboard for socket connections
 instrument(io, { auth: false });

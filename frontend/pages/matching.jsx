@@ -1,4 +1,4 @@
-import { SetStateAction, useState, useRef } from 'react';
+import { SetStateAction, useState, useRef, useEffect } from 'react';
 import {
   Box,
   Button,
@@ -24,7 +24,6 @@ import {
 import { styled } from '@mui/material/styles';
 import { useSession } from '@/contexts/session.context';
 import DefaultLayout from '@/layouts/DefaultLayout';
-import { STATUS_CODE_LOGGED_OUT, STATUS_CODE_DELETED } from '@/lib/constants';
 import router from 'next/router';
 import { io } from 'socket.io-client';
 
@@ -72,8 +71,8 @@ const initialMessages = [];
 
 // backend port used for socket.io
 const socket = io('http://localhost:8001', {
-  // transports: ['websocket'],
-  // autoConnect: false,
+  transports: ['websocket'],
+  autoConnect: false,
 });
 
 // console.log('user is', user?.username);
@@ -109,7 +108,7 @@ const Matching = () => {
   const [difficulty, setDifficulty] = useState('');
   const [socketMessage, setSocketMessage] = useState('');
   const [socketID, setSocketID] = useState('');
-  const { user, logout, deleteUser } = useSession();
+  const { user } = useSession();
   const [messages, setMessages] = useState(initialMessages);
   const [username, setUsername] = useState('');
   const [room, setRoom] = useState('');
@@ -117,19 +116,32 @@ const Matching = () => {
   const [message, setMessage] = useState('');
   const [selectedUser, setSelectedUser] = useState('');
   const socketRef = useRef();
+  const [socketIDonConnect, setSocketIDonConnect] = useState('');
 
+  // user undefined from useSession
+  useEffect(() => {
+    console.log('user is: ', user);
+    setUsername(user?.username);
+    handleConnectToSocket();
+    // socket.auth = { username: user.username };
+    // socket.connect();
+  }, [user]);
+
+  // socket connection established
   socket.on('connect', () => {
+    setSocketIDonConnect(socket.id);
+    console.log('ID on connect : ', socketIDonConnect);
     console.log('connected: ', socket.id);
     setUsername(user?.username);
     setSocketID(socket.id);
   });
 
-  // const connectToSocket = () => {
-  //   setUsername(user?.username);
-  //   console.log('username: ', username);
-  //   socket.auth = { username };
-  //   socket.connect();
-  // };
+  const handleConnectToSocket = () => {
+    setUsername(user?.username);
+    console.log('username: ', user?.username);
+    socket.auth = { username };
+    socket.connect();
+  };
   // const sendPrivateMessage = (content) => {
   //   if (this.selectedUser) {
   //     socket.emit('private message', {
@@ -161,7 +173,7 @@ const Matching = () => {
 
   socket.on('message', (payload) => {
     console.log('socket id in client: ', socket.id);
-    console.log('message from socket: ', payload.message);
+    console.log('message from socket: ', payload);
   });
 
   // socket.on('receiveMessage', (payload) => {
@@ -178,39 +190,44 @@ const Matching = () => {
   // });
 
   // join Room when match is successful and room is created
-  const joinRoom = () => {
-    socket.emit('joinRoom', { username, matchRoomID }, (messageCb) => {
+  const handleJoinRoom = () => {
+    socket.emit('join-room', { username, matchRoomID }, (messageCb) => {
+      setRoom(matchRoomID);
       console.log('message from server: ', messageCb);
     });
   };
+
+  const handleLeaveRoom = () => {
+    socket.emit('leave-room', { username, room }, (messageCb) => {
+      setRoom('');
+      console.log('message from server: ', messageCb);
+    });
+  };
+
+  socket.on('leave-room', ({ message, username }) => {
+    console.log('message from server: ', message);
+  });
 
   // Send message with sepcific matchRoomID to the server if there is
   const handleSendSocketMessage = async () => {
     const payload = {
       content: [...messages, message] ?? `hello from client ${username}`,
       sender: socketID ?? '',
-      roomId: matchRoomID ?? '',
+      roomId: matchRoomID == '' ? socketID : matchRoomID,
       chatName: 'private chat',
     };
-    console.log('Sending socket message: ', payload);
-    // socket.emit('message', { data: `hello from client ${username}` });
-    socket.emit('sendMessage', payload);
+    socket.emit('send-message', payload);
     setMessages([...messages, message]);
-    // setMessages([...messages, payload.content]);
   };
 
-  socket.on('sendMessage', (payload) => {
-    console.log('message from sendMessage socket: ', payload.payload);
-    setMessages(payload.content);
-  });
-
-  socket.on('receiveMessage', (data) => {
-    // ID of the socket sending the message
-    console.log('RECEIVE MESSAGE EVENT');
-    console.log('receive message event: ', data.payload);
+  socket.on('receive-message', (payload) => {
+    console.log('message from sendMessage socket: ', payload.content);
+    // sender is now new receiver to reply to the same room ID
+    // need to join room ID
+    // being set on sent, so now even if cr8 a roomID it doesnt work
+    // can use this for private message instead of private room
     // setMatchRoomID(payload.sender);
-    setMessages(data.payload.content);
-    console.log('message from socket: ', data.payload.content);
+    setMessages(payload.content);
   });
 
   const handleDifficultyChange = (e) => {
@@ -250,8 +267,17 @@ const Matching = () => {
         </Grid>
 
         <Box display="flex" flexDirection="column" width="30%">
-          <Typography variant="h3" marginBottom="2rem">
-            Start Chat {socketID}
+          <Typography variant="h5" marginBottom="1rem">
+            My socket id: {socketID}
+          </Typography>
+          <Typography variant="h5" marginBottom=".5rem">
+            Socket ID on start {socketIDonConnect}
+          </Typography>
+          <Typography variant="h5" marginBottom=".5rem">
+            Current Room {room}
+          </Typography>
+          <Typography variant="h5" marginBottom=".5rem">
+            Match Room ID {matchRoomID}
           </Typography>
           <TextField
             label="Message"
@@ -268,13 +294,17 @@ const Matching = () => {
             onChange={(e) => setMatchRoomID(e.target.value)}
             sx={{ marginBottom: '2rem' }}
           />
-          <Button variant="outlined" onClick={() => joinRoom()}>
+          <Button variant="outlined" onClick={() => handleJoinRoom()}>
             Join Room
           </Button>
+          <Button variant="outlined" onClick={handleLeaveRoom}>
+            Leave Room
+          </Button>
 
-          <Button variant="outlined" onClick={() => connectToSocket()}>
+          <Button variant="outlined" onClick={() => handleConnectToSocket()}>
             Connect
           </Button>
+
           {/* <Box display="flex" flexDirection="row" justifyContent="flex-end">
             <Button variant="outlined" onClick={handleSendSocketMessage}>
               Send
