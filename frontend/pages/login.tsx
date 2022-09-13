@@ -30,7 +30,6 @@ const LoginPage = () => {
       if (res && res.status === STATUS_CODE_LOGGED_IN) {
         setSuccessDialog('Successfully logged in!');
         saveJwtCookie(res.data.token);
-        console.log('saving jwt cookie');
       }
     } catch (err: any) {
       if (err.response.status === STATUS_CODE_LOGIN_FAILED) {

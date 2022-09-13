@@ -21,9 +21,6 @@ function MyApp({ Component, pageProps }: AppProps) {
       return jwtToken as string;
     };
 
-    console.log('user,,', user);
-    console.log('cookie:', getJwtCookie());
-
     updateUser(getJwtCookie());
   }, [documentIsReady]);
 

@@ -22,6 +22,7 @@ import { clearJwt, getJwtCookie } from '@/lib/cookies';
 
 const Dashboard = () => {
   const [difficulty, setDifficulty] = useState('');
+  const [deleted, setDeleted] = useState<boolean>(false);
   const { user, logout, deleteUser } = useUserStore((state) => ({
     user: state.user,
     logout: state.logoutUser,
@@ -45,12 +46,13 @@ const Dashboard = () => {
     const currToken = getJwtCookie() as string;
     const res = await deleteUser(currToken);
     if (res?.status === STATUS_CODE_DELETED) {
+      setDeleted(true);
       router.push('/signup');
       clearJwt();
     }
   };
 
-  return user.loginState ? (
+  return user.loginState || deleted ? (
     <DefaultLayout>
       <Grid container alignItems="center" justifyContent="center">
         <Grid item xs={6}>
