@@ -5,25 +5,23 @@ import { STATUS_CODE_LOGGED_OUT } from './constants';
 
 interface User {
   username: string;
-  token: string;
+  loginState: boolean;
 }
 
 interface UserStore {
   user: User;
   updateUser: (token: string) => any;
-  loginUser: (username: string, password: string) => any;
-  logoutUser: () => any;
-  deleteUser: () => any;
+  loginUser: (username: string, password: string, token: string) => any;
+  logoutUser: (token: string) => any;
+  deleteUser: (token: string) => any;
 }
 
 export const useUserStore = create<UserStore>((set, get) => ({
-  user: { username: '', token: '' },
-  loginUser: async (username: string, password: string) => {
-    const { user } = get();
-    const currToken = user.token;
-    const res = await axios.post(URL_USER_LOGIN, { username, password, currToken });
+  user: { username: '', loginState: false },
+  loginUser: async (username: string, password: string, token: string) => {
+    const res = await axios.post(URL_USER_LOGIN, { username, password, token });
     if (res.data.token) {
-      set({ user: { username: username, token: res.data.token } });
+      set({ user: { username: username, loginState: true } });
     }
     return res;
   },
@@ -35,32 +33,28 @@ export const useUserStore = create<UserStore>((set, get) => ({
     });
 
     if (res.data.username) {
-      set({ user: { username: res.data.username, token: res.data.token } });
+      set({ user: { username: res.data.username, loginState: true } });
     }
   },
-  logoutUser: async () => {
+  logoutUser: async (token: string) => {
     try {
-      const { user } = get();
-      const token = user.token;
       const res = await axios.post(URL_USER_LOGOUT, { token });
 
       if (res.status === STATUS_CODE_LOGGED_OUT) {
-        set({ user: { username: '', token: '' } });
+        set({ user: { username: '', loginState: false } });
       }
       return res;
     } catch (e) {
       console.log(e);
     }
   },
-  deleteUser: async () => {
+  deleteUser: async (token: string) => {
     try {
-      const { user } = get();
-      const token = user.token;
       const res = await axios.delete(URL_USER_SVC, {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (res.status === 200) {
-        set({ user: { username: '', token: '' } });
+        set({ user: { username: '', loginState: false } });
       }
 
       return res;

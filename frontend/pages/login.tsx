@@ -14,7 +14,7 @@ import { STATUS_CODE_LOGIN_FAILED, STATUS_CODE_LOGGED_IN } from '@/lib/constants
 import router from 'next/router';
 import { useUserStore } from '@/lib/store';
 import DefaultLayout from '@/layouts/DefaultLayout';
-import { saveJwtCookie } from '@/lib/cookies';
+import { getJwtCookie, saveJwtCookie } from '@/lib/cookies';
 
 const LoginPage = () => {
   const [username, setUsername] = useState('');
@@ -25,7 +25,8 @@ const LoginPage = () => {
   const [user, loginUser] = useUserStore((state) => [state.user, state.loginUser]);
   const handleLogin = async () => {
     try {
-      const res = await loginUser(username, password);
+      const currToken = getJwtCookie() as string;
+      const res = await loginUser(username, password, currToken);
       if (res && res.status === STATUS_CODE_LOGGED_IN) {
         setSuccessDialog('Successfully logged in!');
         saveJwtCookie(res.data.token);

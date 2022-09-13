@@ -1,9 +1,15 @@
-import { SetStateAction, useState } from 'react';
+import { SetStateAction, useEffect, useState } from 'react';
 import {
   Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
   FormControl,
   Grid,
   InputLabel,
+  Link,
   MenuItem,
   Select,
   SelectChangeEvent,
@@ -12,7 +18,7 @@ import DefaultLayout from '@/layouts/DefaultLayout';
 import { STATUS_CODE_LOGGED_OUT, STATUS_CODE_DELETED } from '@/lib/constants';
 import router from 'next/router';
 import { useUserStore } from '@/lib/store';
-import { clearJwt } from '@/lib/cookies';
+import { clearJwt, getJwtCookie } from '@/lib/cookies';
 
 const Dashboard = () => {
   const [difficulty, setDifficulty] = useState('');
@@ -27,22 +33,24 @@ const Dashboard = () => {
   };
 
   const handleLogout = async () => {
-    const res = await logout();
+    const currToken = getJwtCookie() as string;
+    const res = await logout(currToken);
     if (res?.status === STATUS_CODE_LOGGED_OUT) {
-      clearJwt();
       router.push('/login');
+      clearJwt();
     }
   };
 
   const handleDeleteUser = async () => {
-    const res = await deleteUser();
+    const currToken = getJwtCookie() as string;
+    const res = await deleteUser(currToken);
     if (res?.status === STATUS_CODE_DELETED) {
-      clearJwt();
       router.push('/signup');
+      clearJwt();
     }
   };
 
-  return (
+  return user.loginState ? (
     <DefaultLayout>
       <Grid container alignItems="center" justifyContent="center">
         <Grid item xs={6}>
@@ -103,6 +111,18 @@ const Dashboard = () => {
         </Grid>
       </Grid>
     </DefaultLayout>
+  ) : (
+    <Dialog open={true} onClose={(e) => router.push('/login')}>
+      <DialogTitle>{'Error!'}</DialogTitle>
+      <DialogContent>
+        <DialogContentText>{'Log in to continue'}</DialogContentText>
+      </DialogContent>
+      <DialogActions>
+        <Link href="/login">
+          <Button>Log in</Button>
+        </Link>
+      </DialogActions>
+    </Dialog>
   );
 };
 

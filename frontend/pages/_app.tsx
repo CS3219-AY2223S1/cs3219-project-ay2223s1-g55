@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 import { useUserStore } from '@/lib/store';
 
 function MyApp({ Component, pageProps }: AppProps) {
-  const documentIsReady = typeof document !== undefined;
+  const documentIsReady = typeof window !== undefined;
   const [user, updateUser] = useUserStore((state) => [state.user, state.updateUser]);
 
   useEffect(() => {
@@ -18,10 +18,13 @@ function MyApp({ Component, pageProps }: AppProps) {
         .split('; ')
         .find((cookie) => cookie.startsWith('jwt='))
         ?.split('=')[1];
-      return jwtToken;
+      return jwtToken as string;
     };
 
-    updateUser(getJwtCookie() ?? '');
+    console.log('user,,', user);
+    console.log('cookie:', getJwtCookie());
+
+    updateUser(getJwtCookie());
   }, [documentIsReady]);
 
   return <Component {...pageProps} />;
