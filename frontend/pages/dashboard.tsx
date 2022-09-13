@@ -8,14 +8,19 @@ import {
   Select,
   SelectChangeEvent,
 } from '@mui/material';
-import { useSession } from '@/contexts/session.context';
 import DefaultLayout from '@/layouts/DefaultLayout';
 import { STATUS_CODE_LOGGED_OUT, STATUS_CODE_DELETED } from '@/lib/constants';
 import router from 'next/router';
+import { useUserStore } from '@/lib/store';
+import { clearJwt } from '@/lib/cookies';
 
 const Dashboard = () => {
   const [difficulty, setDifficulty] = useState('');
-  const { user, logout, deleteUser } = useSession();
+  const { user, logout, deleteUser } = useUserStore((state) => ({
+    user: state.user,
+    logout: state.logoutUser,
+    deleteUser: state.deleteUser,
+  }));
 
   const handleDifficultyChange = (e: SelectChangeEvent<string>) => {
     setDifficulty(e.target.value);
@@ -24,6 +29,7 @@ const Dashboard = () => {
   const handleLogout = async () => {
     const res = await logout();
     if (res?.status === STATUS_CODE_LOGGED_OUT) {
+      clearJwt();
       router.push('/login');
     }
   };
@@ -31,6 +37,7 @@ const Dashboard = () => {
   const handleDeleteUser = async () => {
     const res = await deleteUser();
     if (res?.status === STATUS_CODE_DELETED) {
+      clearJwt();
       router.push('/signup');
     }
   };

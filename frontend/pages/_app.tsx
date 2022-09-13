@@ -1,13 +1,30 @@
 import '../styles/globals.css';
 import type { AppProps } from 'next/app';
-import SessionProvider from '@/contexts/session.context';
+import { useEffect } from 'react';
+import { useUserStore } from '@/lib/store';
 
 function MyApp({ Component, pageProps }: AppProps) {
-  return (
-    <SessionProvider>
-      <Component {...pageProps} />
-    </SessionProvider>
-  );
+  const documentIsReady = typeof document !== undefined;
+  const [user, updateUser] = useUserStore((state) => [state.user, state.updateUser]);
+
+  useEffect(() => {
+    if (!documentIsReady) {
+      return;
+    }
+
+    const getJwtCookie = () => {
+      const cookies = document.cookie;
+      const jwtToken = cookies
+        .split('; ')
+        .find((cookie) => cookie.startsWith('jwt='))
+        ?.split('=')[1];
+      return jwtToken;
+    };
+
+    updateUser(getJwtCookie() ?? '');
+  }, [documentIsReady]);
+
+  return <Component {...pageProps} />;
 }
 
 export default MyApp;

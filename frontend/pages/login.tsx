@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   Box,
   Button,
@@ -11,9 +11,10 @@ import {
   Typography,
 } from '@mui/material';
 import { STATUS_CODE_LOGIN_FAILED, STATUS_CODE_LOGGED_IN } from '@/lib/constants';
-import { useSession } from '@/contexts/session.context';
-import DefaultLayout from '@/layouts/DefaultLayout';
 import router from 'next/router';
+import { useUserStore } from '@/lib/store';
+import DefaultLayout from '@/layouts/DefaultLayout';
+import { saveJwtCookie } from '@/lib/cookies';
 
 const LoginPage = () => {
   const [username, setUsername] = useState('');
@@ -21,13 +22,14 @@ const LoginPage = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [dialogTitle, setDialogTitle] = useState('');
   const [dialogMsg, setDialogMsg] = useState('');
-  const { login } = useSession();
-
+  const [user, loginUser] = useUserStore((state) => [state.user, state.loginUser]);
   const handleLogin = async () => {
     try {
-      const res = await login(username, password);
+      const res = await loginUser(username, password);
       if (res && res.status === STATUS_CODE_LOGGED_IN) {
         setSuccessDialog('Successfully logged in!');
+        saveJwtCookie(res.data.token);
+        console.log('saving jwt cookie');
       }
     } catch (err: any) {
       if (err.response.status === STATUS_CODE_LOGIN_FAILED) {
