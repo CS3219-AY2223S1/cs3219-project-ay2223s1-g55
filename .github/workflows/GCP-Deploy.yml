@@ -30,11 +30,15 @@ jobs:
         - name: Checkout repository
           uses: actions/checkout@v2
 
-        - name: Build Docker image
-          run: docker build . -t $IMAGE_NAME -f ./user-service/Dockerfile
+        - name: Deploy Docker image from source
+          dir: 'user-service'
+          run: gcloud run deploy --source cs3219-g55 --region asia-southeast1
 
-        - name: Push Docker image
-          run: docker push $IMAGE_NAME
+        # - name: Build Docker image
+        #   run: docker build . -t $IMAGE_NAME -f ./user-service/Dockerfile
 
-        - name: Deploy Docker image
-          run: gcloud run deploy cs3219-g55 --image $IMAGE_NAME --region asia-southeast1
+        # - name: Push Docker image
+        #   run: docker push $IMAGE_NAME
+
+        # - name: Deploy Docker image
+        #   run: gcloud run deploy cs3219-g55 --image $IMAGE_NAME --region asia-southeast1
