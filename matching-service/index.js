@@ -37,6 +37,7 @@ const PORT = process.env.PORT || 8001;
 const httpServer = createServer(app);
 const io = new Server(httpServer, {
   // Need to explicitly enable CORS
+  // TODO: Edit here to include new URL to access socket
   cors: {
     origin: ['http://localhost:3000', 'https://admin.socket.io'],
     credentials: true,
@@ -57,7 +58,7 @@ let messages = {
   random: [],
 };
 
-// middlewarre to check username and allow connection
+// middleware to check username and allow connection
 // io.use((socket, next) => {
 //   const username = socket.handshake.auth.username;
 //   if (!username) {

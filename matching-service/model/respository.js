@@ -24,15 +24,15 @@ export async function findMatchRequest(username) {
 export async function findMatch(params) {
   // within expiry time of 30s? hmmm
   console.log(`params are ${params.username} and ${params.difficulty}`);
-  const foundUser = await MatchingModel.find({
+  const foundUser = await MatchingModel.findOne({
     username: { $ne: params.username },
     difficulty: params.difficulty,
   });
   console.log('foundUser is: ', foundUser);
-  if (foundUser.length == 0) {
+  if (foundUser == null) {
     return false;
   }
-  return foundUser[0];
+  return foundUser;
 }
 
 export async function deleteMatchRequest(params) {

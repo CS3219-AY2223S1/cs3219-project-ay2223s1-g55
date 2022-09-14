@@ -39,8 +39,8 @@ export async function ormFindMatch(username, difficulty) {
 
 export async function ormCheckMatchRequestExists(username) {
   try {
-    const userFound = await findMatchRequest(username);
-    return userFound != null;
+    const matchFound = await findMatchRequest(username);
+    return matchFound != null;
   } catch (err) {
     console.log('ERROR: Error occured when finding users');
     return { err };
