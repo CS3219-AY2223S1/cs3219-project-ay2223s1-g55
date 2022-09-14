@@ -43,8 +43,6 @@ jobs:
             # NOTE: If required, update to the appropriate source folder
             source: ./user-service
 
-
-
         # - name: Configure Docker
         #   run: gcloud auth configure-docker --quiet
 
