@@ -2,7 +2,7 @@ name: Deploy to Cloud Run from Source
 
 on:
   push:
-    branches: [ dockerize-user-service ]
+    branches: [ master ]
 
 env:
   PROJECT_ID: cs3219-g55
@@ -15,14 +15,6 @@ jobs:
         env:
           SERVICE: user-service
         steps:
-
-        # - name: Login
-        #   uses: google-github-actions/setup-gcloud@v0
-        #   with:
-        #     project_id: ${{ env.PROJECT_ID }}
-        #     service_account_email: ${{ env.SERVICE }}@${{ env.PROJECT_ID }}.iam.gserviceaccount.com
-        #     service_account_key: ${{ secrets.GCP_CREDENTIALS }}
-
         - name: Checkout repository
           uses: actions/checkout@v2
 
