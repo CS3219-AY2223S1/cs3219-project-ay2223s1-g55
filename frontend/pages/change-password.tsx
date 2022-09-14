@@ -66,9 +66,9 @@ function ChangePasswordPage() {
       } else if (!digitsPassword) {
         errMsg = 'At least one digit';
       } else if (!specialCharPassword) {
-        errMsg = 'At least one Special Characters';
+        errMsg = 'At least one Special Character';
       } else if (!minLengthPassword) {
-        errMsg = 'At least minumum 8 characters';
+        errMsg = 'A minimum of 8 characters is required';
       } else {
         errMsg = '';
       }
@@ -101,7 +101,7 @@ function ChangePasswordPage() {
             name="oldPassword"
             onChange={(e) => setOldPassword(e.target.value)}
             onKeyUp={handleValidation}
-            variant="outlined"
+            variant="filled"
           />
           <br />
           <TextField
@@ -119,7 +119,7 @@ function ChangePasswordPage() {
           <br />
           <TextField
             error={confirmPasswordError}
-            helperText={confirmPasswordError ? 'Password do not match' : ''}
+            helperText={confirmPasswordError ? 'Password does not match' : ''}
             style={{ width: '200px', margin: '5px', marginTop: '15px' }}
             type="password"
             label="Confirm New Password"
