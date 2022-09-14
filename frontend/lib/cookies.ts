@@ -8,7 +8,7 @@ export const getJwtCookie = () => {
     .split('; ')
     .find((cookie) => cookie.startsWith('jwt='))
     ?.split('=')[1];
-  return jwtToken;
+  return jwtToken as string;
 };
 
 export const clearJwt = () => {

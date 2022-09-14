@@ -29,7 +29,7 @@ const DeleteAccount = () => {
 
   const handleDeleteUser = async () => {
     if (isValidInput) {
-      const currToken = getJwtCookie() as string;
+      const currToken = getJwtCookie();
       const res = await deleteUser(currToken);
       if (res?.status === STATUS_CODE_DELETED) {
         router.push('/signup');

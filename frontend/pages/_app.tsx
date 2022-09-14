@@ -2,6 +2,7 @@ import '../styles/globals.css';
 import type { AppProps } from 'next/app';
 import { useEffect } from 'react';
 import { useUserStore } from '@/lib/store';
+import { getJwtCookie } from '@/lib/cookies';
 
 function MyApp({ Component, pageProps }: AppProps) {
   const documentIsReady = typeof window !== undefined;
@@ -11,17 +12,9 @@ function MyApp({ Component, pageProps }: AppProps) {
     if (!documentIsReady) {
       return;
     }
+    const cookie = getJwtCookie();
 
-    const getJwtCookie = () => {
-      const cookies = document.cookie;
-      const jwtToken = cookies
-        .split('; ')
-        .find((cookie) => cookie.startsWith('jwt='))
-        ?.split('=')[1];
-      return jwtToken as string;
-    };
-
-    updateUser(getJwtCookie());
+    updateUser(cookie);
   }, [documentIsReady]);
 
   return <Component {...pageProps} />;

@@ -49,7 +49,7 @@ const Dashboard = () => {
   };
 
   const handleLogout = async () => {
-    const currToken = getJwtCookie() as string;
+    const currToken = getJwtCookie();
     const res = await logout(currToken);
     if (res?.status === STATUS_CODE_LOGGED_OUT) {
       router.push('/login');
