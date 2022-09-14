@@ -1,0 +1,11 @@
+{
+  "scripts": {
+    "frontend": "cd frontend && npm run dev",
+    "user": "cd user-service && npm run dev",
+    "matching": "cd matching-service && npm run dev",
+    "git-pre-commit": "cd frontend && npm run lint"
+  },
+  "devDependencies": {
+    "@vercel/git-hooks": "^1.0.0"
+  }
+}
