@@ -27,8 +27,8 @@ jobs:
         - name: Configure Docker
           run: gcloud auth configure-docker --quiet
 
-        - name: Checkout repository
-          uses: actions/checkout@v2
+        # - name: Checkout repository
+        #   uses: actions/checkout@v2
 
         - name: Deploy Docker image from source
           run: gcloud run deploy cs3219-g55 --source ./user-service --region asia-southeast1
