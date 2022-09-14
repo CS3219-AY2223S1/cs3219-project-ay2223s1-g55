@@ -1,5 +1,6 @@
-import { SetStateAction, useEffect, useState } from 'react';
+import { MouseEvent as ReactMouseEvent, useState } from 'react';
 import {
+  Avatar,
   Button,
   Dialog,
   DialogActions,
@@ -8,25 +9,39 @@ import {
   DialogTitle,
   FormControl,
   Grid,
+  IconButton,
   InputLabel,
   Link,
+  ListItemIcon,
+  Menu,
   MenuItem,
   Select,
   SelectChangeEvent,
+  Tooltip,
 } from '@mui/material';
+import Settings from '@mui/icons-material/Settings';
+import Logout from '@mui/icons-material/Logout';
 import DefaultLayout from '@/layouts/DefaultLayout';
-import { STATUS_CODE_LOGGED_OUT, STATUS_CODE_DELETED } from '@/lib/constants';
+import { STATUS_CODE_LOGGED_OUT } from '@/lib/constants';
 import router from 'next/router';
 import { useUserStore } from '@/lib/store';
 import { clearJwt, getJwtCookie } from '@/lib/cookies';
 
 const Dashboard = () => {
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
+  const handleAvatarClick = (event: ReactMouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleAvatarMenuClose = () => {
+    setAnchorEl(null);
+  };
+
   const [difficulty, setDifficulty] = useState('');
-  const [deleted, setDeleted] = useState<boolean>(false);
-  const { user, logout, deleteUser } = useUserStore((state) => ({
+
+  const { user, logout } = useUserStore((state) => ({
     user: state.user,
     logout: state.logoutUser,
-    deleteUser: state.deleteUser,
   }));
 
   const handleDifficultyChange = (e: SelectChangeEvent<string>) => {
@@ -42,17 +57,7 @@ const Dashboard = () => {
     }
   };
 
-  const handleDeleteUser = async () => {
-    const currToken = getJwtCookie() as string;
-    const res = await deleteUser(currToken);
-    if (res?.status === STATUS_CODE_DELETED) {
-      setDeleted(true);
-      router.push('/signup');
-      clearJwt();
-    }
-  };
-
-  return user.loginState || deleted ? (
+  return user.loginState ? (
     <DefaultLayout>
       <Grid container alignItems="center" justifyContent="center">
         <Grid item xs={6}>
@@ -74,44 +79,73 @@ const Dashboard = () => {
           </div>
         </Grid>
         <Grid
-          container
           item
           xs={6}
           justifySelf="flex-end"
           sx={{ display: 'flex', justifyContent: 'flex-end' }}
         >
-          <Grid
-            item
-            xs={12}
-            justifySelf="center"
-            sx={{ display: 'flex', justifyContent: 'center' }}
-          >
-            <Button
-              id="logout_button"
-              variant="contained"
-              onClick={handleLogout}
-              sx={{ height: '100%' }}
+          <Tooltip title="Account settings">
+            <IconButton
+              onClick={handleAvatarClick}
+              size="small"
+              sx={{ ml: 2 }}
+              aria-controls={open ? 'account-menu' : undefined}
+              aria-haspopup="true"
+              aria-expanded={open ? 'true' : undefined}
             >
-              LOG OUT
-            </Button>
-          </Grid>
-          <Grid
-            item
-            xs={12}
-            justifySelf="center"
-            sx={{ display: 'flex', justifyContent: 'center' }}
-          >
-            <Button
-              id="delete_account_button"
-              variant="contained"
-              onClick={handleDeleteUser}
-              sx={{ height: '100%' }}
-            >
-              DELETE
-            </Button>
-          </Grid>
+              <Avatar sx={{ width: 32, height: 32 }}>M</Avatar>
+            </IconButton>
+          </Tooltip>
         </Grid>
       </Grid>
+      <Menu
+        anchorEl={anchorEl}
+        id="account-menu"
+        open={open}
+        onClose={handleAvatarMenuClose}
+        onClick={handleAvatarMenuClose}
+        PaperProps={{
+          elevation: 0,
+          sx: {
+            overflow: 'visible',
+            filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
+            mt: 1.5,
+            '& .MuiAvatar-root': {
+              width: 32,
+              height: 32,
+              ml: -0.5,
+              mr: 1,
+            },
+            '&:before': {
+              content: '""',
+              display: 'block',
+              position: 'absolute',
+              top: 0,
+              right: 14,
+              width: 10,
+              height: 10,
+              bgcolor: 'background.paper',
+              transform: 'translateY(-50%) rotate(45deg)',
+              zIndex: 0,
+            },
+          },
+        }}
+        transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+        anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+      >
+        <MenuItem onClick={() => router.push('/settings')}>
+          <ListItemIcon>
+            <Settings fontSize="small" />
+          </ListItemIcon>
+          Settings
+        </MenuItem>
+        <MenuItem onClick={handleLogout}>
+          <ListItemIcon>
+            <Logout fontSize="small" />
+          </ListItemIcon>
+          Logout
+        </MenuItem>
+      </Menu>
     </DefaultLayout>
   ) : (
     <Dialog open={true} onClose={(e) => router.push('/login')}>
