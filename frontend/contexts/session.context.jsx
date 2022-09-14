@@ -42,7 +42,6 @@ function SessionProvider({ children }) {
       setUser({
         username: res.data.username,
         _id: res.data._id,
-        test: res.data.test,
       });
     }
   };
