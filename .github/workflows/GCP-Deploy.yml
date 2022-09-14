@@ -37,4 +37,4 @@ jobs:
           run: docker push $IMAGE_NAME
 
         - name: Deploy Docker image
-          run: gcloud run deploy cs3219-g55 --image $IMAGE_NAME 
+          run: gcloud run deploy cs3219-g55 --image $IMAGE_NAME --region asia-southeast1
