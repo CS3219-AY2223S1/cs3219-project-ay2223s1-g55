@@ -92,19 +92,22 @@ function ChangePasswordPage() {
         <h2>Change Password</h2>
         <form onSubmit={handlePasswordChange}>
           <TextField
+            error={oldPasswordError}
+            helperText={oldPasswordError ? 'Old Password does not match' : ''}
             style={{ width: '200px', margin: '5px' }}
             type="password"
             label="Old Password"
-            variant="outlined"
             value={oldPassword}
             name="oldPassword"
             onChange={(e) => setOldPassword(e.target.value)}
             onKeyUp={handleValidation}
+            variant="outlined"
           />
           <br />
-          {oldPasswordError && <p className="text-danger">Old Password does not match</p>}
           <TextField
-            style={{ width: '200px', margin: '5px' }}
+            error={passwordError.length > 0}
+            helperText={passwordError.length > 0 ? passwordError : ''}
+            style={{ width: '200px', margin: '5px', marginTop: '30px' }}
             type="password"
             label="New Password"
             variant="outlined"
@@ -113,10 +116,11 @@ function ChangePasswordPage() {
             onChange={(e) => setNewPassword(e.target.value)}
             onKeyUp={handleValidation}
           />
-          {passwordError && <p className="text-danger">{passwordError}</p>}
           <br />
           <TextField
-            style={{ width: '200px', margin: '5px' }}
+            error={confirmPasswordError}
+            helperText={confirmPasswordError ? 'Password do not match' : ''}
+            style={{ width: '200px', margin: '5px', marginTop: '15px' }}
             type="password"
             label="Confirm New Password"
             variant="outlined"
@@ -126,7 +130,6 @@ function ChangePasswordPage() {
             onKeyUp={handleValidation}
           />
           <br />
-          {confirmPasswordError && <p className="text-danger">Password do not match</p>}
           <Button
             disabled={
               confirmPasswordError ||

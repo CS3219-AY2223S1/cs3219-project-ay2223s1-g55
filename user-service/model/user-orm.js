@@ -7,6 +7,7 @@ import {
   deleteUser,
   blacklistUser,
   findToken,
+  updateUser,
 } from './repository.js';
 import bcrypt from 'bcryptjs';
 
@@ -79,6 +80,29 @@ export async function ormCheckTokenExists(token) {
     return await findToken(token);
   } catch (err) {
     console.log('ERROR: Error occured when finding token');
+    return { err };
+  }
+}
+
+export async function ormCompareOldPassword(username, oldPassword) {
+  try {
+    const user = await findUser(username);
+    const isPasswordMatch = await bcrypt.compare(oldPassword, user.password);
+    return user && isPasswordMatch;
+  } catch (err) {
+    console.log('ERROR: Could not compare old passwords');
+    return { err };
+  }
+}
+
+export async function ormUpdateUser(username, newPassword) {
+  try {
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(newPassword, salt);
+    const updatedUser = await updateUser(username, hashedPassword);
+    return updatedUser;
+  } catch (err) {
+    console.log('ERROR: Error occured when updating user');
     return { err };
   }
 }

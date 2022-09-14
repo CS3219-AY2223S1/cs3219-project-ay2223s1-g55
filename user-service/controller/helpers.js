@@ -1,18 +1,16 @@
-import jwt from "jsonwebtoken";
+import jwt from 'jsonwebtoken';
 
 export const decodeBearerToken = (req) => {
-    if (!(req.headers?.authorization?.split(" ")[0] === "Bearer")) {
-        return;
-    }
+  if (!(req.headers?.authorization?.split(' ')[0] === 'Bearer')) {
+    return;
+  }
 
-    const token = req.headers.authorization.split(" ")[1];
-    const decode = jwt.verify(token, process.env.JWT_SECRET);
+  const token = req.headers.authorization.split(' ')[1];
+  const decode = jwt.verify(token, process.env.JWT_SECRET);
 
-    if (!decode.username) {
-        return;
-    }
+  if (!decode.username) {
+    return;
+  }
 
-    return decode;
+  return decode;
 };
-
-
