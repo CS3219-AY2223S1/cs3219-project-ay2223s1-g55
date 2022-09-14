@@ -10,7 +10,7 @@ interface User {
 
 interface UserStore {
   user: User;
-  updateUser: (token: string) => any;
+  updateUser: (token: string) => void;
   loginUser: (username: string, password: string, token: string) => any;
   logoutUser: (token: string) => any;
   deleteUser: (token: string) => any;
