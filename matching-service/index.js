@@ -17,15 +17,15 @@ app.use(express.json());
 app.use(cors()); // config cors so that front-end can use
 app.options('*', cors());
 
-app.get('/', (req, res) => {
+const router = express.Router();
+router.get('/', (_, res) => {
   res.send('Hello World from matching-service');
 });
 
-app.post('/match', createMatchRequest);
-app.get('/match', findMatch);
-app.get('/pending', pendingMatchRequest);
-app.delete('/match', deleteMatchRequest);
-const router = express.Router();
+router.get('/match', findMatch);
+router.post('/match', createMatchRequest);
+router.get('/pending', pendingMatchRequest);
+router.delete('/match', deleteMatchRequest);
 
 app.use('/api/match', router).all((_, res) => {
   res.setHeader('content-type', 'application/json');
@@ -58,14 +58,14 @@ let messages = {
 };
 
 // middlewarre to check username and allow connection
-io.use((socket, next) => {
-  const username = socket.handshake.auth.username;
-  if (!username) {
-    return next(new Error('invalid username'));
-  }
-  socket.username = username;
-  next();
-});
+// io.use((socket, next) => {
+//   const username = socket.handshake.auth.username;
+//   if (!username) {
+//     return next(new Error('invalid username'));
+//   }
+//   socket.username = username;
+//   next();
+// });
 
 // Run when client connects
 io.on('connection', (socket) => {
@@ -128,8 +128,8 @@ io.on('connection', (socket) => {
       username,
       id: socket.id,
     };
-    socket.to(room).emit('leave-room', payload);
-    // socket.emit('joinSuccess', `You have joined the room ${roomId}`);
+    // server emit the annoucement to the room instead bc socket no longer in room
+    io.to(room).emit('leave-room', payload);
   });
 
   // Runs when client disconnects
@@ -141,6 +141,6 @@ io.on('connection', (socket) => {
 // TODO: Create a event listener 'match' that creates a new match in the database when provided with the
 // TODO: Correct details (so dont use app, use socket instead?)
 httpServer.listen(PORT, () => console.log(`matching-service listening on port ${PORT}`));
-
+// app.listen(8001, () => console.log('user-service listening on port 8001'));
 // Admin Dashboard for socket connections
 instrument(io, { auth: false });

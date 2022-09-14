@@ -1,5 +1,11 @@
 import { useState, createContext, useEffect, useContext } from 'react';
-import { URL_USER_SESSION, URL_USER_LOGIN, URL_USER_LOGOUT } from '@/lib/configs';
+import {
+  URL_USER_SESSION,
+  URL_USER_LOGIN,
+  URL_USER_LOGOUT,
+  URL_MATCHING_SVC,
+  URL_MATCHING_MATCH,
+} from '@/lib/configs';
 import axios from 'axios';
 import { STATUS_CODE_LOGGED_OUT } from '@/lib/constants';
 
@@ -88,8 +94,38 @@ function SessionProvider({ children }) {
     }
   };
 
+  const sendMatchRequest = async (username, difficulty) => {
+    console.log('sendMatchRequest called with ', username, difficulty);
+    try {
+      const res = await axios.get(URL_MATCHING_MATCH, {
+        // username,
+        // difficulty,
+        headers: {
+          username: username,
+          difficulty: difficulty,
+        },
+      });
+      if (res.status === 200 || res.status === 201) {
+        console.log('match request sent');
+        // contains json of mongoDbID, username, difficulty, createdAt, message
+        return res;
+      } else if (res.status === 400 || res.status === 404) {
+        console.log('match request failed');
+        return res;
+      } else {
+        console.log('match request failed');
+        return res;
+      }
+    } catch (err) {
+      console.log(err.response);
+      console.log('error message is: ', err.response.data.message);
+      console.log(err.message);
+      throw err;
+    }
+  };
+
   return (
-    <SessionContext.Provider value={{ user, login, logout, deleteUser }}>
+    <SessionContext.Provider value={{ user, login, logout, deleteUser, sendMatchRequest }}>
       {children}
     </SessionContext.Provider>
   );

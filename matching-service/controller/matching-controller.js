@@ -36,32 +36,28 @@ export async function createMatchRequest(req, res) {
 export async function findMatch(req, res) {
   let count = 0;
   console.log(`Running findMatch for ${count} time`);
+  console.log('req.body', req.headers);
   try {
-    const { username, difficulty } = req.body;
+    const { username, difficulty } = req.headers;
     if (username && difficulty) {
+      // TODO: Change this to on first findMatch if no result, insert into database
+      // TODO: will continue on intervals, but when another findMatch request finds this database entry,
+      // TODO: it will delete the entry and return the result and use socket to announce to the user's socketID where to join
       while (count <= 6) {
         const resp = await _findMatch(username, difficulty);
         count += 1;
 
         if (!resp) {
           console.log('Did not find match, count is ', count);
-          // setTimeout(() => resp, 30000, 5000) doesnt seem to work, need to set manual sleep
           setTimeout(() => resp);
           await sleep(4200);
-
           continue;
-
-          // setTimeout(() => findMatch(req, res), 5000, 1000);
-          // return res.status(400).json({
-          //   message: 'Could not find match!',
-          // });
         }
-        // const { _id, username, difficulty, createdAt } = resp.matchFound;
         console.log('match found: ', resp.username);
         if (resp) {
           console.log(`Found match for user ${username} successfully!`);
           return res.status(201).json({
-            mongoDBId: resp._id,
+            mongoDbID: resp._id,
             username: resp.username,
             createdAt: resp.createdAt,
             difficulty: resp.difficulty,
@@ -73,6 +69,7 @@ export async function findMatch(req, res) {
           return res.status(400).json({ message: 'Could not find match!' });
         }
       }
+      console.log('Did not find match, while loop exits. Count is ', count);
       return res.status(400).json({
         message: 'Could not find match!',
       });

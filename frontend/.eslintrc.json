@@ -48,6 +48,7 @@
     "consistent-return": "warn",
     "jsx-quotes": ["error", "prefer-double"],
     "import/extensions": "off",
-    "react/jsx-props-no-spreading": "off"
+    "react/jsx-props-no-spreading": "off",
+    "react/no-array-index-key": "warn"
   }
 }
