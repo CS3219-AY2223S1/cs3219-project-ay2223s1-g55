@@ -6,6 +6,11 @@ on:
   pull_request:
     branches: [ dockerize-user-service ]
 
+env:
+  PROJECT_ID: YOUR_PROJECT_ID # TODO: update Google Cloud project id
+  SERVICE: YOUR_SERVICE_NAME # TODO: update Cloud Run service name
+  REGION: YOUR_SERVICE_REGION # TODO: update Cloud Run service region
+
 jobs:
     deploy:
         name: Setup Gcloud Account
@@ -43,10 +48,11 @@ jobs:
             # NOTE: If required, update to the appropriate source folder
             source: ./user-service
             env_vars: |
-              DB_CLOUD_URI=${{ secrets.DB_CLOUD_URI }},
-              REDIS_CLOUD_URI=${{ secrets.REDIS_CLOUD_URI }},
-              REDIS_CLOUD_PORT=${{ secrets.REDIS_CLOUD_PORT }},
-              REDIS_CLOUD_PASSWORD=${{ secrets.REDIS_CLOUD_PASSWORD }},
+              ENV=PROD
+              DB_CLOUD_URI=${{ secrets.DB_CLOUD_URI }}
+              REDIS_CLOUD_URI=${{ secrets.REDIS_CLOUD_URI }}
+              REDIS_CLOUD_PORT=${{ secrets.REDIS_CLOUD_PORT }}
+              REDIS_CLOUD_PASSWORD=${{ secrets.REDIS_CLOUD_PASSWORD }}
               JWT_SECRET=${{ secrets.JWT_SECRET }}
 
         # - name: Configure Docker
