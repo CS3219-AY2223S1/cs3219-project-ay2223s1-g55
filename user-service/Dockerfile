@@ -17,5 +17,6 @@ RUN cd /usr/src/app
 # Bundle app source
 COPY . .
 
-EXPOSE $PORT
+EXPOSE 8080
+EXPOSE 8000
 CMD [ "node", "index.js" ]
