@@ -7,7 +7,7 @@ const saveJwtCookie = (jwt) => {
   document.cookie = `jwt=${jwt}`;
 };
 
-const getJwtCookie = () => {
+export const getJwtCookie = () => {
   const cookies = document.cookie;
   const jwtToken = cookies
     .split('; ')
@@ -42,6 +42,7 @@ function SessionProvider({ children }) {
       setUser({
         username: res.data.username,
         _id: res.data._id,
+        test: res.data.test,
       });
     }
   };
