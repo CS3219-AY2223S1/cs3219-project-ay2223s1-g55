@@ -13,7 +13,7 @@ RUN npm install
 # RUN npm ci --only=production
 
 # Bundle app source
-COPY ./user-service .
+COPY user-service .
 
 EXPOSE $PORT
 CMD [ "node", "index.js" ]
