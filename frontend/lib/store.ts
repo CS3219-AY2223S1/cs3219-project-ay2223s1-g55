@@ -2,11 +2,7 @@ import axios from 'axios';
 import create from 'zustand';
 import { URL_USER_LOGIN, URL_USER_LOGOUT, URL_USER_SESSION, URL_USER_SVC } from './configs';
 import { STATUS_CODE_LOGGED_OUT } from './constants';
-
-interface User {
-  username: string;
-  loginState: boolean;
-}
+import { User } from './types';
 
 interface UserStore {
   user: User;

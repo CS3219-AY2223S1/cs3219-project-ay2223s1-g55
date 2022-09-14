@@ -22,7 +22,10 @@ const LoginPage = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [dialogTitle, setDialogTitle] = useState('');
   const [dialogMsg, setDialogMsg] = useState('');
-  const [user, loginUser] = useUserStore((state) => [state.user, state.loginUser]);
+  const { user, loginUser } = useUserStore((state) => ({
+    user: state.user,
+    loginUser: state.loginUser,
+  }));
   const handleLogin = async () => {
     try {
       const currToken = getJwtCookie() as string;
