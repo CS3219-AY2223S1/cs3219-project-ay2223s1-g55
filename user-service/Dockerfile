@@ -12,11 +12,8 @@ RUN npm install
 # If you are building your code for production
 # RUN npm ci --only=production
 
-# Return back to project root, /usr/src/app/
-RUN cd /usr/src/app
 # Bundle app source
-COPY . .
+COPY ./user-service .
 
-EXPOSE 8080
-EXPOSE 8000
+EXPOSE $PORT
 CMD [ "node", "index.js" ]
