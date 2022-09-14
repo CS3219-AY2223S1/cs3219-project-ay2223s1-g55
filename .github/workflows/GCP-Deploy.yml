@@ -16,12 +16,12 @@ jobs:
           SERVICE: user-service
         steps:
 
-        - name: Login
-          uses: google-github-actions/setup-gcloud@v0
-          with:
-            project_id: ${{ env.PROJECT_ID }}
-            service_account_email: ${{ env.SERVICE }}@${{ env.PROJECT_ID }}.iam.gserviceaccount.com
-            service_account_key: ${{ secrets.GCP_CREDENTIALS }}
+        # - name: Login
+        #   uses: google-github-actions/setup-gcloud@v0
+        #   with:
+        #     project_id: ${{ env.PROJECT_ID }}
+        #     service_account_email: ${{ env.SERVICE }}@${{ env.PROJECT_ID }}.iam.gserviceaccount.com
+        #     service_account_key: ${{ secrets.GCP_CREDENTIALS }}
 
         - name: Checkout repository
           uses: actions/checkout@v2
@@ -47,5 +47,5 @@ jobs:
               REDIS_CLOUD_PASSWORD=${{ secrets.REDIS_CLOUD_PASSWORD }}
               JWT_SECRET=${{ secrets.JWT_SECRET }}
         
-          - name: Show Output
-            run: echo ${{ steps.deploy.outputs.url }}
+        - name: Show Output
+          run: echo ${{ steps.deploy.outputs.url }}
