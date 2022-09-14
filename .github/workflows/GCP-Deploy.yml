@@ -46,3 +46,6 @@ jobs:
               REDIS_CLOUD_PORT=${{ secrets.REDIS_CLOUD_PORT }}
               REDIS_CLOUD_PASSWORD=${{ secrets.REDIS_CLOUD_PASSWORD }}
               JWT_SECRET=${{ secrets.JWT_SECRET }}
+        
+          - name: Show Output
+            run: echo ${{ steps.deploy.outputs.url }}
