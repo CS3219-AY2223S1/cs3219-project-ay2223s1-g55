@@ -56,6 +56,8 @@ function ChangePasswordPage() {
       const digitsPassword = digitsRegExp.test(passwordInputValue);
       const specialCharPassword = specialCharRegExp.test(passwordInputValue);
       const minLengthPassword = minLengthRegExp.test(passwordInputValue);
+      const isDifferentPassword = newPassword !== oldPassword;
+
       let errMsg = '';
       if (passwordLength === 0) {
         errMsg = 'Password is empty';
@@ -69,6 +71,8 @@ function ChangePasswordPage() {
         errMsg = 'At least one Special Character';
       } else if (!minLengthPassword) {
         errMsg = 'A minimum of 8 characters is required';
+      } else if (!isDifferentPassword) {
+        errMsg = 'New password cannot be same as the old password';
       } else {
         errMsg = '';
       }
