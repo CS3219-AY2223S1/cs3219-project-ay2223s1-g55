@@ -24,14 +24,30 @@ jobs:
             service_account_email: cloud-run-deploy@cs3219-g55.iam.gserviceaccount.com
             service_account_key: ${{ secrets.GCP_CREDENTIALS }}
 
-        - name: Configure Docker
-          run: gcloud auth configure-docker --quiet
+        - name: Checkout repository
+          uses: actions/checkout@v2
 
-        # - name: Checkout repository
-        #   uses: actions/checkout@v2
+        # NOTE: Alternative option - authentication via credentials json
+        - name: Google Auth
+          id: auth
+          uses: 'google-github-actions/auth@v0'
+          with:
+            credentials_json: '${{ secrets.GCP_CREDENTIALS }}'
+             - name: Deploy to Cloud Run
 
-        - name: Deploy Docker image from source
-          run: gcloud run deploy cs3219-g55 --source ./user-service --region asia-southeast1
+        - name: Deploy to Cloud Run
+          id: deploy
+          uses: google-github-actions/deploy-cloudrun@v0
+          with:
+            service: user-service
+            region: asia-southeast1
+            # NOTE: If required, update to the appropriate source folder
+            source: ./user-service
+
+
+
+        # - name: Configure Docker
+        #   run: gcloud auth configure-docker --quiet
 
         # - name: Build Docker image
         #   run: docker build . -t $IMAGE_NAME -f ./user-service/Dockerfile
