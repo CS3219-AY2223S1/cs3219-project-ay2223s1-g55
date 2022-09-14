@@ -46,10 +46,9 @@ export async function findMatch(req, res) {
       while (count <= 6) {
         const resp = await _findMatch(username, difficulty);
         count += 1;
-
+        console.log('resp is: ', resp);
         if (!resp) {
           console.log('Did not find match, count is ', count);
-          setTimeout(() => resp);
           await sleep(4200);
           continue;
         }
