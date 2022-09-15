@@ -11,7 +11,7 @@ import router from 'next/router';
 
 const UnauthorizedDialog = () => {
   return (
-    <Dialog open={true} onClose={(e) => router.push('/login')}>
+    <Dialog open onClose={(e) => router.push('/login')}>
       <DialogTitle>{'Error!'}</DialogTitle>
       <DialogContent>
         <DialogContentText>{'Log in to continue'}</DialogContentText>

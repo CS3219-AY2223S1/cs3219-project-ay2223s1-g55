@@ -1,4 +1,4 @@
-import { useUserStore } from '@/lib/store';
+import useUserStore from '@/lib/store';
 import { Container } from '@mui/material';
 import Head from 'next/head';
 import React from 'react';

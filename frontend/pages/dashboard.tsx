@@ -1,17 +1,10 @@
 import { MouseEvent as ReactMouseEvent, useState } from 'react';
 import {
   Avatar,
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
   FormControl,
   Grid,
   IconButton,
   InputLabel,
-  Link,
   ListItemIcon,
   Menu,
   MenuItem,
@@ -24,7 +17,7 @@ import Logout from '@mui/icons-material/Logout';
 import DefaultLayout from '@/layouts/DefaultLayout';
 import { STATUS_CODE_LOGGED_OUT } from '@/lib/constants';
 import router from 'next/router';
-import { useUserStore } from '@/lib/store';
+import useUserStore from '@/lib/store';
 import { clearJwt, getJwtCookie } from '@/lib/cookies';
 import UnauthorizedDialog from '@/components/UnauthorizedDialog';
 

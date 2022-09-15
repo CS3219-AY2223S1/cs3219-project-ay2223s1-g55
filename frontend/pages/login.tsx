@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import {
   Box,
   Button,
@@ -12,7 +12,7 @@ import {
 } from '@mui/material';
 import { STATUS_CODE_LOGIN_FAILED, STATUS_CODE_LOGGED_IN } from '@/lib/constants';
 import router from 'next/router';
-import { useUserStore } from '@/lib/store';
+import useUserStore from '@/lib/store';
 import DefaultLayout from '@/layouts/DefaultLayout';
 import { getJwtCookie, saveJwtCookie } from '@/lib/cookies';
 

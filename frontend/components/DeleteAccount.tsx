@@ -1,6 +1,6 @@
 import { STATUS_CODE_DELETED } from '@/lib/constants';
 import { getJwtCookie, clearJwt } from '@/lib/cookies';
-import { useUserStore } from '@/lib/store';
+import useUserStore from '@/lib/store';
 import {
   Alert,
   AlertTitle,
@@ -55,7 +55,7 @@ const DeleteAccount = () => {
   return (
     <Container sx={{ height: '100%' }}>
       <Typography variant="h5">Are you sure you want to delete your account?</Typography>
-      <Button onClick={() => setIsDialogOpen(true)}>I'm sure</Button>
+      <Button onClick={() => setIsDialogOpen(true)}>I&apos;m sure</Button>
       <Button onClick={router.reload}>No it was a mistake!</Button>
       <Dialog open={isDialogOpen} onClose={closeDialog}>
         <DialogTitle>Are you very sure?</DialogTitle>
@@ -89,7 +89,7 @@ const DeleteAccount = () => {
             fullWidth
             variant="standard"
             onChange={(e) => checkValidInput(e.target.value)}
-          ></TextField>
+          />
         </DialogContent>
         <DialogActions>
           <Button onClick={handleDeleteUser}>Delete</Button>

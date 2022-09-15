@@ -1,6 +1,6 @@
 import DeleteAccount from '@/components/DeleteAccount';
 import UnauthorizedDialog from '@/components/UnauthorizedDialog';
-import { useUserStore } from '@/lib/store';
+import useUserStore from '@/lib/store';
 import { Box, Container, Tab, Tabs, Typography } from '@mui/material';
 import React, { SyntheticEvent, useState } from 'react';
 

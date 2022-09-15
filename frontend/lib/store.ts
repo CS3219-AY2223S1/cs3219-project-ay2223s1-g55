@@ -12,13 +12,13 @@ interface UserStore {
   deleteUser: (token: string) => any;
 }
 
-export const useUserStore = create<UserStore>((set, get) => ({
+const useUserStore = create<UserStore>((set, get) => ({
   user: { username: '', loginState: false },
   loginUser: async (username: string, password: string, token: string) => {
     try {
       const res = await axios.post(URL_USER_LOGIN, { username, password, token });
       if (res.data.token) {
-        set({ user: { username: username, loginState: true } });
+        set({ user: { username, loginState: true } });
       }
       return res;
     } catch (err) {
@@ -71,3 +71,5 @@ export const useUserStore = create<UserStore>((set, get) => ({
     }
   },
 }));
+
+export default useUserStore;
