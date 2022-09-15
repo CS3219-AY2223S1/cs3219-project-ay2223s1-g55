@@ -176,7 +176,7 @@ function Matching() {
     const payload = {
       content: [...messages, message] ?? `hello from client ${username}`,
       sender: socketID ?? '',
-      roomId: matchRoomID === '' ? socketID : matchRoomID,
+      roomId: room === '' ? matchRoomID : room,
       chatName: 'private chat',
     };
     socket.emit('send-message', payload);
