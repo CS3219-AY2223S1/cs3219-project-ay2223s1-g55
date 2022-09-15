@@ -80,7 +80,7 @@ const DeleteAccount = () => {
             </Alert>
           </Collapse>
           <DialogContentText>
-            This action is <b>irreversible</b>.<br></br> If you wish to continue, please input{' '}
+            This action is <b>irreversible</b>.<br /> If you wish to continue, please input{' '}
             <b>{`${user.username}-delete`}</b> in the field below.
           </DialogContentText>
           <TextField

@@ -27,19 +27,14 @@ const LoginPage = () => {
     loginUser: state.loginUser,
   }));
   const handleLogin = async () => {
-    try {
-      const currToken = getJwtCookie() as string;
-      const res = await loginUser(username, password, currToken);
-      if (res && res.status === STATUS_CODE_LOGGED_IN) {
-        setSuccessDialog('Successfully logged in!');
-        saveJwtCookie(res.data.token);
-      }
-    } catch (err: any) {
-      if (err.response.status === STATUS_CODE_LOGIN_FAILED) {
-        setErrorDialog('Failed to login user');
-      } else {
-        setErrorDialog('Please try again later');
-      }
+    const currToken = getJwtCookie() as string;
+    const res = await loginUser(username, password, currToken);
+    if (res && res.status === STATUS_CODE_LOGGED_IN) {
+      setSuccessDialog('Successfully logged in!');
+      saveJwtCookie(res.data.token);
+    }
+    if (res.error) {
+      setErrorDialog(res.error);
     }
   };
 

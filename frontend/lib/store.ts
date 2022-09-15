@@ -1,7 +1,7 @@
 import axios from 'axios';
 import create from 'zustand';
 import { URL_USER_LOGIN, URL_USER_LOGOUT, URL_USER_SESSION, URL_USER_SVC } from './configs';
-import { STATUS_CODE_LOGGED_OUT } from './constants';
+import { STATUS_CODE_LOGGED_OUT, STATUS_CODE_LOGIN_FAILED } from './constants';
 import { User } from './types';
 
 interface UserStore {
@@ -21,9 +21,12 @@ const useUserStore = create<UserStore>((set, get) => ({
         set({ user: { username, loginState: true } });
       }
       return res;
-    } catch (err) {
-      console.error(err);
-      return { error: 'An error occured while logging in' };
+    } catch (err: any) {
+      if (err.response.status === STATUS_CODE_LOGIN_FAILED) {
+        return { error: 'Failed to login user' };
+      } else {
+        return { error: 'Please try again later' };
+      }
     }
   },
   updateUser: async (token: string) => {
