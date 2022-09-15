@@ -93,8 +93,8 @@ function SessionProvider({ children }) {
     }
   };
 
-  const sendMatchRequest = async (username, difficulty) => {
-    console.log('sendMatchRequest called with ', username, difficulty);
+  const sendMatchRequest = async (username, difficulty, roomSocketID) => {
+    console.log('sendMatchRequest called with ', username, difficulty, roomSocketID);
     try {
       const res = await axios.get(URL_MATCHING_MATCH, {
         // username,
@@ -102,11 +102,12 @@ function SessionProvider({ children }) {
         headers: {
           username,
           difficulty,
+          roomSocketID,
         },
       });
       if (res.status === 200 || res.status === 201) {
         console.log('match request sent');
-        // contains json of mongoDbID, username, difficulty, createdAt, message
+        // contains json of mongodbID, username, difficulty, createdAt, message
         return res;
       }
       if (res.status === 400 || res.status === 404) {

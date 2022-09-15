@@ -11,6 +11,10 @@ const MatchingModelSchema = new Schema({
     type: String,
     required: true,
   },
+  socketID: {
+    type: String,
+    required: true,
+  },
   createdAt: {
     type: Date,
     default: Date.now,

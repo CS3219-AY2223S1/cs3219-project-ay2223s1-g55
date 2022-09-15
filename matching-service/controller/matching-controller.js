@@ -9,9 +9,9 @@ import {
 
 export async function createMatchRequest(req, res) {
   try {
-    const { username, difficulty } = req.body;
-    if (username && difficulty) {
-      const resp = await _createMatchRequest(username, difficulty);
+    const { username, difficulty, roomSocketID } = req.body;
+    if (username && difficulty && roomSocketID) {
+      const resp = await _createMatchRequest(username, difficulty, roomSocketID);
       console.log(resp);
       if (resp.err) {
         return res.status(400).json({ message: 'Could not create a new user!' });
@@ -36,19 +36,34 @@ export async function createMatchRequest(req, res) {
 export async function findMatch(req, res) {
   let count = 0;
   console.log(`Running findMatch for ${count} time`);
-  console.log('req.body', req.headers);
+  console.log('req.head for findMatch is', req.headers);
   try {
-    const { username, difficulty } = req.headers;
-    if (username && difficulty) {
+    const { username, difficulty, roomsocketid } = req.headers;
+    if (username && difficulty && roomsocketid) {
       // TODO: Change this to on first findMatch if no result, insert into database
       // TODO: will continue on intervals, but when another findMatch request finds this database entry,
       // TODO: it will delete the entry and return the result and use socket to announce to the user's socketID where to join
       while (count <= 6) {
-        const resp = await _findMatch(username, difficulty);
+        const resp = await _findMatch(username, difficulty, roomsocketid);
         count += 1;
         console.log('resp is: ', resp);
         if (!resp) {
           console.log('Did not find match, count is ', count);
+          const matchRequestExists = await _checkMatchRequestExists(username);
+          if (!matchRequestExists) {
+            console.log('Match request does not exist, creating new match request');
+            // TODO: Decouple logic here
+            try {
+              const createMatchRequestResp = await _createMatchRequest(
+                username,
+                difficulty,
+                roomsocketid
+              );
+            } catch (err) {
+              console.log('Error creating match request', err);
+              console.log('createMatchRequestResp', createMatchRequestResp);
+            }
+          }
           await sleep(4200);
           continue;
         }
@@ -56,10 +71,11 @@ export async function findMatch(req, res) {
         if (resp) {
           console.log(`Found match for user ${username} successfully!`);
           return res.status(201).json({
-            mongoDbID: resp._id,
+            mongodbID: resp._id,
             username: resp.username,
             createdAt: resp.createdAt,
             difficulty: resp.difficulty,
+            roomSocketID: resp.socketID,
             message: `Completed match request for user ${username} successfully!`,
           });
         }

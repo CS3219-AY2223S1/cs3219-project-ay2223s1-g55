@@ -7,11 +7,12 @@ import {
 } from './respository.js';
 // need to separate orm functions from repository to decouple business logic from persistence
 
-export async function ormCreateMatchRequest(username, difficulty) {
+export async function ormCreateMatchRequest(username, difficulty, socketID) {
   try {
     const newMatchRequest = await createMatchRequest({
       username: username,
       difficulty: difficulty,
+      socketID: socketID,
     });
     newMatchRequest.save();
     return true;

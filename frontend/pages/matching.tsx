@@ -25,6 +25,7 @@ import { styled } from '@mui/material/styles';
 import { useSession } from '@/contexts/session.context';
 import DefaultLayout from '@/layouts/DefaultLayout';
 import { io } from 'socket.io-client';
+import { match } from 'assert';
 
 const SendMessageButton = styled(Button)({
   backgroundColor: '#3f51b5',
@@ -153,19 +154,26 @@ function Matching() {
   });
 
   // join Room when match is successful and room is created
+
   const handleJoinRoom = () => {
     socket.emit('join-room', { username, matchRoomID }, (callback: callbackInterface) => {
+      console.log('callback: ', callback);
       setRoom(matchRoomID);
-      console.log('message from server: ', callback);
     });
   };
 
   const handleLeaveRoom = () => {
     socket.emit('leave-room', { username, room }, (callback: callbackInterface) => {
+      console.log('callback: ', callback);
       setRoom('');
-      console.log('message from server: ', callback);
     });
   };
+
+  socket.on('join-room-success', (payload) => {
+    const { username, id, matchRoomID } = payload;
+    console.log('join-room-success:', payload);
+    setRoom(matchRoomID);
+  });
 
   socket.on('leave-room', ({ leaveRoomMessage, leaveRoomUsername }) => {
     console.log('message from server: ', leaveRoomMessage);
@@ -189,6 +197,26 @@ function Matching() {
     // sender is now new receiver to reply using same room ID
     setMessages(payload.content);
   });
+
+  // Receive match success from server, stop [pendingMatchRequest] and set [matchRoomID]
+  socket.on('match-found', (payload) => {
+    console.log('match found: ', payload.mongodbID);
+    const { username, difficulty, mongodbID, roomSocketID } = payload;
+    setMatchRoomID(mongodbID);
+    setPendingMatchRequest(false);
+    handleJoinRoom();
+  });
+
+  // TODO: Clear matchRoomID after joinRoom is done, for some reason it is not the same as
+  // TODO: Room id joined in the end
+  const handleMatchFound = async (payload: any) => {
+    const { username, difficulty, mongodbID, roomSocketID } = payload;
+    setPendingMatchRequest(false);
+    setSuccessDialog(`Found Match! \n ${mongodbID} \n ${username} \n ${message}`);
+    setMatchRoomID(mongodbID);
+    handleJoinRoom();
+    socket.emit('match-found', { username, difficulty, mongodbID, roomSocketID });
+  };
 
   const handleDifficultyChange = (e: SelectChangeEvent<string>) => {
     setDifficulty(e.target.value);
@@ -216,13 +244,16 @@ function Matching() {
         // TODO: send socketID to server to be stored in database to be communicated
         // TODO: by other users if match is found
         // TODO: sendMatchRequest(username, difficulty, socketId);
-        const res = await sendMatchRequest(username, difficulty);
+        const res = await sendMatchRequest(username, difficulty, socketID);
         // console.log('sendMatchRequest res: ', res);
         if (res && res.status === 201) {
-          setPendingMatchRequest(false);
-          setSuccessDialog(
-            `Found Match! \n ${res.data.mongoDbID} \n ${res.data.username} \n ${res.data.message}`
-          );
+          // ! Or can listen to socket event from server
+          // ! Success in sendingMatchRequest
+          const { username, difficulty, mongodbID, roomSocketID } = res.data;
+
+          await handleMatchFound(res.data);
+          // even though match is found, statement still goes to error, to render a error dialog
+          // TODO: Remove error dialog after successful match found
           // TODO: Match found, join own room and use socket to tell match to join room as well
           console.log(res.data);
           return res;

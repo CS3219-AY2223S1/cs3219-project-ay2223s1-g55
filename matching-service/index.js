@@ -98,11 +98,13 @@ io.on('connection', (socket) => {
     const user = {
       username,
       id: socket.id,
+      matchRoomID: matchRoomID,
     };
-
+    socket.emit('join-room-success', user);
     socket.to(matchRoomID).emit('join-room', payload);
   });
 
+  // TODO: Add leave-room-success event, and clear it on the frontend
   socket.on('leave-room', ({ username, room }, callback) => {
     console.log('server received leave-room ' + room + ' ' + username);
     socket.leave(room);
@@ -119,6 +121,21 @@ io.on('connection', (socket) => {
     };
     // server emit the annoucement to the room instead bc socket no longer in room
     io.to(room).emit('leave-room', payload);
+  });
+
+  socket.on('match-found', ({ username, difficulty, mongodbID, roomSocketID }) => {
+    console.log('server received match-found');
+    const payload = {
+      message: `${username} has found a match`,
+      username,
+      difficulty,
+      mongodbID,
+      roomSocketID,
+    };
+    // either use socket or io, using socket need to join first
+    io.to(roomSocketID).emit('match-found', payload);
+    socket.join(mongodbID);
+    // socket.broadcast.emit('match-found', payload);
   });
 
   // Runs when client disconnects
