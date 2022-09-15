@@ -2,3 +2,4 @@
 /**/*/node_modules 
 /**/*/dump.rdb
 dump.rdb
+node_modules/*
