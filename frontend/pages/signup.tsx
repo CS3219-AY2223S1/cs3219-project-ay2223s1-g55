@@ -17,7 +17,7 @@ import Link from 'next/link';
 import DefaultLayout from '@/layouts/DefaultLayout';
 import router from 'next/router';
 
-const SignupPage = () => {
+function SignupPage() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [isDialogOpen, setIsDialogOpen] = useState(false);
