@@ -1,10 +1,8 @@
-import { SetStateAction, useState, useRef, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Box,
   Button,
-  Container,
   Dialog,
-  DialogActions,
   DialogContent,
   DialogContentText,
   DialogTitle,
@@ -17,18 +15,15 @@ import {
   MenuItem,
   Select,
   SelectChangeEvent,
-  TextareaAutosize,
   TextField,
   Typography,
   Backdrop,
   CircularProgress,
 } from '@mui/material';
 
-import { CountdownCircleTimer } from 'react-countdown-circle-timer';
 import { styled } from '@mui/material/styles';
 import { useSession } from '@/contexts/session.context';
 import DefaultLayout from '@/layouts/DefaultLayout';
-import router from 'next/router';
 import { io } from 'socket.io-client';
 
 const SendMessageButton = styled(Button)({
@@ -66,12 +61,15 @@ const SocketMessageOutput = styled('h2')({
   justifyContent: 'center',
 });
 
+interface callbackInterface {
+  (message: string): void;
+}
 const initialMessagesState = {
   general: [],
   random: [],
 };
 
-const initialMessages = [];
+const initialMessages = [] as string[];
 
 // backend port used for socket.io
 const socket = io('http://localhost:8001', {
@@ -86,20 +84,6 @@ socket.onAny((event, ...args) => {
   console.log(event, args);
 });
 
-// socket.on('users', (users) => {
-//   users.forEach((user) => {
-//     console.log(user);
-//     user.self = user.userID === socket.id;
-//     // initReactiveProperties(user);
-//   });
-// });
-
-// socket.on('connect', () => {
-//   console.log('connected: ', socket.id);
-//   setUsername(user?.username);
-//   setSocketID(socket.id);
-// });
-
 socket.on('connect_error', (err) => {
   console.log('connect_error: ', err);
 });
@@ -108,7 +92,7 @@ socket.on('joinRoom', (payload) => {
   console.log(payload.message);
 });
 
-const Matching = () => {
+function Matching() {
   const [difficulty, setDifficulty] = useState('');
   const [socketMessage, setSocketMessage] = useState('');
   const [socketID, setSocketID] = useState('');
@@ -119,23 +103,21 @@ const Matching = () => {
   const [matchRoomID, setMatchRoomID] = useState('');
   const [message, setMessage] = useState('');
   const [pendingMatchRequest, setPendingMatchRequest] = useState(false);
-  const [selectedUser, setSelectedUser] = useState('');
-  const socketRef = useRef();
   const [socketIDonConnect, setSocketIDonConnect] = useState('');
   // dialogs
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [dialogTitle, setDialogTitle] = useState('');
   const [dialogMsg, setDialogMsg] = useState('');
-  var countdownCircleResetter = 0;
+  const [isBackdropOpen, setIsBackdropOpen] = useState(false);
   const closeDialog = () => setIsDialogOpen(false);
 
-  const setSuccessDialog = (msg) => {
+  const setSuccessDialog = (msg: string) => {
     setIsDialogOpen(true);
     setDialogTitle('Success');
     setDialogMsg(msg);
   };
 
-  const setErrorDialog = (msg) => {
+  const setErrorDialog = (msg: string) => {
     setIsDialogOpen(true);
     setDialogTitle('Error');
     setDialogMsg(msg);
@@ -172,21 +154,21 @@ const Matching = () => {
 
   // join Room when match is successful and room is created
   const handleJoinRoom = () => {
-    socket.emit('join-room', { username, matchRoomID }, (messageCb) => {
+    socket.emit('join-room', { username, matchRoomID }, (callback: callbackInterface) => {
       setRoom(matchRoomID);
-      console.log('message from server: ', messageCb);
+      console.log('message from server: ', callback);
     });
   };
 
   const handleLeaveRoom = () => {
-    socket.emit('leave-room', { username, room }, (messageCb) => {
+    socket.emit('leave-room', { username, room }, (callback: callbackInterface) => {
       setRoom('');
-      console.log('message from server: ', messageCb);
+      console.log('message from server: ', callback);
     });
   };
 
-  socket.on('leave-room', ({ message, username }) => {
-    console.log('message from server: ', message);
+  socket.on('leave-room', ({ leaveRoomMessage, leaveRoomUsername }) => {
+    console.log('message from server: ', leaveRoomMessage);
   });
 
   // Send message with sepcific matchRoomID to the server if there is
@@ -202,16 +184,13 @@ const Matching = () => {
   };
 
   socket.on('receive-message', (payload) => {
+    const { content, sender, roomId, chatName } = payload;
     console.log('message from sendMessage socket: ', payload.content);
-    // sender is now new receiver to reply to the same room ID
-    // need to join room ID
-    // being set on sent, so now even if cr8 a roomID it doesnt work
-    // can use this for private message instead of private room
-    // setMatchRoomID(payload.sender);
+    // sender is now new receiver to reply using same room ID
     setMessages(payload.content);
   });
 
-  const handleDifficultyChange = (e) => {
+  const handleDifficultyChange = (e: SelectChangeEvent<string>) => {
     setDifficulty(e.target.value);
   };
 
@@ -226,7 +205,7 @@ const Matching = () => {
         console.log('Please enter a username and difficulty');
         throw new Error('Please select a difficulty');
       }
-    } catch (err) {
+    } catch (err: any) {
       console.log('Error: ', err);
       setErrorDialog(err.message);
     }
@@ -236,6 +215,7 @@ const Matching = () => {
         setPendingMatchRequest(true);
         // TODO: send socketID to server to be stored in database to be communicated
         // TODO: by other users if match is found
+        // TODO: sendMatchRequest(username, difficulty, socketId);
         const res = await sendMatchRequest(username, difficulty);
         // console.log('sendMatchRequest res: ', res);
         if (res && res.status === 201) {
@@ -249,7 +229,7 @@ const Matching = () => {
         }
         // ? Currently throwing error from sendMatchRequest to be handled here
         // ? is this best practice, or should handle it as a response instead?
-      } catch (err) {
+      } catch (err: any) {
         setPendingMatchRequest(false);
         if (err) {
           console.log('Error: ', err.response);
@@ -260,24 +240,7 @@ const Matching = () => {
           setErrorDialog('Please try again later');
         }
       }
-      // if (res.status === 400) {
-      //   console.log(res);
-      //   setErrorDialog(res.message);
-      //   console.log(res.data);
-      //   return res;
-      // }
     }
-  };
-
-  const loadingCircleTimer = () => {
-    <CountdownCircleTimer
-      isPlaying
-      duration={30}
-      colors={['#004777', '#F7B801', '#A30000', '#A30000']}
-      colorsTime={[30, 20, 10, 0]}
-    >
-      {({ remainingTime }) => remainingTime}
-    </CountdownCircleTimer>;
   };
 
   return (
@@ -325,7 +288,7 @@ const Matching = () => {
           <Button variant="outlined" onClick={() => handleJoinRoom()}>
             Join Room
           </Button>
-          <Button variant="outlined" onClick={handleLeaveRoom}>
+          <Button variant="outlined" onClick={() => handleLeaveRoom()}>
             Leave Room
           </Button>
 
@@ -334,7 +297,9 @@ const Matching = () => {
           </Button>
           {/* // TODO: Add cancel match UI element as well as backend implementation, 
               // TODO: but have to be able to stop current request being sent which is not possible unless 
-              // TODO: separate backend calls into single calls, and frontend do the interval calls*/}
+              // TODO: separate backend calls into single calls, and frontend do the interval calls 
+            */}
+
           <Backdrop
             sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
             open={pendingMatchRequest}
@@ -342,41 +307,18 @@ const Matching = () => {
               console.log('backdrop clicked');
             }}
           >
-            {/* <CountdownCircleTimer
-              key={countdownCircleResetter++}
-              isPlaying
-              duration={30}
-              colors={['#004777', '#F7B801', '#A30000', '#A30000']}
-              colorsTime={[30, 20, 10, 0]}
-            >
-              {({ remainingTime }) => remainingTime}
-            </CountdownCircleTimer> */}
             <CircularProgress color="inherit" value={10} />
           </Backdrop>
-          <Dialog open={isDialogOpen} onClose={closeDialog} width={'50%'}>
-            <Box
-              flexDirection="column"
-              width={'50%'}
-              justifyContent={'center'}
-              alignSelf={'center'}
-            >
+          <Dialog open={isDialogOpen} onClose={closeDialog} maxWidth="xl">
+            <Box flexDirection="column" width="50%" justifyContent="center" alignSelf="center">
               <DialogTitle>{dialogTitle}</DialogTitle>
               <DialogContent>
-                <DialogContentText flexDirection={'column'}>{dialogMsg}</DialogContentText>
+                <DialogContentText flexDirection="column">{dialogMsg}</DialogContentText>
               </DialogContent>
               <Button onClick={closeDialog}>OK</Button>
-              {/* <DialogActions>
-              {isSignupSuccess ? (
-                <Link href="/login" passHref>
-                  <Button>Log in</Button>
-                </Link>
-              ) : (
-                <Button onClick={closeDialog}>Done</Button>
-              )}
-            </DialogActions> */}
             </Box>
           </Dialog>
-          <Box marginTop={'1rem'}>
+          <Box marginTop="1rem">
             <FormControl fullWidth>
               <InputLabel>Difficulty</InputLabel>
               <Select
@@ -396,27 +338,6 @@ const Matching = () => {
               Look for Match
             </Button>
           </Box>
-
-          {/* <Box display="flex" flexDirection="row" justifyContent="flex-end">
-            <Button variant="outlined" onClick={handleSendSocketMessage}>
-              Send
-            </Button>
-          </Box>
-          <Box display="flex" flexDirection="row" justifyContent="flex-end">
-            <Button variant="outlined" onClick={connectToSocket({ username: user?.username })}>
-              Connect to Socket
-            </Button>
-          </Box> */}
-
-          {/* <Dialog open={isDialogOpen} onClose={closeDialog}>
-          <DialogTitle>{dialogTitle}</DialogTitle>
-          <DialogContent>
-            <DialogContentText>{dialogMsg}</DialogContentText>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={closeDialog}>Close</Button>
-          </DialogActions>
-        </Dialog> */}
         </Box>
         <Box display="flex" justifyContent="flex-start" flexDirection="column">
           <List>
@@ -430,6 +351,6 @@ const Matching = () => {
       </Box>
     </DefaultLayout>
   );
-};
+}
 
 export default Matching;

@@ -3,7 +3,6 @@ import {
   URL_USER_SESSION,
   URL_USER_LOGIN,
   URL_USER_LOGOUT,
-  URL_MATCHING_SVC,
   URL_MATCHING_MATCH,
 } from '@/lib/configs';
 import axios from 'axios';
@@ -101,21 +100,21 @@ function SessionProvider({ children }) {
         // username,
         // difficulty,
         headers: {
-          username: username,
-          difficulty: difficulty,
+          username,
+          difficulty,
         },
       });
       if (res.status === 200 || res.status === 201) {
         console.log('match request sent');
         // contains json of mongoDbID, username, difficulty, createdAt, message
         return res;
-      } else if (res.status === 400 || res.status === 404) {
-        console.log('match request failed');
-        return res;
-      } else {
+      }
+      if (res.status === 400 || res.status === 404) {
         console.log('match request failed');
         return res;
       }
+      console.log('match request failed');
+      return res;
     } catch (err) {
       console.log(err.response);
       console.log('error message is: ', err.response.data.message);

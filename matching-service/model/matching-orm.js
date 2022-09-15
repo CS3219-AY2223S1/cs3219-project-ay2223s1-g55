@@ -6,7 +6,6 @@ import {
   findMatchRequest,
 } from './respository.js';
 // need to separate orm functions from repository to decouple business logic from persistence
-// const ormPendingFindMatch = setTimeout(() => ormFindMatch(username, difficulty), 10000, 2000);
 
 export async function ormCreateMatchRequest(username, difficulty) {
   try {
@@ -26,11 +25,6 @@ export async function ormFindMatch(username, difficulty) {
   console.log('Running ormFindMatch');
   try {
     return await findMatch({ username: username, difficulty: difficulty });
-    // setTimeout will return while running in the background
-    // sleep will run it and stop all other operations
-    // await sleep(50000);
-    // setTimeout(() => ormFindMatch(username, difficulty), 1000);
-    // }
   } catch (err) {
     console.log('ERROR: Error occured when finding users:', err.body);
     return { err };
@@ -57,6 +51,7 @@ export async function ormDeleteMatchRequest(username, difficulty) {
   }
 }
 
+// Javascript recommendation for sleep function
 function sleep(ms) {
   return new Promise((resolve) => {
     setTimeout(resolve, ms);

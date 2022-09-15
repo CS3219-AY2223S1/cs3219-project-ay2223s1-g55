@@ -25,15 +25,15 @@
     "react/jsx-filename-extension": [
       1,
       {
-        "extensions": [".js", ".jsx"]
+        "extensions": [".js", ".jsx", ".ts", ".tsx"]
       }
     ],
     "react/react-in-jsx-scope": "off",
     "react/no-children-prop": "warn",
     "react/prop-types": "warn",
     "react/jsx-no-constructed-context-values": "warn",
-    "react/jsx-curly-brace-presence": "warn",
-    "react/function-component-definition": "warn",
+    "react/jsx-curly-brace-presence": "error",
+    "react/function-component-definition": "off",
     "prettier/prettier": [
       "error",
       {

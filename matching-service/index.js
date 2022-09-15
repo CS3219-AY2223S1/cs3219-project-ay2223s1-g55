@@ -36,21 +36,14 @@ const PORT = process.env.PORT || 8001;
 
 const httpServer = createServer(app);
 const io = new Server(httpServer, {
-  // Need to explicitly enable CORS
-  // TODO: Edit here to include new URL to access socket
+  // Edit here to include new URL to access socket
   cors: {
     origin: ['http://localhost:3000', 'https://admin.socket.io'],
     credentials: true,
   },
 });
-// users in current server
-let users = {};
 
-// users in current Room
-let roomUsers = {};
-
-// dictionary of rooms in current server
-let rooms = {};
+// TODO: Room/Namespace and Message management
 // Run when clinet connects
 // socket is the client
 let messages = {
@@ -58,7 +51,7 @@ let messages = {
   random: [],
 };
 
-// middleware to check username and allow connection
+// disabled middleware to check username and allow connection
 // io.use((socket, next) => {
 //   const username = socket.handshake.auth.username;
 //   if (!username) {
@@ -75,29 +68,26 @@ io.on('connection', (socket) => {
   // socket.join(id);
   console.log('New WS Connection...', socket.id);
 
-  // annoucement when user connects
+  // announcement when user connects
   socket.emit('message', 'Welcome to Server!');
 
   socket.on('send-message', (data) => {
-    console.log('SEND MESSAGE EVENT', data.content);
     const { content, sender, roomId, chatName } = data;
-    console.log(`payload is ${data.content}`);
-    // Send to global room or server?
+    console.log(`send-message event'payload content is ${data.content}`);
     if (roomId === '') {
+      // Send globally to all listeners in socket
       socket.broadcast.emit('send-message', data);
-      // individual socket sned only to that room/socket in [to]
     } else {
-      // socket.emit('sendMessage', data.payload);
-      console.log('sending Message from index');
-      // to same roomId does not seem to work
-      console.log(`data is ${data.content}`);
+      // Send to specific room
       socket.to(roomId).emit('receive-message', data);
     }
   });
+
   // callback function from client side
   socket.on('join-room', ({ username, matchRoomID }, callback) => {
     console.log('server received join Room', matchRoomID + ' ' + username);
     socket.join(matchRoomID);
+    // Set of rooms in socket
     console.log(socket.rooms);
     callback(`${username} joined room ${matchRoomID}`);
 
@@ -109,14 +99,12 @@ io.on('connection', (socket) => {
       username,
       id: socket.id,
     };
-    // roomUsers.push(user);
-    // io.to(roomId).emit('newUser', `${username} has joined the room ${roomId}`);
+
     socket.to(matchRoomID).emit('join-room', payload);
-    // socket.emit('joinSuccess', `You have joined the room ${roomId}`);
   });
 
   socket.on('leave-room', ({ username, room }, callback) => {
-    console.log('server received leave-room', room + ' ' + username);
+    console.log('server received leave-room ' + room + ' ' + username);
     socket.leave(room);
     console.log(socket.rooms);
     callback(`${username} left the room ${room}`);
@@ -143,5 +131,5 @@ io.on('connection', (socket) => {
 // TODO: Correct details (so dont use app, use socket instead?)
 httpServer.listen(PORT, () => console.log(`matching-service listening on port ${PORT}`));
 // app.listen(8001, () => console.log('user-service listening on port 8001'));
-// Admin Dashboard for socket connections
+// Admin Dashboard for socket connections, use https://admin.socket.io to access
 instrument(io, { auth: false });
