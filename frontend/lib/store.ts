@@ -24,9 +24,8 @@ const useUserStore = create<UserStore>((set, get) => ({
     } catch (err: any) {
       if (err.response.status === STATUS_CODE_LOGIN_FAILED) {
         return { error: 'Failed to login user' };
-      } else {
-        return { error: 'Please try again later' };
       }
+      return { error: 'Please try again later' };
     }
   },
   updateUser: async (token: string) => {
