@@ -1,4 +1,4 @@
-const URI_USER_SVC = process.env.PUBLIC_ENV_URI_USER_SVC || 'http://localhost:8000';
+const URI_USER_SVC = process.env.NEXT_PUBLIC_URI_USER_SVC || 'http://localhost:8000';
 
 const PREFIX_USER_SVC = '/api/user';
 
