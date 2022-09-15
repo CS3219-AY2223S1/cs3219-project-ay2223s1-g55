@@ -2,22 +2,28 @@ import { STATUS_CODE_DELETED } from '@/lib/constants';
 import { getJwtCookie, clearJwt } from '@/lib/cookies';
 import { useUserStore } from '@/lib/store';
 import {
+  Alert,
+  AlertTitle,
   Button,
+  Collapse,
   Container,
   Dialog,
   DialogActions,
   DialogContent,
   DialogContentText,
   DialogTitle,
+  IconButton,
   TextField,
   Typography,
 } from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 
 const DeleteAccount = () => {
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
   const [isValidInput, setIsValidInput] = useState<boolean>(false);
+  const [isAlertOpen, setIsAlertOpen] = useState<boolean>(false);
   const { user, deleteUser } = useUserStore((state) => ({
     user: state.user,
     deleteUser: state.deleteUser,
@@ -36,7 +42,9 @@ const DeleteAccount = () => {
         clearJwt();
         return;
       }
+      setIsAlertOpen(true);
     }
+    setIsAlertOpen(true);
   };
 
   const checkValidInput = (input: string) => {
@@ -52,6 +60,25 @@ const DeleteAccount = () => {
       <Dialog open={isDialogOpen} onClose={closeDialog}>
         <DialogTitle>Are you very sure?</DialogTitle>
         <DialogContent>
+          <Collapse in={isAlertOpen}>
+            <Alert
+              severity="error"
+              action={
+                <IconButton
+                  aria-label="close"
+                  color="inherit"
+                  size="small"
+                  onClick={() => {
+                    setIsAlertOpen(false);
+                  }}
+                >
+                  <CloseIcon fontSize="inherit" />
+                </IconButton>
+              }
+            >
+              <AlertTitle>Delete failed</AlertTitle>
+            </Alert>
+          </Collapse>
           <DialogContentText>
             This action is <b>irreversible</b>.<br></br> If you wish to continue, please input{' '}
             <b>{`${user.username}-delete`}</b> in the field below.
