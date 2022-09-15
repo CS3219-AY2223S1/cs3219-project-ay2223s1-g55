@@ -68,9 +68,7 @@ const DeleteAccount = () => {
                   aria-label="close"
                   color="inherit"
                   size="small"
-                  onClick={() => {
-                    setIsAlertOpen(false);
-                  }}
+                  onClick={() => setIsAlertOpen(false)}
                 >
                   <CloseIcon fontSize="inherit" />
                 </IconButton>
