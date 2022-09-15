@@ -105,6 +105,6 @@ function SignupPage() {
       </Box>
     </DefaultLayout>
   );
-};
+}
 
 export default SignupPage;

@@ -103,6 +103,6 @@ function LoginPage() {
       </Box>
     </DefaultLayout>
   );
-};
+}
 
 export default LoginPage;

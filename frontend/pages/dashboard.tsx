@@ -97,6 +97,6 @@ function Dashboard() {
       </Grid>
     </DefaultLayout>
   );
-};
+}
 
 export default Dashboard;
