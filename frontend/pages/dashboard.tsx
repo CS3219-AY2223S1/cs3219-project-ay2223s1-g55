@@ -26,6 +26,7 @@ import { STATUS_CODE_LOGGED_OUT } from '@/lib/constants';
 import router from 'next/router';
 import { useUserStore } from '@/lib/store';
 import { clearJwt, getJwtCookie } from '@/lib/cookies';
+import UnauthorizedDialog from '@/components/UnauthorizedDialog';
 
 const Dashboard = () => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -57,7 +58,9 @@ const Dashboard = () => {
     }
   };
 
-  return user.loginState ? (
+  if (!user.loginState) return <UnauthorizedDialog />;
+
+  return (
     <DefaultLayout>
       <Grid container alignItems="center" justifyContent="center">
         <Grid item xs={6}>
@@ -149,18 +152,6 @@ const Dashboard = () => {
         </MenuItem>
       </Menu>
     </DefaultLayout>
-  ) : (
-    <Dialog open={true} onClose={(e) => router.push('/login')}>
-      <DialogTitle>{'Error!'}</DialogTitle>
-      <DialogContent>
-        <DialogContentText>{'Log in to continue'}</DialogContentText>
-      </DialogContent>
-      <DialogActions>
-        <Link href="/login">
-          <Button>Log in</Button>
-        </Link>
-      </DialogActions>
-    </Dialog>
   );
 };
 

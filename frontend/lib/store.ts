@@ -15,21 +15,31 @@ interface UserStore {
 export const useUserStore = create<UserStore>((set, get) => ({
   user: { username: '', loginState: false },
   loginUser: async (username: string, password: string, token: string) => {
-    const res = await axios.post(URL_USER_LOGIN, { username, password, token });
-    if (res.data.token) {
-      set({ user: { username: username, loginState: true } });
+    try {
+      const res = await axios.post(URL_USER_LOGIN, { username, password, token });
+      if (res.data.token) {
+        set({ user: { username: username, loginState: true } });
+      }
+      return res;
+    } catch (err) {
+      console.error(err);
+      return { error: 'An error occured while logging in' };
     }
-    return res;
   },
   updateUser: async (token: string) => {
-    const res = await axios.get(URL_USER_SESSION, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    try {
+      const res = await axios.get(URL_USER_SESSION, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
-    if (res.data.username) {
-      set({ user: { username: res.data.username, loginState: true } });
+      if (res.data.username) {
+        set({ user: { username: res.data.username, loginState: true } });
+      }
+    } catch (err) {
+      console.error(err);
+      return { error: 'An error occured while updating user' };
     }
   },
   logoutUser: async (token: string) => {
@@ -40,8 +50,9 @@ export const useUserStore = create<UserStore>((set, get) => ({
         set({ user: { username: '', loginState: false } });
       }
       return res;
-    } catch (e) {
-      console.log(e);
+    } catch (err) {
+      console.error(err);
+      return { error: 'An error occured while logging out' };
     }
   },
   deleteUser: async (token: string) => {
@@ -56,6 +67,7 @@ export const useUserStore = create<UserStore>((set, get) => ({
       return res;
     } catch (err) {
       console.log(err);
+      return { error: 'An error occured while deleting account' };
     }
   },
 }));
