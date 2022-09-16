@@ -21,7 +21,7 @@ import useUserStore from '@/lib/store';
 import { clearJwt, getJwtCookie } from '@/lib/cookies';
 import UnauthorizedDialog from '@/components/UnauthorizedDialog';
 
-const Dashboard = () => {
+function Dashboard() {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const handleAvatarClick = (event: ReactMouseEvent<HTMLElement>) => {
@@ -146,6 +146,6 @@ const Dashboard = () => {
       </Menu>
     </DefaultLayout>
   );
-};
+}
 
 export default Dashboard;

@@ -1,6 +1,6 @@
 # CS3219-AY22-23-Project-Skeleton
 
-This is a template repository for CS3219 project.
+user-service url: https://user-service-q563p73okq-as.a.run.app/
 
 ## User Service
 1. Rename `.env.sample` file to `.env`.

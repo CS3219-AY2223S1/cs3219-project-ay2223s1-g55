@@ -16,7 +16,7 @@ import useUserStore from '@/lib/store';
 import DefaultLayout from '@/layouts/DefaultLayout';
 import { getJwtCookie, saveJwtCookie } from '@/lib/cookies';
 
-const LoginPage = () => {
+function LoginPage() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -103,6 +103,6 @@ const LoginPage = () => {
       </Box>
     </DefaultLayout>
   );
-};
+}
 
 export default LoginPage;
