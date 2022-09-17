@@ -25,7 +25,6 @@ import { styled } from '@mui/material/styles';
 import { useSession } from '@/contexts/session.context';
 import DefaultLayout from '@/layouts/DefaultLayout';
 import { io } from 'socket.io-client';
-import { match } from 'assert';
 
 const SendMessageButton = styled(Button)({
   backgroundColor: '#3f51b5',
@@ -36,22 +35,6 @@ const SendMessageButton = styled(Button)({
   },
   '&:active': {
     backgroundColor: 'green',
-  },
-});
-
-const SocketMessageOutputContainer = styled('div')({
-  height: '100px',
-  width: '100px',
-  fontSize: '20px',
-  padding: '5px',
-  backgroundColor: 'white',
-  color: 'black',
-  justifyContent: 'center',
-  alignItems: 'center',
-  border: '1px solid black',
-  '&:hover': {
-    backgroundColor: 'grey',
-    color: 'black',
   },
 });
 
@@ -176,7 +159,7 @@ function Matching() {
   });
 
   socket.on('leave-room', ({ leaveRoomMessage, leaveRoomUsername }) => {
-    console.log('message from server: ', leaveRoomMessage);
+    console.log('message from server for: ', leaveRoomMessage);
   });
 
   // Send message with sepcific matchRoomID to the server if there is

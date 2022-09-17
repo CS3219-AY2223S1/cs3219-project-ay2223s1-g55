@@ -1,4 +1,4 @@
-import { SetStateAction, useState } from 'react';
+import { useState } from 'react';
 import {
   Button,
   FormControl,
@@ -15,7 +15,7 @@ import router from 'next/router';
 
 const Dashboard = () => {
   const [difficulty, setDifficulty] = useState('');
-  const { user, logout, deleteUser } = useSession();
+  const { logout, deleteUser } = useSession();
 
   const handleDifficultyChange = (e: SelectChangeEvent<string>) => {
     setDifficulty(e.target.value);

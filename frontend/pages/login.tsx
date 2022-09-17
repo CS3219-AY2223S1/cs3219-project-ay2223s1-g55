@@ -23,6 +23,17 @@ const LoginPage = () => {
   const [dialogMsg, setDialogMsg] = useState('');
   const { login } = useSession();
 
+  const setSuccessDialog = (msg: string) => {
+    setIsDialogOpen(true);
+    setDialogTitle('Success');
+    setDialogMsg(msg);
+  };
+
+  const setErrorDialog = (msg: string) => {
+    setIsDialogOpen(true);
+    setDialogTitle('Error');
+    setDialogMsg(msg);
+  };
   const handleLogin = async () => {
     try {
       const res = await login(username, password);
@@ -43,18 +54,6 @@ const LoginPage = () => {
     if (dialogTitle === 'Success') {
       router.push('/dashboard');
     }
-  };
-
-  const setSuccessDialog = (msg: string) => {
-    setIsDialogOpen(true);
-    setDialogTitle('Success');
-    setDialogMsg(msg);
-  };
-
-  const setErrorDialog = (msg: string) => {
-    setIsDialogOpen(true);
-    setDialogTitle('Error');
-    setDialogMsg(msg);
   };
 
   const handleSignupClick = () => router.push('/signup');
