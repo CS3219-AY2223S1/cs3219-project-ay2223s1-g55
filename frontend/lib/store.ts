@@ -16,7 +16,6 @@ interface UserStore {
   loginUser: (username: string, password: string, token: string) => any;
   logoutUser: (token: string) => any;
   deleteUser: (token: string) => any;
-  sendMatchRequest: (username: string, difficulty: string, roomSocketID: string) => any;
 }
 
 const useUserStore = create<UserStore>((set, get) => ({
@@ -77,33 +76,6 @@ const useUserStore = create<UserStore>((set, get) => ({
     } catch (err) {
       console.log(err);
       return { error: 'An error occured while deleting account' };
-    }
-  },
-  sendMatchRequest: async (username: string, difficulty: string, roomSocketID: string) => {
-    console.log('sendMatchRequest called with ', username, difficulty, roomSocketID);
-    try {
-      const res = await axios.get(URL_MATCHING_MATCH, {
-        headers: {
-          username,
-          difficulty,
-          roomSocketID,
-        },
-      });
-      if (res.status === 200 || res.status === 201) {
-        console.log('match request sent');
-        // contains json of mongodbID, username, difficulty, createdAt, message
-        return res;
-      }
-      if (res.status === 400 || res.status === 404) {
-        console.log('match request failed');
-        return res;
-      }
-      console.log('match request failed');
-      return res;
-    } catch (err) {
-      console.log(err);
-      console.log('An error occured when sending Match Request');
-      throw err;
     }
   },
 }));

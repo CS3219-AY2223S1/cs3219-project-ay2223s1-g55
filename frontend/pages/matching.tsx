@@ -20,6 +20,8 @@ import {
   Backdrop,
   CircularProgress,
 } from '@mui/material';
+import { URL_MATCHING_MATCH } from '@/lib/configs';
+import axios from 'axios';
 
 import { styled } from '@mui/material/styles';
 import useUserStore from '@/lib/store';
@@ -67,10 +69,39 @@ socket.onAny((event, ...args) => {
   console.log(event, args);
 });
 
+const sendMatchRequest = async (username: string, difficulty: string, roomSocketID: string) => {
+  console.log('sendMatchRequest called with ', username, difficulty, roomSocketID);
+  try {
+    const res = await axios.get(URL_MATCHING_MATCH, {
+      // username,
+      // difficulty,
+      headers: {
+        username,
+        difficulty,
+        roomSocketID,
+      },
+    });
+    if (res.status === 200 || res.status === 201) {
+      console.log('match request sent');
+      // contains json of mongodbID, username, difficulty, createdAt, message
+      return res;
+    }
+    if (res.status === 400 || res.status === 404) {
+      console.log('match request failed');
+      return res;
+    }
+    console.log('match request failed');
+    return res;
+  } catch (err: any) {
+    console.log('error message is: ', err.response.data.message);
+    console.log(err.message);
+    throw err;
+  }
+};
+
 function Matching() {
-  const { user, sendMatchRequest } = useUserStore((state) => ({
+  const { user } = useUserStore((state) => ({
     user: state.user,
-    loginUser: state.sendMatchRequest,
   }));
   const [difficulty, setDifficulty] = useState('');
   const [socketMessage, setSocketMessage] = useState('');
@@ -188,7 +219,9 @@ function Matching() {
   const handleMatchFound = async (payload: any) => {
     const { username, difficulty, mongodbID, roomSocketID } = payload;
     setPendingMatchRequest(false);
-    setSuccessDialog(`Found Match! \n ${mongodbID} \n ${username} \n ${message}`);
+    setSuccessDialog(
+      `Found Match! \n ${mongodbID} \n ${username} \n ${message} \n Click Join Room to join`
+    );
     setMatchRoomID(mongodbID);
     setRoom(matchRoomID);
     await handleJoinRoom();
