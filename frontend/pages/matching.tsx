@@ -22,7 +22,7 @@ import {
 } from '@mui/material';
 
 import { styled } from '@mui/material/styles';
-import { useSession } from '@/contexts/session.context';
+import useUserStore from '@/lib/store';
 import DefaultLayout from '@/layouts/DefaultLayout';
 import { io } from 'socket.io-client';
 
@@ -68,10 +68,13 @@ socket.onAny((event, ...args) => {
 });
 
 function Matching() {
+  const { user, sendMatchRequest } = useUserStore((state) => ({
+    user: state.user,
+    loginUser: state.sendMatchRequest,
+  }));
   const [difficulty, setDifficulty] = useState('');
   const [socketMessage, setSocketMessage] = useState('');
   const [socketID, setSocketID] = useState('');
-  const { user, sendMatchRequest } = useSession();
   const [messages, setMessages] = useState(initialMessages);
   const [username, setUsername] = useState('');
   const [room, setRoom] = useState('');
@@ -128,13 +131,9 @@ function Matching() {
 
   const handleJoinRoom = async () => {
     setRoom(matchRoomID);
-    socket.emit(
-      'join-room',
-      { username: username, matchRoomID: matchRoomID },
-      (callback: callbackInterface) => {
-        console.log('callback: ', callback);
-      }
-    );
+    socket.emit('join-room', { username, matchRoomID }, (callback: callbackInterface) => {
+      console.log('callback: ', callback);
+    });
   };
 
   const handleLeaveRoom = () => {
@@ -242,7 +241,7 @@ function Matching() {
         setPendingMatchRequest(false);
         if (err) {
           console.log('Error: ', err.response);
-          setErrorDialog(err.response.data.message);
+          setErrorDialog('Error occured when finding match');
         } else if (err.response.data.status === 500) {
           setErrorDialog('Failed to find a match');
         } else {
