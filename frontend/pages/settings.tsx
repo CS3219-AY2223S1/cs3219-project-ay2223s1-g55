@@ -1,3 +1,4 @@
+import ChangePasswordPage from '@/components/change-password';
 import DeleteAccount from '@/components/DeleteAccount';
 import UnauthorizedDialog from '@/components/UnauthorizedDialog';
 import useUserStore from '@/lib/store';
@@ -19,7 +20,7 @@ const Settings = () => {
       case 'delete account':
         return <DeleteAccount />;
       case 'change password':
-        return <Container>Change password page</Container>;
+        return <ChangePasswordPage />;
       default:
         return (
           <Container>
