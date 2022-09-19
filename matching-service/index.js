@@ -7,7 +7,6 @@ import { instrument } from '@socket.io/admin-ui';
 import {
   createMatchRequest,
   findMatch,
-  pendingMatchRequest,
   deleteMatchRequest,
 } from './controller/matching-controller.js';
 
@@ -24,7 +23,6 @@ router.get('/', (_, res) => {
 
 router.get('/match', findMatch);
 router.post('/match', createMatchRequest);
-router.get('/pending', pendingMatchRequest);
 router.delete('/match', deleteMatchRequest);
 
 app.use('/api/match', router).all((_, res) => {

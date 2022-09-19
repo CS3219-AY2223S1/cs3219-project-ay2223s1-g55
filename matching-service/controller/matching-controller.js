@@ -98,33 +98,6 @@ export async function findMatch(req, res) {
   }
 }
 
-export async function pendingMatchRequest(req, res) {
-  try {
-    const { username, difficulty } = req.body;
-    if (username && difficulty) {
-      const resp = await _findMatch(username, difficulty);
-      console.log('match found in pending:' + resp.matchFound);
-      if (!resp.matchFound) {
-        await sleep(10000);
-      }
-      if (resp.err) {
-        // await sleep(10000);
-        return res.status(400).json({ message: 'Could not find match!' });
-      } else {
-        console.log(`Found match for user ${username} successfully!`);
-        return res
-          .status(201)
-          .json({ message: `Completed match request for user ${username} successfully!` });
-      }
-    } else {
-      return res.status(400).json({ message: 'Username and/or Difficulty level are missing!' });
-    }
-  } catch (err) {
-    console.log(err);
-    return res.status(500).json({ message: 'Database failure when looking for match for user!' });
-  }
-}
-
 export async function deleteMatchRequest(req, res) {
   try {
     const { username, difficulty } = req.body;
