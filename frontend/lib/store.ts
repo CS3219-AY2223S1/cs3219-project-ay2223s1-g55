@@ -6,7 +6,7 @@ import { User } from './types';
 
 interface UserStore {
   user: User;
-  updateUser: (token: string) => void;
+  updateUser: (token: string, oldPassword: string, newPassword: string) => any;
   loginUser: (username: string, password: string, token: string) => any;
   logoutUser: (token: string) => any;
   deleteUser: (token: string) => any;
@@ -28,21 +28,26 @@ const useUserStore = create<UserStore>((set, get) => ({
       return { error: 'Please try again later' };
     }
   },
-  updateUser: async (token: string) => {
+  updateUser: async (token: string, oldPassword: string, newPassword: string) => {
     try {
-      const res = await axios.get(URL_USER_SESSION, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      if (res.data.username) {
-        set({ user: { username: res.data.username, loginState: true } });
-      }
+      const res = await axios.put(
+        URL_USER_SVC,
+        { oldPassword, newPassword },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      return res;
     } catch (err) {
-      console.error(err);
       return { error: 'An error occured while updating user' };
     }
+    //   if (res.data.username) {
+    //     set({ user: { username: res.data.username, loginState: true } });
+    //   }
+    // } catch (err) {
+    //   console.error(err);
+    //   return { error: 'An error occured while updating user' };
+    // }
   },
   logoutUser: async (token: string) => {
     try {

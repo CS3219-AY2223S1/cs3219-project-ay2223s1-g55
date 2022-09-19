@@ -15,28 +15,18 @@ const ChangePasswordPage = () => {
   const [oldPasswordError, setOldPasswordErr] = useState(false);
   const [passwordError, setPasswordError] = useState('');
   const [confirmPasswordError, setConfirmPasswordError] = useState(false);
-
+  const { updateUser } = useUserStore((state) => ({
+    updateUser: state.updateUser,
+  }));
   const handlePasswordChange = async (e) => {
     e.preventDefault();
     const token = getJwtCookie();
-    const res = await axios
-      .put(
-        URL_USER_SVC,
-        { oldPassword, newPassword },
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      )
-      .catch((err) => {
-        if (err.response.status === STATUS_CODE_CONFLICT) {
-          setOldPasswordErr(true);
-        } else {
-          setOldPasswordErr(false);
-        }
-      });
+    const res = await updateUser(token, oldPassword, newPassword);
     if (res && res.status === STATUS_CODE_SUCCESS) {
       setOldPasswordErr(false);
       router.push('/dashboard');
+    } else {
+      setOldPasswordErr(true);
     }
   };
 
