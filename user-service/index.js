@@ -24,7 +24,7 @@ router.delete('/', deleteUser);
 router.post('/login', loginUser);
 router.get('/session', getSession);
 router.post('/logout', logoutUser);
-router.put('/password', updateUser);
+router.put('/', updateUser);
 
 app.use('/api/user', router).all((_, res) => {
   res.setHeader('content-type', 'application/json');

@@ -3,25 +3,24 @@ import { Button, TextField } from '@mui/material';
 import axios from 'axios';
 import { useState } from 'react';
 import router from 'next/router';
-import { URL_USER_CHANGE_PASSWORD } from '@/lib/configs';
+import { URL_USER_SVC } from '@/lib/configs';
 import { STATUS_CODE_CONFLICT, STATUS_CODE_SUCCESS } from '@/lib/constants';
-import { getJwtCookie, useSession } from '@/contexts/session.context';
+import { getJwtCookie } from '@/contexts/session.context';
 
 function ChangePasswordPage() {
   const [oldPassword, setOldPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmNewPassword, setConfirmNewPassword] = useState('');
   const [oldPasswordError, setOldPasswordErr] = useState(false);
-  const [passwordError, setPasswordErr] = useState('');
+  const [passwordError, setPasswordError] = useState('');
   const [confirmPasswordError, setConfirmPasswordError] = useState(false);
-  const { user } = useSession();
 
   const handlePasswordChange = async (e) => {
     e.preventDefault();
     const token = getJwtCookie();
     const res = await axios
       .put(
-        URL_USER_CHANGE_PASSWORD,
+        URL_USER_SVC,
         { oldPassword, newPassword },
         {
           headers: { Authorization: `Bearer ${token}` },
@@ -76,7 +75,7 @@ function ChangePasswordPage() {
       } else {
         errMsg = '';
       }
-      setPasswordErr(errMsg);
+      setPasswordError(errMsg);
     }
     // for confirm password
     if (
@@ -110,7 +109,7 @@ function ChangePasswordPage() {
           <br />
           <TextField
             error={passwordError.length > 0}
-            helperText={passwordError.length > 0 ? passwordError : ''}
+            helperText={passwordError ?? ''}
             style={{ width: '200px', margin: '5px', marginTop: '30px' }}
             type="password"
             label="New Password"

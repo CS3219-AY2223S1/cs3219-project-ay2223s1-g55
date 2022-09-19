@@ -6,4 +6,3 @@ export const URL_USER_SVC = URI_USER_SVC + PREFIX_USER_SVC;
 export const URL_USER_LOGIN = `${URL_USER_SVC}/login`;
 export const URL_USER_SESSION = `${URL_USER_SVC}/session`;
 export const URL_USER_LOGOUT = `${URL_USER_SVC}/logout`;
-export const URL_USER_CHANGE_PASSWORD = `${URL_USER_SVC}/password`;
