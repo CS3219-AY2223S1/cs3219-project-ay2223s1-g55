@@ -1,39 +1,57 @@
-import { SetStateAction, useState } from 'react';
+import { MouseEvent as ReactMouseEvent, useState } from 'react';
 import {
-  Button,
+  Avatar,
   FormControl,
   Grid,
+  IconButton,
   InputLabel,
+  ListItemIcon,
+  Menu,
   MenuItem,
   Select,
   SelectChangeEvent,
+  Tooltip,
 } from '@mui/material';
-import { useSession } from '@/contexts/session.context';
+import Settings from '@mui/icons-material/Settings';
+import Logout from '@mui/icons-material/Logout';
 import DefaultLayout from '@/layouts/DefaultLayout';
-import { STATUS_CODE_LOGGED_OUT, STATUS_CODE_DELETED } from '@/lib/constants';
+import { STATUS_CODE_LOGGED_OUT } from '@/lib/constants';
 import router from 'next/router';
+import useUserStore from '@/lib/store';
+import { clearJwt, getJwtCookie } from '@/lib/cookies';
+import UnauthorizedDialog from '@/components/UnauthorizedDialog';
 
-const Dashboard = () => {
+function Dashboard() {
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
+  const handleAvatarClick = (event: ReactMouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleAvatarMenuClose = () => {
+    setAnchorEl(null);
+  };
+
   const [difficulty, setDifficulty] = useState('');
-  const { user, logout, deleteUser } = useSession();
+
+  const { user, logout } = useUserStore((state) => ({
+    user: state.user,
+    logout: state.logoutUser,
+  }));
 
   const handleDifficultyChange = (e: SelectChangeEvent<string>) => {
     setDifficulty(e.target.value);
   };
 
   const handleLogout = async () => {
-    const res = await logout();
+    const currToken = getJwtCookie();
+    const res = await logout(currToken);
     if (res?.status === STATUS_CODE_LOGGED_OUT) {
       router.push('/login');
+      clearJwt();
     }
   };
 
-  const handleDeleteUser = async () => {
-    const res = await deleteUser();
-    if (res?.status === STATUS_CODE_DELETED) {
-      router.push('/signup');
-    }
-  };
+  if (!user.loginState) return <UnauthorizedDialog />;
 
   const handleChangePassword = () => {
     router.push('/change-password');
@@ -61,61 +79,77 @@ const Dashboard = () => {
           </div>
         </Grid>
         <Grid
-          container
           item
           xs={6}
           justifySelf="flex-end"
           sx={{ display: 'flex', justifyContent: 'flex-end' }}
         >
-          <Grid
-            item
-            xs={12}
-            justifySelf="center"
-            sx={{ display: 'flex', justifyContent: 'center' }}
-          >
-            <Button
-              id="logout_button"
-              variant="contained"
-              onClick={handleLogout}
-              sx={{ height: '100%' }}
+          <Tooltip title="Account settings">
+            <IconButton
+              onClick={handleAvatarClick}
+              size="small"
+              sx={{ ml: 2 }}
+              aria-controls={open ? 'account-menu' : undefined}
+              aria-haspopup="true"
+              aria-expanded={open ? 'true' : undefined}
             >
-              LOG OUT
-            </Button>
-          </Grid>
-          <Grid
-            item
-            xs={12}
-            justifySelf="center"
-            sx={{ display: 'flex', justifyContent: 'center' }}
-          >
-            <Button
-              id="delete_account_button"
-              variant="contained"
-              onClick={handleDeleteUser}
-              sx={{ height: '100%' }}
-            >
-              DELETE
-            </Button>
-          </Grid>
-          <Grid
-            item
-            xs={12}
-            justifySelf="center"
-            sx={{ display: 'flex', justifyContent: 'center' }}
-          >
-            <Button
-              id="change_password_button"
-              variant="contained"
-              onClick={handleChangePassword}
-              sx={{ height: '100%' }}
-            >
-              Change Password
-            </Button>
-          </Grid>
+              <Avatar sx={{ width: 32, height: 32 }}>
+                {user?.username.charAt(0).toLocaleUpperCase()}
+              </Avatar>
+            </IconButton>
+          </Tooltip>
         </Grid>
       </Grid>
+      <Menu
+        anchorEl={anchorEl}
+        id="account-menu"
+        open={open}
+        onClose={handleAvatarMenuClose}
+        onClick={handleAvatarMenuClose}
+        PaperProps={{
+          elevation: 0,
+          sx: {
+            overflow: 'visible',
+            filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
+            mt: 1.5,
+            '& .MuiAvatar-root': {
+              width: 32,
+              height: 32,
+              ml: -0.5,
+              mr: 1,
+            },
+            '&:before': {
+              content: '""',
+              display: 'block',
+              position: 'absolute',
+              top: 0,
+              right: 14,
+              width: 10,
+              height: 10,
+              bgcolor: 'background.paper',
+              transform: 'translateY(-50%) rotate(45deg)',
+              zIndex: 0,
+            },
+          },
+        }}
+        transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+        anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+      >
+        <MenuItem onClick={() => router.push('/settings')}>
+          <ListItemIcon>
+            <Settings fontSize="small" />
+          </ListItemIcon>
+          Settings
+        </MenuItem>
+        <MenuItem onClick={handleLogout}>
+          <ListItemIcon>
+            <Logout fontSize="small" />
+          </ListItemIcon>
+          Logout
+        </MenuItem>
+      </Menu>
     </DefaultLayout>
   );
-};
+}
 
 export default Dashboard;

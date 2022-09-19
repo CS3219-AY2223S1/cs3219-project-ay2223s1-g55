@@ -14,10 +14,10 @@ import axios from 'axios';
 import { URL_USER_SVC } from '@/lib/configs';
 import { STATUS_CODE_CONFLICT, STATUS_CODE_CREATED } from '@/lib/constants';
 import Link from 'next/link';
-import DefaultLayout from '@/layouts/DefaultLayout';
 import router from 'next/router';
+import DefaultLayout from '@/layouts/DefaultLayout';
 
-const SignupPage = () => {
+function SignupPage() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -105,6 +105,6 @@ const SignupPage = () => {
       </Box>
     </DefaultLayout>
   );
-};
+}
 
 export default SignupPage;
