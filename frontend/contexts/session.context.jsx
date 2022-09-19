@@ -1,10 +1,5 @@
 import { useState, createContext, useEffect, useContext } from 'react';
-import {
-  URL_USER_SESSION,
-  URL_USER_LOGIN,
-  URL_USER_LOGOUT,
-  URL_MATCHING_MATCH,
-} from '@/lib/configs';
+import { URL_USER_SESSION, URL_USER_LOGIN, URL_USER_LOGOUT, URL_USER_SVC, URL_MATCHING_MATCH, } from '@/lib/configs';
 import axios from 'axios';
 import { STATUS_CODE_LOGGED_OUT } from '@/lib/constants';
 

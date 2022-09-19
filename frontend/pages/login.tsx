@@ -15,7 +15,7 @@ import { useSession } from '@/contexts/session.context';
 import DefaultLayout from '@/layouts/DefaultLayout';
 import router from 'next/router';
 
-const LoginPage = () => {
+function LoginPage() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -102,6 +102,6 @@ const LoginPage = () => {
       </Box>
     </DefaultLayout>
   );
-};
+}
 
 export default LoginPage;
