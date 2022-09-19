@@ -14,8 +14,8 @@ import axios from 'axios';
 import { URL_USER_SVC } from '@/lib/configs';
 import { STATUS_CODE_CONFLICT, STATUS_CODE_CREATED } from '@/lib/constants';
 import Link from 'next/link';
-import DefaultLayout from '@/layouts/DefaultLayout';
 import router from 'next/router';
+import DefaultLayout from '@/layouts/DefaultLayout';
 
 function SignupPage() {
   const [username, setUsername] = useState('');

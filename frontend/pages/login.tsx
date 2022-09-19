@@ -11,9 +11,10 @@ import {
   Typography,
 } from '@mui/material';
 import { STATUS_CODE_LOGIN_FAILED, STATUS_CODE_LOGGED_IN } from '@/lib/constants';
-import { useSession } from '@/contexts/session.context';
-import DefaultLayout from '@/layouts/DefaultLayout';
 import router from 'next/router';
+import useUserStore from '@/lib/store';
+import DefaultLayout from '@/layouts/DefaultLayout';
+import { getJwtCookie, saveJwtCookie } from '@/lib/cookies';
 
 function LoginPage() {
   const [username, setUsername] = useState('');
@@ -21,7 +22,6 @@ function LoginPage() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [dialogTitle, setDialogTitle] = useState('');
   const [dialogMsg, setDialogMsg] = useState('');
-  const { login } = useSession();
 
   const setSuccessDialog = (msg: string) => {
     setIsDialogOpen(true);
@@ -34,18 +34,19 @@ function LoginPage() {
     setDialogTitle('Error');
     setDialogMsg(msg);
   };
+  const { user, loginUser } = useUserStore((state) => ({
+    user: state.user,
+    loginUser: state.loginUser,
+  }));
   const handleLogin = async () => {
-    try {
-      const res = await login(username, password);
-      if (res && res.status === STATUS_CODE_LOGGED_IN) {
-        setSuccessDialog('Successfully logged in!');
-      }
-    } catch (err: any) {
-      if (err.response.status === STATUS_CODE_LOGIN_FAILED) {
-        setErrorDialog('Failed to login user');
-      } else {
-        setErrorDialog('Please try again later');
-      }
+    const currToken = getJwtCookie() as string;
+    const res = await loginUser(username, password, currToken);
+    if (res && res.status === STATUS_CODE_LOGGED_IN) {
+      setSuccessDialog('Successfully logged in!');
+      saveJwtCookie(res.data.token);
+    }
+    if (res.error) {
+      setErrorDialog(res.error);
     }
   };
 
