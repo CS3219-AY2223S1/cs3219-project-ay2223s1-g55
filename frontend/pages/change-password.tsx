@@ -5,7 +5,7 @@ import { useState } from 'react';
 import router from 'next/router';
 import { URL_USER_SVC } from '@/lib/configs';
 import { STATUS_CODE_CONFLICT, STATUS_CODE_SUCCESS } from '@/lib/constants';
-import { getJwtCookie } from '@/contexts/session.context';
+import { getJwtCookie } from '@/lib/cookies';
 
 function ChangePasswordPage() {
   const [oldPassword, setOldPassword] = useState('');
