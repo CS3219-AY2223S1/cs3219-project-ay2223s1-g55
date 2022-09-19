@@ -98,7 +98,7 @@ io.on('connection', (socket) => {
     const user = {
       username,
       id: socket.id,
-      matchRoomID: matchRoomID,
+      matchRoomID: `${matchRoomID}`,
     };
     socket.emit('join-room-success', user);
     socket.to(matchRoomID).emit('join-room', payload);

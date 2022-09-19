@@ -51,10 +51,3 @@ export async function ormDeleteMatchRequest(username, difficulty) {
     return { err };
   }
 }
-
-// Javascript recommendation for sleep function
-function sleep(ms) {
-  return new Promise((resolve) => {
-    setTimeout(resolve, ms);
-  });
-}

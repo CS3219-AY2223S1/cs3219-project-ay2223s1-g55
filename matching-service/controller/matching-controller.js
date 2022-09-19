@@ -4,6 +4,7 @@ import {
   ormDeleteMatchRequest as _deleteMatchRequest,
   ormCheckMatchRequestExists as _checkMatchRequestExists,
 } from '../model/matching-orm.js';
+import { sleep } from '../utils/sleep.js';
 // import { decodeBearerToken } from './helpers.js';
 // import jwt from 'jsonwebtoken';
 
@@ -173,10 +174,4 @@ export async function getSession(req, res) {
   } catch (err) {
     return res.status(500).json({ message: 'Failed to retrieve session!' });
   }
-}
-
-function sleep(ms) {
-  return new Promise((resolve) => {
-    setTimeout(resolve, ms);
-  });
 }

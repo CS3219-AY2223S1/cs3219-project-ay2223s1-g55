@@ -61,19 +61,10 @@ const socket = io('http://localhost:8001', {
   // autoConnect: false,
 });
 
-// console.log('user is', user?.username);
 // catch-all listener for development
 socket.onAny((event, ...args) => {
   console.log('Logging Listener: ', event, args);
   console.log(event, args);
-});
-
-socket.on('connect_error', (err) => {
-  console.log('connect_error: ', err);
-});
-
-socket.on('joinRoom', (payload) => {
-  console.log(payload.message);
 });
 
 function Matching() {
@@ -111,15 +102,12 @@ function Matching() {
     console.log('user is: ', user);
     setUsername(user?.username);
     handleConnectToSocket();
-    // socket.auth = { username: user.username };
-    // socket.connect();
-  }, [user]);
+  }, []);
 
   // socket connection established
   socket.on('connect', () => {
+    console.log('socket id is ', socket.id);
     setSocketIDonConnect(socket.id);
-    console.log('ID on connect : ', socket.id);
-    console.log('connected: ', socket.id);
     setUsername(user?.username);
     setSocketID(socket.id);
   });
@@ -138,11 +126,15 @@ function Matching() {
 
   // join Room when match is successful and room is created
 
-  const handleJoinRoom = () => {
-    socket.emit('join-room', { username, matchRoomID }, (callback: callbackInterface) => {
-      console.log('callback: ', callback);
-      setRoom(matchRoomID);
-    });
+  const handleJoinRoom = async () => {
+    setRoom(matchRoomID);
+    socket.emit(
+      'join-room',
+      { username: username, matchRoomID: matchRoomID },
+      (callback: callbackInterface) => {
+        console.log('callback: ', callback);
+      }
+    );
   };
 
   const handleLeaveRoom = () => {
@@ -155,7 +147,7 @@ function Matching() {
   socket.on('join-room-success', (payload) => {
     const { username, id, matchRoomID } = payload;
     console.log('join-room-success:', payload);
-    setRoom(matchRoomID);
+    // setRoom(matchRoomID);
   });
 
   socket.on('leave-room', ({ leaveRoomMessage, leaveRoomUsername }) => {
@@ -182,12 +174,14 @@ function Matching() {
   });
 
   // Receive match success from server, stop [pendingMatchRequest] and set [matchRoomID]
-  socket.on('match-found', (payload) => {
+  socket.on('match-found', async (payload) => {
     console.log('match found: ', payload.mongodbID);
     const { username, difficulty, mongodbID, roomSocketID } = payload;
     setMatchRoomID(mongodbID);
+    console.log('match room id after set is:', matchRoomID);
+    // ! Leave joining room to on click for now
+    // await handleJoinRoom();
     setPendingMatchRequest(false);
-    handleJoinRoom();
   });
 
   // TODO: Clear matchRoomID after joinRoom is done, for some reason it is not the same as
@@ -197,7 +191,8 @@ function Matching() {
     setPendingMatchRequest(false);
     setSuccessDialog(`Found Match! \n ${mongodbID} \n ${username} \n ${message}`);
     setMatchRoomID(mongodbID);
-    handleJoinRoom();
+    setRoom(matchRoomID);
+    await handleJoinRoom();
     socket.emit('match-found', { username, difficulty, mongodbID, roomSocketID });
   };
 
