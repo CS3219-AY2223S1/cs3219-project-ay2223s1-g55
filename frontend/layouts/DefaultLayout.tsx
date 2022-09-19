@@ -1,4 +1,4 @@
-import { useSession } from '@/contexts/session.context';
+import useUserStore from '@/lib/store';
 import { Container } from '@mui/material';
 import Head from 'next/head';
 import React from 'react';
@@ -8,7 +8,7 @@ interface DefaultLayoutProps {
 }
 
 function DefaultLayout({ children }: DefaultLayoutProps) {
-  const { user } = useSession();
+  const user = useUserStore((state) => state.user);
 
   return (
     <Container>
