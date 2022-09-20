@@ -25,14 +25,18 @@
     "react/jsx-filename-extension": [
       1,
       {
-        "extensions": [".js", ".jsx", ".tsx"]
+        "extensions": [".js", ".jsx", ".ts", ".tsx"]
+
       }
     ],
     "react/react-in-jsx-scope": "off",
     "react/no-children-prop": "warn",
     "react/prop-types": "warn",
     "react/jsx-no-constructed-context-values": "warn",
-    "react/jsx-curly-brace-presence": "warn",
+    "react/jsx-curly-brace-presence": "error",
+    "react/function-component-definition": "off",
+    "react/jsx-props-no-spreading": "off",
+    "react/no-array-index-key": "warn",
     "prettier/prettier": [
       "error",
       {
@@ -49,5 +53,6 @@
     "import/extensions": "off",
     "react/jsx-props-no-spreading": "off",
     "react/function-component-definition": "off"
+    "no-shadow": "warn"
   }
 }

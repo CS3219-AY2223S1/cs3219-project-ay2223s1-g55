@@ -3,6 +3,7 @@ import {
   Avatar,
   FormControl,
   Grid,
+  Button,
   IconButton,
   InputLabel,
   ListItemIcon,
@@ -40,6 +41,10 @@ function Dashboard() {
 
   const handleDifficultyChange = (e: SelectChangeEvent<string>) => {
     setDifficulty(e.target.value);
+  };
+
+  const handleMatching = async () => {
+    router.push('/matching');
   };
 
   const handleLogout = async () => {
@@ -98,6 +103,21 @@ function Dashboard() {
               </Avatar>
             </IconButton>
           </Tooltip>
+        </Grid>
+        <Grid
+          item
+          xs={12}
+          justifySelf="center"
+          sx={{ display: 'flex', justifyContent: 'center', marginTop: '10px' }}
+        >
+          <Button
+            id="matching_button"
+            variant="contained"
+            onClick={handleMatching}
+            sx={{ height: '100%' }}
+          >
+            Match
+          </Button>
         </Grid>
       </Grid>
       <Menu
