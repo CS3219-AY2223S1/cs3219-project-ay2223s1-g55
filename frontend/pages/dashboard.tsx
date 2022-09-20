@@ -58,6 +58,10 @@ function Dashboard() {
 
   if (!user.loginState) return <UnauthorizedDialog />;
 
+  const handleChangePassword = () => {
+    router.push('/change-password');
+  };
+
   return (
     <DefaultLayout>
       <Grid container alignItems="center" justifyContent="center">

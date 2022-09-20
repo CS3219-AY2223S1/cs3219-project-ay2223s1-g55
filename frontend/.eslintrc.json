@@ -50,6 +50,8 @@
     "consistent-return": "warn",
     "jsx-quotes": ["error", "prefer-double"],
     "import/extensions": "off",
+    "react/jsx-props-no-spreading": "off",
+    "react/function-component-definition": "off",
     "no-shadow": "warn"
   }
 }
