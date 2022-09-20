@@ -26,7 +26,6 @@
       1,
       {
         "extensions": [".js", ".jsx", ".ts", ".tsx"]
-
       }
     ],
     "react/react-in-jsx-scope": "off",
@@ -52,7 +51,7 @@
     "jsx-quotes": ["error", "prefer-double"],
     "import/extensions": "off",
     "react/jsx-props-no-spreading": "off",
-    "react/function-component-definition": "off"
+    "react/function-component-definition": "off",
     "no-shadow": "warn"
   }
 }

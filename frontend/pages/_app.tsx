@@ -1,15 +1,15 @@
 import '../styles/globals.css';
 import type { AppProps } from 'next/app';
 import { useEffect } from 'react';
-import useUserStore from '@/lib/store';
+// import useUserStore from '@/lib/store';
 import { getJwtCookie } from '@/lib/cookies';
 
 function MyApp({ Component, pageProps }: AppProps) {
   const documentIsReady = typeof window !== 'undefined';
-  const { user, updateUser } = useUserStore((state) => ({
-    user: state.user,
-    updateUser: state.updateUser,
-  }));
+  // const { user, updateUser } = useUserStore((state) => ({
+  //   user: state.user,
+  //   updateUser: state.updateUser,
+  // }));
 
   useEffect(() => {
     if (!documentIsReady) {
@@ -17,7 +17,7 @@ function MyApp({ Component, pageProps }: AppProps) {
     }
     const cookie = getJwtCookie();
 
-    updateUser(cookie);
+    // updateUser(cookie);
   }, [documentIsReady]);
 
   return <Component {...pageProps} />;
