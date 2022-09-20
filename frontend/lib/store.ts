@@ -1,18 +1,12 @@
 import axios from 'axios';
 import create from 'zustand';
-import {
-  URL_USER_LOGIN,
-  URL_USER_LOGOUT,
-  URL_USER_SESSION,
-  URL_USER_SVC,
-  URL_MATCHING_MATCH,
-} from './configs';
+import { URL_USER_LOGIN, URL_USER_LOGOUT, URL_USER_SESSION, URL_USER_SVC } from './configs';
 import { STATUS_CODE_LOGGED_OUT, STATUS_CODE_LOGIN_FAILED } from './constants';
 import { User } from './types';
 
 interface UserStore {
   user: User;
-  updateUser: (token: string, oldPassword: string, newPassword: string) => any;
+  updateUser: (token: string) => void;
   loginUser: (username: string, password: string, token: string) => any;
   logoutUser: (token: string) => any;
   deleteUser: (token: string) => any;
@@ -34,26 +28,21 @@ const useUserStore = create<UserStore>((set, get) => ({
       return { error: 'Please try again later' };
     }
   },
-  updateUser: async (token: string, oldPassword: string, newPassword: string) => {
+  updateUser: async (token: string) => {
     try {
-      const res = await axios.put(
-        URL_USER_SVC,
-        { oldPassword, newPassword },
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
-      return res;
+      const res = await axios.get(URL_USER_SESSION, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (res.data.username) {
+        set({ user: { username: res.data.username, loginState: true } });
+      }
     } catch (err) {
+      console.error(err);
       return { error: 'An error occured while updating user' };
     }
-    //   if (res.data.username) {
-    //     set({ user: { username: res.data.username, loginState: true } });
-    //   }
-    // } catch (err) {
-    //   console.error(err);
-    //   return { error: 'An error occured while updating user' };
-    // }
   },
   logoutUser: async (token: string) => {
     try {
