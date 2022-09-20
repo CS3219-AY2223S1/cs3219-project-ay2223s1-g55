@@ -18,7 +18,7 @@ const ChangePasswordPage = () => {
   const { updateUser } = useUserStore((state) => ({
     updateUser: state.updateUser,
   }));
-  const handlePasswordChange = async (e) => {
+  const handlePasswordChange = async (e: any) => {
     e.preventDefault();
     const token = getJwtCookie();
     const res = await updateUser(token, oldPassword, newPassword);
@@ -30,7 +30,7 @@ const ChangePasswordPage = () => {
     }
   };
 
-  const handleValidation = (e) => {
+  const handleValidation = (e: any) => {
     const passwordInputValue = e.target.value.trim();
     const passwordInputFieldName = e.target.name;
     // for password
