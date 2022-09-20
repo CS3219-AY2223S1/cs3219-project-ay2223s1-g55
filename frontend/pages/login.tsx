@@ -22,6 +22,18 @@ function LoginPage() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [dialogTitle, setDialogTitle] = useState('');
   const [dialogMsg, setDialogMsg] = useState('');
+
+  const setSuccessDialog = (msg: string) => {
+    setIsDialogOpen(true);
+    setDialogTitle('Success');
+    setDialogMsg(msg);
+  };
+
+  const setErrorDialog = (msg: string) => {
+    setIsDialogOpen(true);
+    setDialogTitle('Error');
+    setDialogMsg(msg);
+  };
   const { user, loginUser } = useUserStore((state) => ({
     user: state.user,
     loginUser: state.loginUser,
@@ -43,18 +55,6 @@ function LoginPage() {
     if (dialogTitle === 'Success') {
       router.push('/dashboard');
     }
-  };
-
-  const setSuccessDialog = (msg: string) => {
-    setIsDialogOpen(true);
-    setDialogTitle('Success');
-    setDialogMsg(msg);
-  };
-
-  const setErrorDialog = (msg: string) => {
-    setIsDialogOpen(true);
-    setDialogTitle('Error');
-    setDialogMsg(msg);
   };
 
   const handleSignupClick = () => router.push('/signup');
