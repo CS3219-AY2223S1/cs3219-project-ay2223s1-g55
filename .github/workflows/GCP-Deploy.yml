@@ -9,7 +9,7 @@ env:
   REGION: asia-southeast1
 
 jobs:
-    deploy:
+    deploy_1:
         name: Deploy user-service
         runs-on: ubuntu-latest
         env:
@@ -41,7 +41,7 @@ jobs:
         
         - name: Show Output
           run: echo ${{ steps.deploy.outputs.url }}
-    deploy:
+    deploy_2:
         name: Deploy matching-service
         runs-on: ubuntu-latest
         env:
