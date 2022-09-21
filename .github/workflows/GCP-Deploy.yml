@@ -1,8 +1,8 @@
-name: Deploy to Cloud Run from Source
+name: gcp cloud run deploy 
 
 on:
   push:
-    branches: [ ezek/deploy-matching ]
+    branches: [ main ]
 
 env:
   PROJECT_ID: cs3219-g55
@@ -10,7 +10,7 @@ env:
 
 jobs:
     deploy_1:
-        name: Deploy user-service
+        name: user-service deployment
         runs-on: ubuntu-latest
         env:
           SERVICE: user-service
@@ -42,7 +42,7 @@ jobs:
         - name: Show Output
           run: echo ${{ steps.deploy.outputs.url }}
     deploy_2:
-        name: Deploy matching-service
+        name: matching-service deployment 
         runs-on: ubuntu-latest
         env:
           SERVICE: matching-service
