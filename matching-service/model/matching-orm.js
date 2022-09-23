@@ -1,18 +1,22 @@
-import MatchingModel from './matching-model.js';
 import {
   createMatchRequest,
+  updateMatchRequest,
   deleteMatchRequest,
-  findMatch,
+  checkMatchRequestExists,
   findMatchRequest,
+  createMatchSession,
+  checkMatchRequestIsMatched,
+  findMatchSession,
 } from './respository.js';
 // need to separate orm functions from repository to decouple business logic from persistence
 
 export async function ormCreateMatchRequest(username, difficulty, socketID) {
   try {
     const newMatchRequest = await createMatchRequest({
-      username: username,
       difficulty: difficulty,
-      socketID: socketID,
+      isMatched: false,
+      username1: username,
+      username1socketID: socketID,
     });
     newMatchRequest.save();
     return true;
@@ -22,10 +26,10 @@ export async function ormCreateMatchRequest(username, difficulty, socketID) {
   }
 }
 
-export async function ormFindMatch(username, difficulty) {
-  console.log('Running ormFindMatch');
+export async function ormFindMatchRequest(username, difficulty) {
+  console.log('Running ormFindMatchRequest');
   try {
-    return await findMatch({ username: username, difficulty: difficulty });
+    return await findMatchRequest({ username2: username, difficulty: difficulty });
   } catch (err) {
     console.log('ERROR: Error occured when finding users:', err.body);
     return { err };
@@ -34,20 +38,103 @@ export async function ormFindMatch(username, difficulty) {
 
 export async function ormCheckMatchRequestExists(username) {
   try {
-    const matchFound = await findMatchRequest(username);
-    return matchFound != null;
+    const matchFound = checkMatchRequestExists({
+      username: username,
+    });
+    console.log('matchFound:', matchFound);
+    return matchFound;
   } catch (err) {
     console.log('ERROR: Error occured when finding users');
     return { err };
   }
 }
 
-export async function ormDeleteMatchRequest(username, difficulty) {
+export async function ormDeleteMatchRequest(difficulty, isMatched, username) {
   try {
-    await deleteMatchRequest({ username: username });
+    await deleteMatchRequest({ difficulty: difficulty, isMatched: isMatched, username: username });
     return true;
   } catch (err) {
-    console.log('ERROR: Error occured when deleting user');
+    console.log('ERROR: Error occured when deleting user', err);
+    return { err };
+  }
+}
+
+export async function ormUpdateMatchRequest(
+  difficulty,
+  isMatched,
+  username1,
+  username1socketID,
+  username2,
+  username2socketID
+) {
+  try {
+    const updatedMatchRequest = await updateMatchRequest({
+      difficulty: difficulty,
+      isMatched: isMatched,
+      username1: username1,
+      username1socketID: username1socketID,
+      username2: username2,
+      username2socketID: username2socketID,
+    });
+    console.log('Updated match request successfully');
+    if (updatedMatchRequest == null) {
+      console.log('Match request does not exist');
+      return false;
+    }
+    return updatedMatchRequest;
+  } catch (err) {
+    console.log('ERROR: Error occured when updating user :', err);
+    return { err };
+  }
+}
+
+export async function ormCheckMatchRequestIsMatched(username, difficulty) {
+  try {
+    const matchFound = checkMatchRequestIsMatched({
+      username1: username,
+      difficulty: difficulty,
+    });
+    console.log('matchFound:', matchFound);
+    return matchFound;
+  } catch (err) {
+    console.log('ERROR: Error occured when finding users');
+    return { err };
+  }
+}
+
+export async function ormCreateMatchSession(
+  difficulty,
+  username1,
+  username1socketID,
+  username2,
+  username2socketID
+) {
+  try {
+    const newMatchSession = await createMatchSession({
+      difficulty: difficulty,
+      username1: username1,
+      username1socketID: username1socketID,
+      username2: username2,
+      username2socketID: username2socketID,
+    });
+    newMatchSession.save();
+    return newMatchSession;
+  } catch (err) {
+    console.log('ERROR: Could not create new match session');
+    return { err };
+  }
+}
+
+export async function ormFindMatchSession(username, difficulty, username1socketID) {
+  console.log('Running ormFindMatchSession');
+  try {
+    return await findMatchSession({
+      username1: username,
+      difficulty: difficulty,
+      username1socketID: username1socketID,
+    });
+  } catch (err) {
+    console.log('ERROR: Error occured when finding users:', err.body);
     return { err };
   }
 }

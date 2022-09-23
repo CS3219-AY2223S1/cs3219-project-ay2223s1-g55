@@ -1,12 +1,14 @@
 import {
   ormCreateMatchRequest as _createMatchRequest,
-  ormFindMatch as _findMatch,
+  ormFindMatchRequest as _findMatchRequest,
   ormDeleteMatchRequest as _deleteMatchRequest,
   ormCheckMatchRequestExists as _checkMatchRequestExists,
+  ormUpdateMatchRequest as _updateMatchRequest,
+  ormCreateMatchSession as _createMatchSession,
+  ormCheckMatchRequestIsMatched as _checkMatchRequestIsMatched,
+  ormFindMatchSession as _findMatchSession,
 } from '../model/matching-orm.js';
 import { sleep } from '../utils/sleep.js';
-// import { decodeBearerToken } from './helpers.js';
-// import jwt from 'jsonwebtoken';
 
 export async function createMatchRequest(req, res) {
   try {
@@ -23,7 +25,9 @@ export async function createMatchRequest(req, res) {
           .json({ message: `Created new match request for user ${username} successfully!` });
       }
     } else {
-      return res.status(400).json({ message: 'Username and/or Password are missing!' });
+      return res
+        .status(400)
+        .json({ message: 'Username and/or Password and/or SocketID are missing!' });
     }
   } catch (err) {
     console.log(err);
@@ -34,65 +38,128 @@ export async function createMatchRequest(req, res) {
 }
 
 // Need to find match for 30s at least
-export async function findMatch(req, res) {
+export async function findMatchRequest(req, res) {
   let count = 0;
-  console.log(`Running findMatch for ${count} time`);
+  let matchFound = false;
+  let username1;
+  let username1socketID;
+  let username2;
+  let username2socketID;
+  let matchRoomID;
+  let message;
+  console.log(`Running findMatchRequest for ${count} time`);
   console.log('req.head for findMatch is', req.headers);
   try {
     const { username, difficulty, roomsocketid } = req.headers;
-    if (username && difficulty && roomsocketid) {
-      // TODO: Change this to on first findMatch if no result, insert into database
-      // TODO: will continue on intervals, but when another findMatch request finds this database entry,
-      // TODO: it will delete the entry and return the result and use socket to announce to the user's socketID where to join
-      while (count <= 6) {
-        const resp = await _findMatch(username, difficulty, roomsocketid);
-        count += 1;
-        console.log('resp is: ', resp);
-        if (!resp) {
-          console.log('Did not find match, count is ', count);
-          const matchRequestExists = await _checkMatchRequestExists(username);
-          if (!matchRequestExists) {
-            console.log('Match request does not exist, creating new match request');
-            // TODO: Decouple logic here
+
+    if (!username || !difficulty || !roomsocketid) {
+      return res
+        .status(400)
+        .json({ message: 'Username and/or Difficulty and/or SocketID are missing!' });
+    }
+
+    while (count <= 6 && !matchFound) {
+      const resp = await _findMatchRequest(username, difficulty);
+
+      count += 1;
+      console.log('resp is: ', resp);
+      // Match not found, resp is false
+      if (!resp) {
+        const matchRequestExists = await _checkMatchRequestExists(username, difficulty);
+        if (!matchRequestExists) {
+          console.log('Match request does not exist, creating new match request');
+          // TODO: Decouple logic here
+          try {
+            await _createMatchRequest(username, difficulty, roomsocketid);
+          } catch (err) {
+            console.log('Error creating match request', err);
+          }
+        } else {
+          // match Request exist
+          const isMatched = await _checkMatchRequestIsMatched(username, difficulty);
+          if (isMatched) {
+            console.log('Match request is matched, deleting match request');
             try {
-              const createMatchRequestResp = await _createMatchRequest(
-                username,
-                difficulty,
-                roomsocketid
-              );
+              await _deleteMatchRequest(difficulty, true, username);
+              const matchSession = await _findMatchSession(username, difficulty, roomsocketid);
+              message = `Found match between ${matchSession.username1} and ${matchSession.username2} successfully!`;
+              username1 = matchSession.username1;
+              username1socketID = matchSession.username1socketID;
+              username2 = matchSession.username2;
+              username2socketID = matchSession.username2socketID;
+              matchRoomID = matchSession._id;
+              matchFound = true;
+              console.log('isMatched is true, match found : ', message);
+              break;
             } catch (err) {
-              console.log('Error creating match request', err);
-              console.log('createMatchRequestResp', createMatchRequestResp);
+              console.log('Error deleting match request', err);
             }
           }
-          await sleep(4200);
-          continue;
         }
-        console.log('match found: ', resp.username);
-        if (resp) {
-          console.log(`Found match for user ${username} successfully!`);
-          return res.status(201).json({
-            mongodbID: resp._id,
-            username: resp.username,
-            createdAt: resp.createdAt,
-            difficulty: resp.difficulty,
-            roomSocketID: resp.socketID,
-            message: `Completed match request for user ${username} successfully!`,
-          });
-        }
-
-        if (resp.err) {
-          return res.status(400).json({ message: 'Could not find match!' });
-        }
+        await sleep(4200);
+        continue;
       }
-      console.log('Did not find match, while loop exits. Count is ', count);
+
+      if (resp) {
+        console.log(`match found for user ${username} successfully!: `, resp);
+        const updatedMatchRequest = await _updateMatchRequest(
+          difficulty,
+          resp.isMatched,
+          resp.username1,
+          resp.username1socketID,
+          username,
+          roomsocketid
+        );
+        console.log('updatedMatchRequest', updatedMatchRequest);
+
+        if (updatedMatchRequest) {
+          console.log('Updated match request successfully');
+          const matchSession = await _createMatchSession(
+            updatedMatchRequest.difficulty,
+            updatedMatchRequest.username1,
+            updatedMatchRequest.username1socketID,
+            updatedMatchRequest.username2,
+            updatedMatchRequest.username2socketID
+          );
+          console.log('Created match session successfully:', matchSession);
+          if (matchSession) {
+            // return res.status(200).json({
+            message = `Found match between ${matchSession.username1} and ${matchSession.username2} successfully!`;
+            username1 = matchSession.username1;
+            username1socketID = matchSession.username1socketID;
+            username2 = matchSession.username2;
+            username2socketID = matchSession.username2socketID;
+            matchRoomID = matchSession._id;
+            matchFound = true;
+            // });
+          }
+        }
+        // Break out of while loop
+        break;
+      }
+
+      if (resp.err) {
+        return res.status(400).json({ message: 'Could not find match!' });
+      }
+    }
+    console.log('Find match, while loop exits. Count is ', count);
+    await _deleteMatchRequest(difficulty, false, username);
+    // console.log('break out of while loop res: ', res);
+    if (!matchFound) {
       return res.status(400).json({
         message: 'Could not find match!',
       });
-    } else {
-      return res.status(400).json({ message: 'Username and/or Difficulty level are missing!' });
     }
+    return res.status(200).json({
+      message,
+      username1,
+      username1socketID,
+      username2,
+      username2socketID,
+      matchRoomID,
+    });
   } catch (err) {
+    // }
     console.log(err);
     return res.status(500).json({ message: 'Database failure when looking for match for user!' });
   }

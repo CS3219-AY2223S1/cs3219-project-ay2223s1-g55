@@ -1,4 +1,4 @@
-import MatchingModel from './matching-model.js';
+import { MatchingModel, MatchSessionModel } from './matching-model.js';
 import 'dotenv/config.js';
 import redis from 'redis';
 
@@ -13,30 +13,110 @@ const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
 export async function createMatchRequest(params) {
+  // { difficulty, isMatched, username1, username1socketID, username2, username2socketID }
   return new MatchingModel(params);
 }
 
-export async function findMatchRequest(username) {
-  const foundUser = await MatchingModel.findOne({ username: username });
-  return foundUser;
-}
-
-export async function findMatch(params) {
-  // within expiry time of 30s? hmmm
-  console.log(`params are ${params.username} and ${params.difficulty}`);
-  const foundUser = await MatchingModel.findOne({
-    username: { $ne: params.username },
+/**
+ * Look for matchRequest and update matchRequest in the MatchingModel collection
+ * @param { difficulty, isMatched, username1, username1socketID,
+ *        username2, username2socketID } params
+ * @returns { difficulty, isMatched, username1, username1socketID,
+ *         username2, username2socketID }
+ *        foundMatchRequest
+ *        Updated matchRequest from MatchingModel collection
+ */
+export async function updateMatchRequest(params) {
+  console.log('[respository] updateMatchRequest params', params);
+  const filter = {
     difficulty: params.difficulty,
-  });
-  console.log('foundUser is: ', foundUser);
-  if (foundUser == null) {
-    return false;
-  }
-  return foundUser;
+    username1: params.username1,
+  };
+  const update = {
+    username2: params.username2,
+    username2socketID: params.username2socketID,
+    isMatched: true,
+  };
+  const updatedMatchRequest = await MatchingModel.findOneAndUpdate(filter, update, { new: true });
+  console.log('[repository] Updated match request successfully: ', updatedMatchRequest.username2);
+  // return true;
+  return updatedMatchRequest;
 }
 
+/**
+ * Look for matchRequest in the MatchingModel collection
+ * @param { difficulty, username2 } params
+ * @returns { difficulty, isMatched, username1, username1socketID,
+ *         username2, username2socketID }
+ *        foundMatchRequest
+ *        The matchRequest from MatchingModel collection
+ */
+export async function findMatchRequest(params) {
+  const foundMatchRequest = await MatchingModel.findOne({
+    difficulty: params.difficulty,
+    username1: { $ne: params.username2 },
+    isMatched: false,
+  });
+  console.log('[respository.js] foundMatchRequest:', foundMatchRequest);
+  return foundMatchRequest != null ? foundMatchRequest : false;
+}
+
+export async function checkMatchRequestIsMatched(params) {
+  const isMatched = await MatchingModel.findOne({
+    difficulty: params.difficulty,
+    username1: params.username1,
+    isMatched: true,
+  });
+  console.log('[respository.js] foundMatchRequest:', isMatched);
+  return isMatched != null ? isMatched : false;
+}
+
+/**
+ * Look for existing matchRequest in the MatchingModel collection
+ * @param { difficulty, username1 } params
+ * @returns { Boolean } true if matchRequest exists in MatchingModel collection
+ */
+export async function checkMatchRequestExists(params) {
+  const foundMatchRequest = await MatchingModel.findOne({ username1: params.username });
+  console.log('[respository.js] foundMatchRequest:', foundMatchRequest);
+  return foundMatchRequest != null;
+}
+
+/**
+ * delete PendingMatchRequest from MatchingModel collection
+ * @param { difficulty, isMatched, username1, username2 } params
+ * @returns
+ */
 export async function deleteMatchRequest(params) {
-  console.log({ params });
-  await MatchingModel.deleteOne(params);
+  if (params.isMatched) {
+    await MatchingModel.deleteOne(params);
+  }
+  if (!params.isMatched) {
+    const deleteRequest = await MatchingModel.deleteOne({
+      difficulty: params.difficulty,
+      username1: params.username,
+    });
+    console.log('[respository.js] deleteRequest:', deleteRequest);
+  }
   return;
+}
+
+/**
+ * Create MatchSession in MatchSessionModel collection
+ * @param { difficulty, username1, username1socketID, username2, username2socketID } params
+ * @returns { difficulty, username1, username1socketID, username2, username2socketID, _id } matchSession
+ */
+export async function createMatchSession(params) {
+  console.log('[respository.js] createMatchSession params:', params);
+  return new MatchSessionModel(params);
+}
+
+export async function findMatchSession(params) {
+  console.log('[respository.js] findMatchSession params:', params);
+  const foundMatchSession = await MatchSessionModel.findOne({
+    difficulty: params.difficulty,
+    username1: params.username1,
+    username1socketID: params.username1socketID,
+  });
+  return foundMatchSession != null ? foundMatchSession : false;
 }
