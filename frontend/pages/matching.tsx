@@ -135,17 +135,25 @@ function Matching() {
   };
   // user undefined from useSession
   useEffect(() => {
-    console.log('user is: ', user);
-    setUsername(user?.username);
-    handleConnectToSocket();
-  }, []);
+    const onConnectionCallback = () => {
+      console.log('socket id in connectionCallback is ', socket.id);
+      console.log('user is: ', user);
+      setUsername(user?.username);
+      setSocketID(socket.id);
+      // handleConnectToSocket();
+    };
+    socket.on(ON_EVENT.CONNECT, onConnectionCallback);
+    return () => {
+      socket.off(ON_EVENT.CONNECT, onConnectionCallback);
+    };
+  }, [socket]);
 
   // socket connection established
-  socket.on(ON_EVENT.CONNECT, () => {
-    console.log('socket id is ', socket.id);
-    setUsername(user?.username);
-    setSocketID(socket.id);
-  });
+  // socket.on(ON_EVENT.CONNECT, () => {
+  //   console.log('socket id is ', socket.id);
+  //   setUsername(user?.username);
+  //   setSocketID(socket.id);
+  // });
 
   const handleConnectToSocket = () => {
     setUsername(user?.username);
@@ -155,6 +163,8 @@ function Matching() {
   };
 
   socket.on(ON_EVENT.MESSAGE, (payload) => {
+    // setSocketID(socket.id);
+    // setUsername(user?.username);
     console.log('socket id in client: ', socket.id);
     console.log('message from socket: ', payload);
   });
