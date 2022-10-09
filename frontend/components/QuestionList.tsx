@@ -2,9 +2,10 @@ import { URL_QUESTION_GET_DIFFICULTY } from '@/lib/configs';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { Container, Grid } from '@mui/material';
+import { Question } from '@/lib/types';
 
 const QuestionList = () => {
-  const [questions, setQuestions] = useState<>();
+  const [questions, setQuestions] = useState<Question[]>();
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const getQuestions = async (difficulty: string) => {
     try {
