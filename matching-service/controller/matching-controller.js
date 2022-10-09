@@ -208,7 +208,7 @@ export async function cancelMatchRequest(req, res) {
         return res.status(400).json({ message: 'Could not find match request!' });
       }
       // ! Should not need to pass in boolean value, request itself should be self explanatory?
-      const resp = await _cancelMatchRequest(difficulty, username, true);
+      const resp = await _cancelMatchRequest(difficulty, username);
       console.log(resp);
       if (resp?.err) {
         return res.status(400).json({ message: 'Could not cancel match request!' });

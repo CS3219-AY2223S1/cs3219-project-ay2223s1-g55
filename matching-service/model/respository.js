@@ -113,7 +113,7 @@ export async function cancelMatchRequest(params) {
     username1: params.username,
   };
   const update = {
-    isCancelled: params.isCancelled,
+    isCancelled: true,
   };
   const cancelledMatchRequest = await MatchingModel.findOneAndUpdate(filter, update, { new: true });
   console.log('[repository] Cancelled match request successfully: ', cancelledMatchRequest);

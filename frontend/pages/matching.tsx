@@ -290,7 +290,7 @@ function Matching() {
         // }
       } catch (err: any) {
         setPendingMatchRequest(false);
-        if (err.response.data.message == 'Match request is cancelled') {
+        if (err.response.data.message === 'Match request is cancelled') {
           setErrorDialog('Match Request successfully cancelled');
         } else if (err.response.data.status === 500) {
           setErrorDialog('Failed to find a match');

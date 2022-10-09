@@ -60,12 +60,11 @@ export async function ormDeleteMatchRequest(difficulty, isMatched, username) {
   }
 }
 
-export async function ormCancelMatchRequest(difficulty, username, isCancelled) {
+export async function ormCancelMatchRequest(difficulty, username) {
   try {
     const cancelledMatchRequest = await cancelMatchRequest({
       difficulty: difficulty,
       username: username,
-      isCancelled: isCancelled,
     });
     if (cancelledMatchRequest == null) {
       console.log('Match request does not exist');
