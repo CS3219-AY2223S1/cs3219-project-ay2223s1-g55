@@ -7,8 +7,6 @@ interface DefaultLayoutProps {
 }
 
 function DefaultLayout({ children }: DefaultLayoutProps) {
-  const user = useUserStore((state) => state.user);
-
   return (
     <>
       <AppBar />

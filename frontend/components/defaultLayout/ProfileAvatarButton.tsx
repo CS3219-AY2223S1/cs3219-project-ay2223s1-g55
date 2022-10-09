@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { STATUS_CODE_LOGGED_OUT } from '@/lib/constants';
 import { getJwtCookie, clearJwt } from '@/lib/cookies';
-import { Settings, Logout } from '@mui/icons-material';
+import { Settings, Logout, Route } from '@mui/icons-material';
 import { Menu, MenuItem, ListItemIcon, Avatar, Grid, IconButton, Tooltip } from '@mui/material';
 import router from 'next/router';
 import useUserStore from '@/lib/store';
+import Link from 'next/link';
 
 const ProfileAvatarButton = () => {
   const { user, logout } = useUserStore((state) => ({
@@ -89,12 +90,22 @@ const ProfileAvatarButton = () => {
           </ListItemIcon>
           Settings
         </MenuItem>
+
         <MenuItem onClick={handleLogout}>
           <ListItemIcon>
             <Logout fontSize="small" />
           </ListItemIcon>
           Logout
         </MenuItem>
+
+        <Link href="/learning-pathway" passHref>
+          <MenuItem>
+            <ListItemIcon>
+              <Route fontSize="small" />
+            </ListItemIcon>
+            My Learning Pathway
+          </MenuItem>
+        </Link>
       </Menu>
     </>
   );
