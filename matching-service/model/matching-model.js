@@ -35,6 +35,10 @@ const MatchingModelSchema = new Schema({
     type: Date,
     default: Date.now,
   },
+  isCancelled: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 // remove TTL so that it can be deleted properly

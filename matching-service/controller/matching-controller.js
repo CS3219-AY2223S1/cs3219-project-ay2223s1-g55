@@ -7,6 +7,7 @@ import {
   ormCreateMatchSession as _createMatchSession,
   ormCheckMatchRequestIsMatched as _checkMatchRequestIsMatched,
   ormFindMatchSession as _findMatchSession,
+  ormCancelMatchRequest as _cancelMatchRequest,
 } from '../model/matching-orm.js';
 import { sleep } from '../utils/sleep.js';
 
@@ -58,14 +59,22 @@ export async function findMatchRequest(req, res) {
         .json({ message: 'Username and/or Difficulty and/or SocketID are missing!' });
     }
 
+    // Runs search for match for intervaals of 4.2s for 6 times
     while (count <= 6 && !matchFound) {
       const resp = await _findMatchRequest(username, difficulty);
+      console.log('resp is', resp);
 
       count += 1;
       console.log('resp is: ', resp);
       // Match not found, resp is false
       if (!resp) {
         const matchRequestExists = await _checkMatchRequestExists(username, difficulty);
+        // Run a check if the request isCancelled
+        if (matchRequestExists.isCancelled) {
+          console.log('Match request is cancelled');
+          await _deleteMatchRequest(difficulty, false, username);
+          return res.status(400).json({ message: 'Match request is cancelled' });
+        }
         if (!matchRequestExists) {
           console.log('Match request does not exist, creating new match request');
           // TODO: Decouple logic here
@@ -187,6 +196,32 @@ export async function deleteMatchRequest(req, res) {
   } catch (err) {
     console.log(err);
     return res.status(500).json({ message: 'Database failure when deleting match request!' });
+  }
+}
+
+export async function cancelMatchRequest(req, res) {
+  try {
+    const { username, difficulty } = req.body;
+    const requestExists = await _checkMatchRequestExists(username);
+    if (username) {
+      if (!requestExists) {
+        return res.status(400).json({ message: 'Could not find match request!' });
+      }
+      // ! Should not need to pass in boolean value, request itself should be self explanatory?
+      const resp = await _cancelMatchRequest(difficulty, username, true);
+      console.log(resp);
+      if (resp?.err) {
+        return res.status(400).json({ message: 'Could not cancel match request!' });
+      }
+
+      console.log(`Cancelled match request for ${username} successfully!`);
+      return res
+        .status(201)
+        .json({ message: `Cancelled match request for ${username} successfully!` });
+    }
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ message: 'Database failure when cancelling match request!' });
   }
 }
 

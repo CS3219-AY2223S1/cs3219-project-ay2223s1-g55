@@ -7,7 +7,12 @@ import mongoose from 'mongoose';
 
 const mongoDB = process.env.ENV == 'PROD' ? process.env.DB_CLOUD_URI : process.env.DB_LOCAL_URI;
 
-mongoose.connect(mongoDB, { useNewUrlParser: true, useUnifiedTopology: true });
+// TODO: dbname inside curly brace
+mongoose.connect(mongoDB, {
+  dbname: 'matchServiceDB',
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
 
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
@@ -79,7 +84,7 @@ export async function checkMatchRequestIsMatched(params) {
 export async function checkMatchRequestExists(params) {
   const foundMatchRequest = await MatchingModel.findOne({ username1: params.username });
   console.log('[respository.js] foundMatchRequest:', foundMatchRequest);
-  return foundMatchRequest != null;
+  return foundMatchRequest != null ? foundMatchRequest : false;
 }
 
 /**
@@ -99,6 +104,21 @@ export async function deleteMatchRequest(params) {
     console.log('[respository.js] deleteRequest:', deleteRequest);
   }
   return;
+}
+
+export async function cancelMatchRequest(params) {
+  console.log('[respository] cancelMatchRequest params', params.isCancelled);
+  const filter = {
+    difficulty: params.difficulty,
+    username1: params.username,
+  };
+  const update = {
+    isCancelled: params.isCancelled,
+  };
+  const cancelledMatchRequest = await MatchingModel.findOneAndUpdate(filter, update, { new: true });
+  console.log('[repository] Cancelled match request successfully: ', cancelledMatchRequest);
+  // return true;
+  return cancelledMatchRequest;
 }
 
 /**

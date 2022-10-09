@@ -7,6 +7,7 @@ import {
   createMatchSession,
   checkMatchRequestIsMatched,
   findMatchSession,
+  cancelMatchRequest,
 } from './respository.js';
 // need to separate orm functions from repository to decouple business logic from persistence
 
@@ -55,6 +56,25 @@ export async function ormDeleteMatchRequest(difficulty, isMatched, username) {
     return true;
   } catch (err) {
     console.log('ERROR: Error occured when deleting user', err);
+    return { err };
+  }
+}
+
+export async function ormCancelMatchRequest(difficulty, username, isCancelled) {
+  try {
+    const cancelledMatchRequest = await cancelMatchRequest({
+      difficulty: difficulty,
+      username: username,
+      isCancelled: isCancelled,
+    });
+    if (cancelledMatchRequest == null) {
+      console.log('Match request does not exist');
+      return false;
+    }
+    return cancelledMatchRequest;
+    // return true;
+  } catch (err) {
+    console.log('ERROR: Error occured when cancelling match request', err);
     return { err };
   }
 }
