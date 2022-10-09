@@ -4,7 +4,7 @@
     "user": "cd user-service && npm run dev",
     "matching": "cd matching-service && npm run dev",
     "all": "concurrent \"npm run frontend\" \"npm run user\" \"npm run matching\"",
-    "git-pre-commit": "cd frontend && npm run lint"
+    "git-pre-commit": "cd frontend && npm run lint:fix && npm run lint"
   },
   "devDependencies": {
     "@vercel/git-hooks": "^1.0.0",
