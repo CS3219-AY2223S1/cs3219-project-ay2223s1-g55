@@ -4,11 +4,14 @@ import {
   ormDeleteMatchRequest as _deleteMatchRequest,
   ormCheckMatchRequestExists as _checkMatchRequestExists,
   ormUpdateMatchRequest as _updateMatchRequest,
-  ormCreateMatchSession as _createMatchSession,
   ormCheckMatchRequestIsMatched as _checkMatchRequestIsMatched,
-  ormFindMatchSession as _findMatchSession,
   ormCancelMatchRequest as _cancelMatchRequest,
 } from '../model/matching-orm.js';
+
+import {
+  ormCreateMatchSession as _createMatchSession,
+  ormFindMatchSession as _findMatchSession,
+} from '../model/match-session-orm.js';
 import { sleep } from '../utils/sleep.js';
 
 export async function createMatchRequest(req, res) {

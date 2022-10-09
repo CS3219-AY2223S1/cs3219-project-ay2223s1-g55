@@ -1,6 +1,6 @@
-import { MatchingModel, MatchSessionModel } from './matching-model.js';
+import MatchingModel from './matching-model.js';
+import MatchSessionModel from './match-session-model.js';
 import 'dotenv/config.js';
-import redis from 'redis';
 
 // Set up mongoose connection
 import mongoose from 'mongoose';
