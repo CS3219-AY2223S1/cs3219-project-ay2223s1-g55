@@ -59,8 +59,8 @@ export async function findMatchRequest(req, res) {
         .json({ message: 'Username and/or Difficulty and/or SocketID are missing!' });
     }
 
-    // Runs search for match for intervaals of 4.2s for 6 times
-    while (count <= 6 && !matchFound) {
+    // Runs search for match for intervaals of 2s for 14 times
+    while (count <= 14 && !matchFound) {
       const resp = await _findMatchRequest(username, difficulty);
       console.log('resp is', resp);
 
@@ -105,7 +105,7 @@ export async function findMatchRequest(req, res) {
             }
           }
         }
-        await sleep(4200);
+        await sleep(2000);
         continue;
       }
 

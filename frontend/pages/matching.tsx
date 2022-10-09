@@ -20,7 +20,7 @@ import {
   Backdrop,
   CircularProgress,
 } from '@mui/material';
-import { URL_MATCHING_REQUEST } from '@/lib/configs';
+import { URL_MATCHING_CANCEL, URL_MATCHING_REQUEST } from '@/lib/configs';
 import axios from 'axios';
 
 import { styled } from '@mui/material/styles';
@@ -94,6 +94,33 @@ const sendMatchRequest = async (username: string, difficulty: string, roomSocket
       return res;
     }
     console.log('match request failed');
+    return res;
+  } catch (err: any) {
+    console.log('error message is: ', err.response.data.message);
+    console.log(err.message);
+    throw err;
+  }
+};
+
+const cancelMatchRequest = async (username: string, difficulty: string) => {
+  console.log('cancelMatchRequest called with ', username, difficulty);
+  try {
+    const res = await axios.post(URL_MATCHING_CANCEL, {
+      username,
+      difficulty,
+    });
+    console.log('res from cancelMatchRequest: ', res.data);
+    // { message, username1, username1socketID, username2, username2socketID, matchRoomID }
+    if (res.status === 200 || res.status === 201) {
+      console.log('cancel match request sent');
+      // contains json of mongodbID, username, difficulty, createdAt, message
+      return res;
+    }
+    if (res.status === 400 || res.status === 404) {
+      console.log('cancel match request failed');
+      return res;
+    }
+    console.log('cancel match request failed');
     return res;
   } catch (err: any) {
     console.log('error message is: ', err.response.data.message);
@@ -251,23 +278,44 @@ function Matching() {
       try {
         setPendingMatchRequest(true);
         const res = await sendMatchRequest(username, difficulty, socketID);
-        // console.log('sendMatchRequest res: ', res);
+        console.log('sendMatchRequest res: ', res.data);
         if (res.status === 201 || res.status === 200) {
           await handleMatchFound(res.data);
           console.log(res.data);
           return res;
         }
+
+        // if (res.data.message == 'Match request is cancelled') {
+        //   setSuccessDialog(`Cancelled match request successfully! \n ${res.data.message}`);
+        // }
       } catch (err: any) {
         setPendingMatchRequest(false);
-        if (err) {
-          console.log('Error: ', err);
-          setErrorDialog('Error occured when finding match');
+        if (err.response.data.message == 'Match request is cancelled') {
+          setErrorDialog('Match Request successfully cancelled');
         } else if (err.response.data.status === 500) {
           setErrorDialog('Failed to find a match');
         } else {
           setErrorDialog('Please try again later');
         }
       }
+    }
+  };
+
+  const handleCancelMatchRequest = async () => {
+    if (username && difficulty) {
+      try {
+        setPendingMatchRequest(false);
+        const res = await cancelMatchRequest(username, difficulty);
+        if (res.status === 200) {
+          console.log('cancelMatchRequest res: ', res);
+        }
+      } catch (err: any) {
+        console.log('Error in cancelling match request: ', err);
+      }
+    }
+    if (!username || !difficulty) {
+      console.log('Please enter a username and difficulty');
+      throw new Error('Please select a difficulty');
     }
   };
 
@@ -325,6 +373,10 @@ function Matching() {
             }}
           >
             <CircularProgress color="inherit" value={10} />
+
+            <Button variant="contained" onClick={() => handleCancelMatchRequest()}>
+              Cancel Request
+            </Button>
           </Backdrop>
 
           <Dialog open={isDialogOpen} onClose={closeDialog} maxWidth="xl">
