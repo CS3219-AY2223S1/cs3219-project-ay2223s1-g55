@@ -2,18 +2,28 @@ import mongoose from 'mongoose'
 
 const { Schema } = mongoose;
 const RecordModelSchema = new Schema({
-    name: {
-        type: String,
-        required: true,
-        unique: false
-    },
-    userId: {
+    questionId: {
         type: Number,
         required: true,
-        unique: false,
-    }
+    },
+    firstUserId: {
+        type: Number,
+        required: true,
+    },
+    secondUserId: {
+        type: Number,
+        required: true,
+    },
+    questionName: String,
+    firstUserName: String,
+    secondUserName: String,
+    startedAt: {
+        type: Date,
+        default: Date.now(),
+    },
+    duration: Number,
 })
 
-const myDB = mongoose.connection.useDb('historyServiceDB');
+const historyServiceDb = mongoose.connection.useDb('historyServiceDB');
 
-export default myDB.model('RecordModel', RecordModelSchema);
+export default historyServiceDb.model('RecordModel', RecordModelSchema);

@@ -1,5 +1,4 @@
 import {
-  getRecord,
   listUserRecords,
   createRecord
 } from './repository.js';
@@ -11,16 +10,6 @@ export async function ormCreateRecord(params) {
     return newRecord;
   } catch (err) {
     console.error("Failed to create record");
-    return { err }
-  }
-}
-
-export async function ormGetRecord() {
-  try {
-    const record = await getRecord();
-    return record;
-  } catch (err) {
-    console.error("Failed to get record");
     return { err }
   }
 }

@@ -7,7 +7,6 @@ app.use(express.json());
 app.use(cors()); // config cors so that front-end can use
 app.options('*', cors());
 import {
-  getRecord,
   listUserRecords,
   createRecord
 } from './controller/record-controller.js';
@@ -24,7 +23,6 @@ const router = express.Router();
 
 // Controller will contain all the History-defined Routes
 router.get('/', (_, res) => res.send('History-service is up and running!'));
-router.get('/record', getRecord);
 router.get('/user/:userId/records/', listUserRecords);
 router.post('/user/:userId/records/', createRecord);
 
