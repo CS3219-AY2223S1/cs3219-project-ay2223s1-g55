@@ -2,7 +2,7 @@
 const URI_USER_SVC = process.env.NODE_ENV === 'development'
     ? 'http://localhost:8000'
     : 'https://user-service-q563p73okq-as.a.run.app';
-const URI_MATCHING_SVC = process.env.URI_USER_SVC || 'http://localhost:8001';
+const URI_MATCHING_SVC = process.env.URI_MATCHING_SVC || 'http://localhost:8001';
 
 const PREFIX_USER_SVC = '/api/user';
 
