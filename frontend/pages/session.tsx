@@ -7,7 +7,7 @@ import { useEffect, useState } from 'react';
 const fetchAllMessages = async (sessionId: string) => {
   console.log('Fetching all messages');
   try {
-    const res = await axios.get(URL_COMMUNICATION_MESSAGE + `/${sessionId}`);
+    const res = await axios.get(`URL_COMMUNICATION_MESSAGE/${sessionId}`);
     console.log('res from fetchAllMessages: ', res.data);
     if (res.status === 200 || res.status === 201) {
       return res;
