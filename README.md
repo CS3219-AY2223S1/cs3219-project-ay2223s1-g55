@@ -1,3 +1,5 @@
+[![Deploy to Cloud Run from Source](https://github.com/CS3219-AY2223S1/cs3219-project-ay2223s1-g55/actions/workflows/GCP-Deploy.yml/badge.svg)](https://github.com/CS3219-AY2223S1/cs3219-project-ay2223s1-g55/actions/workflows/GCP-Deploy.yml)
+
 # CS3219-AY22-23-Project-Skeleton
 
 user-service url: https://user-service-q563p73okq-as.a.run.app/
