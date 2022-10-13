@@ -3,7 +3,6 @@ import {
   ormFetchAllMessages as _fetchAllMessages,
   ormCheckSessionExists as _checkSessionExists,
 } from "../model/message-orm.js";
-import {localDateTime} from "../utils/localDateTime.js";
 
 export async function createMessage(req, res) {
   try {
@@ -49,10 +48,10 @@ export async function fetchAllMessages(req, res) {
     if (sessionId) {
       const resp = await _fetchAllMessages(sessionId);
       const firstMessage = resp[0];
-      var firstMessageTime = localDateTime(firstMessage.createdAt);
+      // var firstMessageTime = localDateTime(firstMessage.createdAt.);
       var currentTime = new Date(Date.now() + 480 * 60000);
       console.log("current time is", currentTime);
-      console.log("first message time is ", firstMessageTime);
+      // console.log("first message time is ", firstMessageTime);
       // console.log(resp);
       if (resp.err) {
         return res.status(400).json({message: "Could not fetch all messages!"});
