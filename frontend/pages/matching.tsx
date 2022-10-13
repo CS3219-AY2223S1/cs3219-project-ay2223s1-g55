@@ -27,6 +27,7 @@ import { styled } from '@mui/material/styles';
 import useUserStore from '@/lib/store';
 import DefaultLayout from '@/layouts/DefaultLayout';
 import { io } from 'socket.io-client';
+import router from 'next/router';
 import { EMIT_EVENT, ON_EVENT } from '@/lib/constants';
 
 const SendMessageButton = styled(Button)({
@@ -149,6 +150,10 @@ function Matching() {
   const [isBackdropOpen, setIsBackdropOpen] = useState(false);
   const closeDialog = () => setIsDialogOpen(false);
 
+  const handleSession = async () => {
+    router.push('/session');
+  };
+
   const setSuccessDialog = (msg: string) => {
     setIsDialogOpen(true);
     setDialogTitle('Success');
@@ -160,8 +165,21 @@ function Matching() {
     setDialogTitle('Error');
     setDialogMsg(msg);
   };
+
   // user undefined from useSession
   useEffect(() => {
+    // backend port used for socket.io
+    const socket = io('http://localhost:8001', {
+      transports: ['websocket'],
+      // autoConnect: false,
+    });
+
+    // catch-all listener for development
+    socket.onAny((event, ...args) => {
+      console.log('Logging Listener: ', event, args);
+      console.log(event, args);
+    });
+
     const onConnectionCallback = () => {
       console.log('socket id in connectionCallback is ', socket.id);
       console.log('user is: ', user);
@@ -170,14 +188,17 @@ function Matching() {
       // handleConnectToSocket();
     };
     socket.on(ON_EVENT.CONNECT, onConnectionCallback);
+
     return () => {
+      // ! Need to add socket.close?
+      // ! Need to move all socket listeners into user effect??
+      // socket.close();
       socket.off(ON_EVENT.CONNECT, onConnectionCallback);
     };
-  }, [socket]);
+  }, []);
 
-  // socket connection established
   // socket.on(ON_EVENT.CONNECT, () => {
-  //   console.log('socket id is ', socket.id);
+  //   console.log('socket connection established socket id is  ', socket.id);
   //   setUsername(user?.username);
   //   setSocketID(socket.id);
   // });
@@ -188,13 +209,6 @@ function Matching() {
     socket.auth = { username };
     socket.connect();
   };
-
-  socket.on(ON_EVENT.MESSAGE, (payload) => {
-    // setSocketID(socket.id);
-    // setUsername(user?.username);
-    console.log('socket id in client: ', socket.id);
-    console.log('message from socket: ', payload);
-  });
 
   // join Room when match is successful and room is created
 
@@ -227,18 +241,23 @@ function Matching() {
     const payload = {
       content: [...messages, message] ?? `hello from client ${username}`,
       sender: socketID ?? '',
+      senderName: username ?? '',
       roomId: room === '' ? matchRoomID : room,
-      chatName: 'private chat',
     };
     socket.emit(EMIT_EVENT.SEND_MESSAGE, payload);
     setMessages([...messages, message]);
   };
 
   socket.on(ON_EVENT.RECEIVE_MESSAGE, (payload) => {
-    const { content, sender, roomId, chatName } = payload;
+    const { content, sender, senderName, roomId } = payload;
     console.log('message from sendMessage socket: ', payload.content);
     // sender is now new receiver to reply using same room ID
     setMessages(payload.content);
+  });
+
+  // ! Private Messaging
+  socket.on(ON_EVENT.PRIVATE_MESSAGE, (payload) => {
+    console.log('private message from server: ', payload);
   });
 
   const handleMatchFound = async (payload: any) => {
@@ -406,6 +425,10 @@ function Matching() {
           </Box>
           <Button variant="outlined" onClick={() => handleSendMatchRequest()}>
             Look for Match
+          </Button>
+
+          <Button variant="outlined" onClick={() => handleSession()}>
+            Session
           </Button>
         </Box>
         <Box display="flex" justifyContent="flex-start" flexDirection="column">
