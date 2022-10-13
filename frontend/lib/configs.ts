@@ -16,4 +16,5 @@ export const URL_USER_LOGOUT = `${URL_USER_SVC}/logout`;
 
 const PREFIX_MATCHING_SVC = '/api/match';
 export const URL_MATCHING_SVC = URI_MATCHING_SVC + PREFIX_MATCHING_SVC;
-export const URL_MATCHING_MATCH = `${URL_MATCHING_SVC}/match`;
+export const URL_MATCHING_REQUEST = `${URL_MATCHING_SVC}/request`;
+export const URL_MATCHING_CANCEL = `${URL_MATCHING_SVC}/cancel`;
