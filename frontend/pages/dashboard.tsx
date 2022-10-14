@@ -21,6 +21,7 @@ import router from 'next/router';
 import useUserStore from '@/lib/store';
 import { clearJwt, getJwtCookie } from '@/lib/cookies';
 import UnauthorizedDialog from '@/components/UnauthorizedDialog';
+import QuestionList from '@/components/QuestionList';
 
 function Dashboard() {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -120,6 +121,7 @@ function Dashboard() {
           </Button>
         </Grid>
       </Grid>
+      <QuestionList />
       <Menu
         anchorEl={anchorEl}
         id="account-menu"
