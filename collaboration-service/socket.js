@@ -35,7 +35,6 @@ const socketInitializer = (httpServer) => {
       });
 
       clientSocket.on('save-document', async (data) => {
-        console.log(data);
         await DocumentModel.findByIdAndUpdate(documentId, { data });
       });
     });
