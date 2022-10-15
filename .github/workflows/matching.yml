@@ -1,19 +1,20 @@
-name: Deploy to Cloud Run from Source
+name: Cloud Run Deploy
 
 on:
   push:
     branches: [ main ]
+    path: 'matching-service/**'
 
 env:
   PROJECT_ID: cs3219-g55
   REGION: asia-southeast1
 
 jobs:
-    deploy:
-        name: Deploy user-service
+    deploy_2:
+        name: Matching-Service
         runs-on: ubuntu-latest
         env:
-          SERVICE: user-service
+          SERVICE: matching-service
         steps:
         - name: Checkout repository
           uses: actions/checkout@v2
