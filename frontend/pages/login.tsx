@@ -60,7 +60,7 @@ function LoginPage() {
   const handleSignupClick = () => router.push('/signup');
 
   return (
-    <DefaultLayout>
+    <>
       <Box display="flex" flexDirection="column" width="30%">
         <Typography variant="h3" marginBottom="2rem">
           Log In
@@ -101,7 +101,7 @@ function LoginPage() {
       <Box display="flex" flexDirection="row" justifyContent="flex-start">
         <Button onClick={handleSignupClick}>No account? Create one here!</Button>
       </Box>
-    </DefaultLayout>
+    </>
   );
 }
 
