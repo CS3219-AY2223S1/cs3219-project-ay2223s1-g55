@@ -16,20 +16,21 @@ export async function createMessage(req, res) {
       );
       console.log(resp);
       if (resp.err) {
-        return res
-          .status(400)
-          .json({message: "Could not create a new message!"});
+        return res.status(400).json({
+          message: "Could not create a new message!",
+        });
       } else {
         console.log(
           `Created new message from user ${senderName} successfully!`
         );
         return res.status(201).json({
           message: `Created new message for user ${senderName} successfully!`,
+          data: resp,
         });
       }
     } else {
       return res.status(400).json({
-        message: "SessionId or senderName, senderId, message are missing!",
+        message: "sessionId or senderName, senderId, message are missing!",
       });
     }
   } catch (err) {

@@ -18,6 +18,7 @@ export async function ormCreateMessage(
       message: message,
     });
     newMessage.save();
+    console.log("ormCreateMessage: ", newMessage);
     return newMessage;
   } catch (err) {
     console.log("ERROR: Could not create new message");
