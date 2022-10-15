@@ -1,6 +1,7 @@
 import {Server} from "socket.io";
 import {instrument} from "@socket.io/admin-ui";
 import {IO_EVENT, EMIT_EVENT, ON_EVENT} from "../lib/constants.js";
+import {ormCreateMessage as _createMessage} from "../model/message-orm.js";
 
 export const createSocketIOServer = (httpServer) => {
   const io = new Server(httpServer, {
@@ -58,23 +59,65 @@ export const createSocketIOServer = (httpServer) => {
       socket.to(sessionId).emit(EMIT_EVENT.JOIN_ROOM, payload);
     });
 
+    // TODO: FetchAllRoomMessages to after the person just join, if no messages yet(sessionId dont exists in collection) send empty array
     //! Assuming no private messaging only messaging through a room now
     // TODO: on need (arg) but emit is arg1, arg2 instead
-    socket.on("roomMessage", (content, sender, senderName, sessionId) => {
-      // const ({content : string, sender : string, senderName : string, sessionId : string}) = data;
-      console.log(
-        `roomMessage event from payload content is ${sessionId}`,
-        socket.id
-      );
+    socket.on(
+      "roomMessage",
+      async (content, senderId, senderName, sessionId, createdAt) => {
+        // const ({content : string, sender : string, senderName : string, sessionId : string}) = data;
+        console.log(
+          `roomMessage event from payload content is ${sessionId}`,
+          socket.id
+        );
 
-      io.in(sessionId).emit(
-        "receiveMessage",
-        content,
-        sender,
-        senderName,
-        sessionId
-      );
-    });
+        io.in(sessionId).emit(
+          "receiveMessage",
+          content,
+          senderId,
+          senderName,
+          sessionId,
+          createdAt
+        );
+        // TODO: Save message into database message collection using seesionId
+        // try {
+        //   const resp = await _createMessage(
+        //     sessionId,
+        //     senderName,
+        //     senderId,
+        //     content
+        //   );
+        //   if (resp.err) {
+        //     // ! What if database is down but still want to communicate via socket
+        //     // ! Keep the message and try again ltr?
+        //     // return res.status(400).json({
+        //     //   message: "Could not create a new message!",
+        //     // });
+        //   } else {
+        //     console.log(
+        //       `Created new message from user ${senderName} successfully! : resp is ${resp}`
+        //     );
+        //     // TODO resp will be the message created from mongoDB
+        //     io.in(sessionId).emit(
+        //       "receiveMessage",
+        //       resp.message,
+        //       resp.senderId,
+        //       resp.senderName,
+        //       resp.sessionId,
+        //       resp.createdAt
+        //     );
+        //     return;
+        //   }
+        //   // ! frontend will do the check where by all is required
+        // } catch (err) {
+        //   // TODO: Message will not be sent due to database error
+        //   // TODO: EMIT FAILURE EVENT TO LET FRONTEND KNOW AND TRY TO SEND AGAIN IF NEED BE
+        //   return res.status(500).json({
+        //     message: "Database failure when creating new message from user!",
+        //   });
+        // }
+      }
+    );
 
     socket.on("joinRoom", (sessionId, username, userId) => {
       console.log(
@@ -84,7 +127,7 @@ export const createSocketIOServer = (httpServer) => {
         userId
       );
       socket.join(sessionId);
-      io.in(sessionId).emit("joinRoomSuccess");
+      io.in(sessionId).emit("joinRoomSuccess", sessionId, username, userId);
     });
     socket.on(ON_EVENT.SEND_MESSAGE, (data) => {
       // createdAt field only present after created in mongoDB collection in client side
