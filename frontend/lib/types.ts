@@ -5,11 +5,23 @@ export interface User {
 }
 
 // Question types
-type Difficulty = 'Easy' | 'Medium' | 'Hard';
-export interface Question {
+export type Difficulty = 'All' | 'Easy' | 'Medium' | 'Hard';
+export interface QuestionType {
   title: string;
   description: string;
   difficulty: Difficulty;
-  examples: string[];
+  examples: QuestionExampleType[];
   constraints: string[];
+  comments: QuestionCommentType[];
+}
+
+export interface QuestionExampleType {
+  input: string;
+  output: string;
+  explanation?: string;
+}
+
+export interface QuestionCommentType {
+  user: string;
+  comment: string;
 }

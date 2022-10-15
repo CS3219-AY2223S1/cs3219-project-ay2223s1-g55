@@ -18,5 +18,3 @@ export const URL_MATCHING_MATCH = `${URL_MATCHING_SVC}/match`;
 
 const PREFIX_QUESTION_SVC = '/api/question';
 export const URL_QUESTION_SVC = URI_QUESTION_SVC + PREFIX_QUESTION_SVC;
-export const URL_QUESTION_GET_DIFFICULTY = (difficulty: string) =>
-  `${URL_QUESTION_SVC}?difficulty=${difficulty}`;

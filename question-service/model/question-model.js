@@ -17,13 +17,32 @@ const QuestionModelSchema = new Schema({
     enum: ['Easy', 'Medium', 'Hard'],
   },
   examples: {
-    type: [String],
+    type: [
+      {
+        input: { type: String, required: true },
+        output: { type: String, required: true },
+        explanation: { type: String, required: false },
+      },
+    ],
     required: true,
   },
   constraints: {
     type: [String],
     required: true,
   },
+  comments: [
+    {
+      user: {
+        type: String,
+        required: true,
+      },
+      comment: { type: String, required: true },
+      created_at: {
+        type: Date,
+        default: Date.now(),
+      },
+    },
+  ],
 });
 
 export default mongoose.model('QuestionModel', QuestionModelSchema);
