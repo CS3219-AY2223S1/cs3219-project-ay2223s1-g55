@@ -2,29 +2,46 @@ import mongoose from 'mongoose';
 
 const { Schema } = mongoose;
 const MatchingModelSchema = new Schema({
-  username: {
-    type: String,
-    required: true,
-    unique: true,
-  },
+  // username1 only can have one pending match at any one time until deleted
   difficulty: {
     type: String,
     required: true,
   },
-  socketID: {
+  isMatched: {
+    type: Boolean,
+    required: true,
+  },
+  username1: {
     type: String,
     required: true,
+    unique: true,
+  },
+  username1socketID: {
+    type: String,
+    required: true,
+    unique: true,
+  },
+  username2: {
+    type: String,
+    required: false,
+    unique: false,
+  },
+  username2socketID: {
+    type: String,
+    required: false,
+    unique: false,
   },
   createdAt: {
     type: Date,
     default: Date.now,
   },
-  // password: {
-  //   type: String,
-  //   required: true,
-  // },
+  isCancelled: {
+    type: Boolean,
+    default: false,
+  },
 });
 
-MatchingModelSchema.path('createdAt').index({ expireAfterSeconds: 60 });
+// remove TTL so that it can be deleted properly
+// MatchingModelSchema.path('createdAt').index({ expireAfterSeconds: 60 });
 
 export default mongoose.model('MatchingModel', MatchingModelSchema);
