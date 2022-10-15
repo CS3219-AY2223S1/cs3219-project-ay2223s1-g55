@@ -23,4 +23,4 @@ app.use('/api/history', router).all((_, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
 });
 
-app.listen(process.env.PORT || 8002, () => console.log(`history-service listening on port ${process.env.PORT || 8002}`));
+app.listen(process.env.PORT || 8003, () => console.log(`history-service listening on port ${process.env.PORT || 8003}`));
