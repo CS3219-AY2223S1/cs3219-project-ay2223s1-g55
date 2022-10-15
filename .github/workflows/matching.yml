@@ -1,9 +1,6 @@
 name: Cloud Run Deploy
 
 on:
-  pull_request:
-    branches: [ main ]
-    path: 'matching-service/**'
   push:
     branches: [ main ]
     path: 'matching-service/**'
