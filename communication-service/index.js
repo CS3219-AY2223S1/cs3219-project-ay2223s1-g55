@@ -6,7 +6,7 @@ import {
   createMessage,
   fetchAllMessages,
 } from "./controller/message-controller.js";
-
+import {createSocketIOServer} from "./socket/index.js";
 const app = express();
 app.use(express.urlencoded({extended: true}));
 app.use(express.json());
@@ -30,20 +30,22 @@ const PORT = process.env.PORT || 8008;
 
 const httpServer = createServer(app);
 
-const socketIOServer = new Server(httpServer, {
-  // Edit here to include new URL to access socket
-  cors: {
-    origin: ["http://localhost:3000", "https://admin.socket.io"],
-    credentials: true,
-  },
-});
+// const socketIOServer = new Server(httpServer, {
+//   // Edit here to include new URL to access socket
+//   cors: {
+//     origin: ["http://localhost:3000", "https://admin.socket.io"],
+//     credentials: true,
+//   },
+// });
 
-socketIOServer.on("connection", (clientSocket) => {
-  console.log("New client connected");
-  socket.on("disconnect", () => {
-    console.log("Client disconnected");
-  });
-});
+// socketIOServer.on("connection", (clientSocket) => {
+//   console.log("New client connected");
+//   socket.on("disconnect", () => {
+//     console.log("Client disconnected");
+//   });
+// });
+
+createSocketIOServer(httpServer);
 
 httpServer.listen(PORT, () =>
   console.log(`communication-service listening on port ${PORT}`)
