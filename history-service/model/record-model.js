@@ -24,6 +24,4 @@ const RecordModelSchema = new Schema({
     duration: Number,
 })
 
-const historyServiceDb = mongoose.connection.useDb('historyServiceDB');
-
-export default historyServiceDb.model('RecordModel', RecordModelSchema);
+export default mongoose.model('RecordModel', RecordModelSchema);
