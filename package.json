@@ -3,8 +3,9 @@
     "frontend": "cd frontend && npm run dev",
     "user": "cd user-service && npm run dev",
     "matching": "cd matching-service && npm run dev",
+    "question": "cd question-service && npm run dev",
     "history": "cd history-service && npm run dev",
-    "all": "concurrent \"npm run frontend\" \"npm run user\" \"npm run matching\" \"npm run history\"",
+    "all": "concurrent \"npm run frontend\" \"npm run user\" \"npm run matching\" \"npm run history\" \"npm run question\"",
     "git-pre-commit": "cd frontend && npm run lint"
   },
   "devDependencies": {

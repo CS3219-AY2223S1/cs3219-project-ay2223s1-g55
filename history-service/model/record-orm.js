@@ -14,9 +14,9 @@ export async function ormCreateRecord(params) {
   }
 }
 
-export async function ormListUserRecords(userId, options) {
+export async function ormListUserRecords(username, options) {
   try {
-    const records = await listUserRecords(userId, options);
+    const records = await listUserRecords(username, options);
     return records;
   } catch (err) {
     console.error("Failed to get records");

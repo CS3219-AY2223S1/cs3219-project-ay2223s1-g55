@@ -15,8 +15,8 @@ mongoose.connect(mongoDB, {
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
-export async function listUserRecords(userId, options) {
-  return await RecordModel.find({ $or: [{ firstUserId: userId }, { secondUserId: userId }] })
+export async function listUserRecords(username, options) {
+  return await RecordModel.find({ $or: [{ firstUsername: username }, { secondUsername: username }] })
     .skip(options.offset)
     .limit(options.limit);
 }

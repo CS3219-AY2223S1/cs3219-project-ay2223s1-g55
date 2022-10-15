@@ -6,10 +6,10 @@ import { validateRecord } from './validations.js';
 
 export async function listUserRecords(req, res) {
   try {
-    const { userId } = req.params;
+    const { username } = req.params;
     const { offset, limit } = req.query;
 
-    const records = await _listUserRecords(userId, { limit, offset });
+    const records = await _listUserRecords(username, { limit, offset });
     return res.status(200).json(records);
   } catch (err) {
     return res.status(500).json({ message: 'Database failure when retrieving records.' });

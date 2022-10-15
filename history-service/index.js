@@ -15,8 +15,8 @@ const router = express.Router();
 
 // Controller will contain all the History-defined Routes
 router.get('/', (_, res) => res.send('History-service is up and running!'));
-router.get('/user/:userId/records/', listUserRecords);
-router.post('/user/:userId/records/', createRecord);
+router.get('/user/:username/records/', listUserRecords);
+router.post('/user/:username/records/', createRecord);
 
 app.use('/api/history', router).all((_, res) => {
   res.setHeader('content-type', 'application/json');
