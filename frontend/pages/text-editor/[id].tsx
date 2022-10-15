@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import 'react-quill/dist/quill.snow.css';
 import io from 'socket.io-client';
-import { setInterval } from 'timers';
 
 const SAVE_INTERVAL_MS = 2000;
 const ReactQuill = dynamic(() => import('react-quill'), {
