@@ -4,8 +4,9 @@ import { createServer } from 'http';
 import { createSocketIOServer } from './socket.js';
 import {
   createMatchRequest,
-  findMatch,
+  findMatchRequest,
   deleteMatchRequest,
+  cancelMatchRequest,
 } from './controller/matching-controller.js';
 
 const app = express();
@@ -19,9 +20,10 @@ router.get('/', (_, res) => {
   res.send('Hello World from matching-service');
 });
 
-router.get('/match', findMatch);
-router.post('/match', createMatchRequest);
-router.delete('/match', deleteMatchRequest);
+router.get('/request', findMatchRequest);
+router.post('/request', createMatchRequest);
+router.delete('/request', deleteMatchRequest);
+router.post('/cancel', cancelMatchRequest);
 
 app.use('/api/match', router).all((_, res) => {
   res.setHeader('content-type', 'application/json');

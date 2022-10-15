@@ -13,7 +13,7 @@ export const createSocketIOServer = (httpServer) => {
   });
   // TODO: Room/Namespace and Message management
   // disabled middleware to check username and allow connection
-  // io.use((socket, next) => {
+  // socketIOServer.use((socket, next) => {
   //   const username = socket.handshake.auth.username;
   //   if (!username) {
   //     return next(new Error('invalid username'));
