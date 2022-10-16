@@ -3,3 +3,6 @@
 /**/*/dump.rdb
 dump.rdb
 node_modules/*
+
+# For mac DS_Store files
+**/.DS_Store

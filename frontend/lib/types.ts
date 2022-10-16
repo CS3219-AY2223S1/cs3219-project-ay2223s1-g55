@@ -4,6 +4,7 @@ export interface User {
   loginState: boolean;
 }
 
+// Message type
 export interface Message {
   senderName: string;
   senderId: string;
@@ -66,3 +67,26 @@ export type MessageData = {
   senderId: string;
   sessionId: string;
 };
+
+// Question types
+export type Difficulty = 'All' | 'Easy' | 'Medium' | 'Hard';
+export interface QuestionType {
+  title: string;
+  description: string;
+  difficulty: Difficulty;
+  examples: QuestionExampleType[];
+  constraints: string[];
+  comments: QuestionCommentType[];
+}
+
+export interface QuestionExampleType {
+  input: string;
+  output: string;
+  explanation?: string;
+}
+
+export interface QuestionCommentType {
+  user: string;
+  comment: string;
+}
+

@@ -1,6 +1,7 @@
 import ChangePasswordPage from '@/components/change-password';
 import DeleteAccount from '@/components/DeleteAccount';
 import UnauthorizedDialog from '@/components/UnauthorizedDialog';
+import DefaultLayout from '@/layouts/DefaultLayout';
 import useUserStore from '@/lib/store';
 import { Box, Container, Tab, Tabs, Typography } from '@mui/material';
 import React, { SyntheticEvent, useState } from 'react';
@@ -32,23 +33,25 @@ const Settings = () => {
 
   if (!user.loginState) return <UnauthorizedDialog />;
   return (
-    <Container className="main" maxWidth="lg" sx={{ height: '100vh' }}>
-      <Typography variant="h4">Settings</Typography>
-      <Box sx={{ display: 'flex' }}>
-        <Tabs
-          orientation="vertical"
-          variant="scrollable"
-          value={currTabValue}
-          onChange={setTabChange}
-          aria-label="settings-tabs"
-          sx={{ borderRight: 1, borderColor: 'divider' }}
-        >
-          <Tab label="Delete Account" onClick={() => setCurrPage('delete account')} />
-          <Tab label="Change Password" onClick={() => setCurrPage('change password')} />
-        </Tabs>
-        {renderPage()}
-      </Box>
-    </Container>
+    <DefaultLayout>
+      <Container className="main" maxWidth="lg" sx={{ height: '100vh' }}>
+        <Typography variant="h4">Settings</Typography>
+        <Box sx={{ display: 'flex' }}>
+          <Tabs
+            orientation="vertical"
+            variant="scrollable"
+            value={currTabValue}
+            onChange={setTabChange}
+            aria-label="settings-tabs"
+            sx={{ borderRight: 1, borderColor: 'divider' }}
+          >
+            <Tab label="Delete Account" onClick={() => setCurrPage('delete account')} />
+            <Tab label="Change Password" onClick={() => setCurrPage('change password')} />
+          </Tabs>
+          {renderPage()}
+        </Box>
+      </Container>
+    </DefaultLayout>
   );
 };
 
