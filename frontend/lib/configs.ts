@@ -35,3 +35,4 @@ export const URL_QUESTION_SVC = URI_QUESTION_SVC + PREFIX_QUESTION_SVC;
 const PREFIX_HISTORY_SVC = '/api/history';
 export const URL_HISTORY_SVC = URI_HISTORY_SVC + PREFIX_HISTORY_SVC;
 export const URL_HISTORY_RECORD = `${URL_HISTORY_SVC}/user/:username/records`;
+export const URL_HISTORY_COMPLETED = `${URL_HISTORY_SVC}/user/:username/completed`;

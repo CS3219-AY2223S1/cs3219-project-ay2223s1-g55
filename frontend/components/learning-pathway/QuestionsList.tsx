@@ -10,13 +10,16 @@ import {
   Divider,
 } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import CheckCircleTwoToneIcon from '@mui/icons-material/CheckCircleTwoTone';
+import CancelTwoToneIcon from '@mui/icons-material/CancelTwoTone';
 
 interface QuestionsListProps {
   questions: QuestionType[];
   difficulty: string;
+  completedQuestions?: string[];
 }
 
-const QuestionsList = ({ questions, difficulty }: QuestionsListProps) => {
+const QuestionsList = ({ questions, difficulty, completedQuestions = [] }: QuestionsListProps) => {
   return (
     <Accordion defaultExpanded>
       <AccordionSummary expandIcon={<ExpandMoreIcon />}>
@@ -28,11 +31,11 @@ const QuestionsList = ({ questions, difficulty }: QuestionsListProps) => {
             <>
               <ListItem sx={{ display: 'flex', justifyContent: 'space-between' }}>
                 <ListItemText primary={question.title} />
-                {/* {record.done ? (
-                              <CheckCircleTwoToneIcon color="success" />
-                            ) : (
-                              <CancelTwoToneIcon color="error" />
-                            )} */}
+                {completedQuestions?.includes(question.title) ? (
+                  <CheckCircleTwoToneIcon color="success" />
+                ) : (
+                  <CancelTwoToneIcon color="error" />
+                )}
               </ListItem>
               <Divider />
             </>

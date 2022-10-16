@@ -1,4 +1,4 @@
-import { URL_HISTORY_RECORD, URL_QUESTION_SVC } from '@/lib/configs';
+import { URL_HISTORY_COMPLETED, URL_HISTORY_RECORD, URL_QUESTION_SVC } from '@/lib/configs';
 import { QuestionType, IHistoryRecord } from '@/lib/types';
 import { get } from './base';
 
@@ -19,4 +19,8 @@ export const getAllRecords = (username: string) => {
     queryParams: { limit: 10 },
     urlParams: { username },
   });
+};
+
+export const getAllCompletedQuestions = (username: string) => {
+  return get<string[]>(URL_HISTORY_COMPLETED, { urlParams: { username } });
 };
