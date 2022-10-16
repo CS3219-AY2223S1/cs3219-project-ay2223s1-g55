@@ -22,6 +22,7 @@ import {
 } from '@mui/material';
 import { URL_MATCHING_CANCEL, URL_MATCHING_REQUEST, URI_MATCHING_SVC } from '@/lib/configs';
 import axios from 'axios';
+import { useRouter } from 'next/router';
 
 import { styled } from '@mui/material/styles';
 import useUserStore from '@/lib/store';
@@ -249,7 +250,7 @@ function Matching() {
     setPendingMatchRequest(false);
     const timeId = setTimeout(() => {
       // After 3 seconds redirect
-      const url = `/match/session/${roomSocketID}`;
+      const url = `/match/session/${payload.matchRoomID}`;
       router.push(url);
     }, 5000);
     setInterval(() => setCountdownSeconds(countdownSeconds - 1), 1000);
