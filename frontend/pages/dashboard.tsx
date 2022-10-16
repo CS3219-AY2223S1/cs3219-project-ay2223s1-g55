@@ -44,7 +44,7 @@ function Dashboard() {
   };
 
   const handleMatching = async () => {
-    router.push('/matching');
+    router.push('/match');
   };
 
   const handleLogout = async () => {

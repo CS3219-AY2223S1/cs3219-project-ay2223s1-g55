@@ -1,8 +1,8 @@
 import dynamic from 'next/dynamic';
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/router';
 import 'react-quill/dist/quill.snow.css';
 import io from 'socket.io-client';
+import { Card, CardContent, Typography } from '@mui/material';
 
 const SAVE_INTERVAL_MS = 2000;
 const ReactQuill = dynamic(() => import('react-quill'), {
@@ -24,7 +24,8 @@ const modules = {
 };
 let socket: any;
 
-function TextEditor() {
+function Editor(props: { sessionId: string }) {
+  const { sessionId } = props;
   const [isConnected, setIsConnected] = useState(false);
   const [value, setValue] = useState('');
   const [isDisabled, setIsDisabled] = useState<boolean>(true);
@@ -32,11 +33,9 @@ function TextEditor() {
   const handleVal = (content: any, delta: any, source: any, editor: any) => {
     if (source !== 'user') return;
     setValue(editor.getContents());
-    console.log(value);
     socket.emit('send-changes', editor.getContents());
   };
-  const router = useRouter();
-  const { id: documentId } = router.query;
+
   useEffect(() => {
     // check for connection, get room id and connect either here or on top
     socket = io('http://localhost:8002', {
@@ -62,16 +61,16 @@ function TextEditor() {
   }, []);
 
   useEffect(() => {
-    if (documentId == null || socket == null) return;
-    console.log(documentId);
+    if (!isConnected || socket == null) return;
+    console.log(sessionId);
 
     socket.once('load-document', (document: any) => {
       setValue(document);
       setIsDisabled(false);
     });
 
-    socket.emit('get-document', documentId);
-  }, [socket, documentId]);
+    socket.emit('get-document', sessionId);
+  }, [isConnected]);
 
   useEffect(() => {
     // backend port used for socket.io
@@ -114,4 +113,4 @@ function TextEditor() {
   );
 }
 
-export default TextEditor;
+export default Editor;

@@ -27,6 +27,7 @@ import { styled } from '@mui/material/styles';
 import useUserStore from '@/lib/store';
 import DefaultLayout from '@/layouts/DefaultLayout';
 import { io } from 'socket.io-client';
+import { useRouter } from 'next/router';
 
 const SendMessageButton = styled(Button)({
   backgroundColor: '#3f51b5',
@@ -100,6 +101,7 @@ const sendMatchRequest = async (username: string, difficulty: string, roomSocket
 };
 
 function Matching() {
+  const router = useRouter();
   const { user } = useUserStore((state) => ({
     user: state.user,
   }));
@@ -118,6 +120,7 @@ function Matching() {
   const [dialogTitle, setDialogTitle] = useState('');
   const [dialogMsg, setDialogMsg] = useState('');
   const [isBackdropOpen, setIsBackdropOpen] = useState(false);
+  const [countdownSeconds, setCountdownSeconds] = useState(5);
   const closeDialog = () => setIsDialogOpen(false);
 
   const setSuccessDialog = (msg: string) => {
@@ -219,8 +222,14 @@ function Matching() {
   const handleMatchFound = async (payload: any) => {
     const { username, difficulty, mongodbID, roomSocketID } = payload;
     setPendingMatchRequest(false);
+    const timeId = setTimeout(() => {
+      // After 3 seconds redirect
+      const url = `/match/session/${roomSocketID}`;
+      router.push(url);
+    }, 5000);
+    setInterval(() => setCountdownSeconds(countdownSeconds - 1), 1000);
     setSuccessDialog(
-      `Found Match! \n ${mongodbID} \n ${username} \n ${message} \n Click Join Room to join`
+      `Found Match! \n ${mongodbID} \n ${username} \n ${message} \n Redirecting in ${countdownSeconds}`
     );
     setMatchRoomID(mongodbID);
     setRoom(matchRoomID);
