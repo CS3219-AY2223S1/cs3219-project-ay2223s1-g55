@@ -17,6 +17,7 @@ const QuestionsList = ({ questions, difficulty, completedQuestions }: QuestionsL
         <Typography>{difficulty}</Typography>
       </AccordionSummary>
       <AccordionDetails>
+        {!questions?.length && 'No questions to show.'}
         <List>
           {questions?.map((question) => (
             <QuestionListItem

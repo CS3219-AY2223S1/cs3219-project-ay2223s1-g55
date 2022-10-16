@@ -36,6 +36,11 @@ export interface IHistoryRecord {
   duration?: number;
 }
 
+export interface IExperience {
+  experiencePoints: number;
+  experienceLevel: string;
+}
+
 // API Function Types
 export interface IUrlParams {
   [slug: string]: string | number;

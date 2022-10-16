@@ -1,5 +1,10 @@
-import { URL_HISTORY_COMPLETED, URL_HISTORY_RECORD, URL_QUESTION_SVC } from '@/lib/configs';
-import { QuestionType, IHistoryRecord } from '@/lib/types';
+import {
+  URL_HISTORY_COMPLETED,
+  URL_HISTORY_EXPERIENCE,
+  URL_HISTORY_RECORD,
+  URL_QUESTION_SVC,
+} from '@/lib/configs';
+import { QuestionType, IHistoryRecord, IExperience } from '@/lib/types';
 import { get } from './base';
 
 // Question Service
@@ -23,4 +28,8 @@ export const getAllRecords = (username: string) => {
 
 export const getAllCompletedQuestions = (username: string) => {
   return get<string[]>(URL_HISTORY_COMPLETED, { urlParams: { username } });
+};
+
+export const getExperience = (username: string) => {
+  return get<IExperience>(URL_HISTORY_EXPERIENCE, { urlParams: { username } });
 };

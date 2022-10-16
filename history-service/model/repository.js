@@ -1,5 +1,6 @@
 import 'dotenv/config.js';
 import RecordModel from './record-model.js';
+import { EXPERIENCE_LEVEL, EXPERIENCE_POINTS } from '../lib/constants.js';
 
 // Set up mongoose connection
 import mongoose from 'mongoose';
@@ -25,8 +26,22 @@ export async function getUserExperienceLevel(username) {
       }
     }
   ])
-  console.log(difficultiesCount);
-  return {}
+  const experiencePoints = difficultiesCount.reduce((prevExperience, difficultyCount) => {
+    return prevExperience + EXPERIENCE_POINTS[`${difficultyCount._id}`] * difficultyCount.count
+  }, 0);
+
+  let experienceLevel;
+  if (experienceLevel >= 150) {
+    experienceLevel = EXPERIENCE_LEVEL.elite;
+  } else if (experiencePoints >= 100) {
+    experienceLevel = EXPERIENCE_LEVEL.expert;
+  } else if (experiencePoints >= 50) {
+    experienceLevel = EXPERIENCE_LEVEL.novice;
+  } else {
+    experienceLevel = EXPERIENCE_LEVEL.beginner;
+  }
+
+  return { experienceLevel, experiencePoints }
 }
 
 export async function listUserRecords(username, options) {

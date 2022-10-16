@@ -7,18 +7,38 @@ import { getQuestions, getAllCompletedQuestions } from 'api';
 import { NextPage } from 'next';
 import QuestionsList from '@/components/learning-pathway/QuestionsList';
 import useUserStore from '@/lib/store';
+import ExperienceLevel from '@/components/learning-pathway/ExperienceLevel';
 
-interface IProps {
-  easyQuestions: QuestionType[];
-  mediumQuestions: QuestionType[];
-  hardQuestions: QuestionType[];
-}
+// interface IProps {
+//   // easyQuestions: QuestionType[];
+//   // mediumQuestions: QuestionType[];
+//   // hardQuestions: QuestionType[];
+// }
 
 const selector = (state: any) => ({ user: state.user });
 
-const LearningPathway: NextPage<IProps> = ({ easyQuestions, mediumQuestions, hardQuestions }) => {
+const LearningPathway: NextPage = () => {
   const { user } = useUserStore(selector);
   const [completedQuestions, setCompletedQuestions] = React.useState<string[]>([]);
+
+  // TODO: add this into getStaticProps once we deploy history-service and remove these useStates
+  const [easyQuestions, setEasyQuestions] = React.useState<QuestionType[]>([]);
+  const [mediumQuestions, setMediumQuestions] = React.useState<QuestionType[]>([]);
+  const [hardQuestions, setHardQuestions] = React.useState<QuestionType[]>([]);
+
+  React.useEffect(() => {
+    // TODO: add this into getStaticProps once we deploy history-service
+    // and remove this useEffect
+    const fetchAllQuestions = async () => {
+      const _easyQuestions = await getQuestions('Easy');
+      const _mediumQuestions = await getQuestions('Medium');
+      const _hardQuestions = await getQuestions('Hard');
+      setEasyQuestions(_easyQuestions);
+      setMediumQuestions(_mediumQuestions);
+      setHardQuestions(_hardQuestions);
+    };
+    fetchAllQuestions();
+  }, []);
 
   React.useEffect(() => {
     const fetchCompletedQuestions = async () => {
@@ -35,7 +55,7 @@ const LearningPathway: NextPage<IProps> = ({ easyQuestions, mediumQuestions, har
 
         <Grid container gap={5}>
           <Grid item xs={12} md={7}>
-            <h2>My Journey</h2>
+            <ExperienceLevel />
 
             <Stack spacing={2}>
               <QuestionsList
@@ -65,12 +85,12 @@ const LearningPathway: NextPage<IProps> = ({ easyQuestions, mediumQuestions, har
   );
 };
 
-export const getStaticProps = async () => {
-  const easyQuestions = await getQuestions('Easy');
-  const mediumQuestions = await getQuestions('Medium');
-  const hardQuestions = await getQuestions('Hard');
+// export const getStaticProps = async () => {
+//   const easyQuestions = await getQuestions('Easy');
+//   const mediumQuestions = await getQuestions('Medium');
+//   const hardQuestions = await getQuestions('Hard');
 
-  return { props: { easyQuestions, mediumQuestions, hardQuestions } };
-};
+//   return { props: { easyQuestions, mediumQuestions, hardQuestions } };
+// };
 
 export default LearningPathway;
