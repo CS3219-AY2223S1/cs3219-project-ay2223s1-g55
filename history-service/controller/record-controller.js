@@ -1,9 +1,21 @@
 import {
   ormListUserRecords as _listUserRecords,
   ormCreateRecord as _createRecord,
-  ormListUserCompletedQuestions as _listUserCompletedQuestions
+  ormListUserCompletedQuestions as _listUserCompletedQuestions,
+  ormGetUserExperienceLevel as _getUserExperienceLevel
 } from '../model/record-orm.js';
 import { validateRecord } from './validations.js';
+
+export async function getUserExperienceLevel(req, res) {
+  try {
+    const { username } = req.params;
+
+    const experience = await _getUserExperienceLevel(username);
+    return res.status(200).json(experience);
+  } catch (err) {
+    return res.status(500).json({ message: 'Database failure when retrieving user completed questions.' });
+  }
+}
 
 export async function listUserCompletedQuestions(req, res) {
   try {

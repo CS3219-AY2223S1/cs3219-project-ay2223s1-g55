@@ -9,16 +9,18 @@ app.options('*', cors());
 import {
   listUserRecords,
   createRecord,
-  listUserCompletedQuestions
+  listUserCompletedQuestions,
+  getUserExperienceLevel
 } from './controller/record-controller.js';
 
 const router = express.Router();
 
 // Controller will contain all the History-defined Routes
 router.get('/', (_, res) => res.send('History-service is up and running!'));
-router.get('/user/:username/records', listUserRecords);
-router.post('/user/:username/records', createRecord);
-router.get('/user/:username/completed', listUserCompletedQuestions);
+router.get('/records/:username', listUserRecords);
+router.post('/records/:username', createRecord);
+router.get('/completed/:username', listUserCompletedQuestions);
+router.get('/experience/:username', getUserExperienceLevel);
 
 app.use('/api/history', router).all((_, res) => {
   res.setHeader('content-type', 'application/json');

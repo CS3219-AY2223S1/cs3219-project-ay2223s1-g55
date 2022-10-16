@@ -15,6 +15,20 @@ mongoose.connect(mongoDB, {
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
+export async function getUserExperienceLevel(username) {
+  const difficultiesCount = await RecordModel.aggregate([
+    { $match: { $or: [{ firstUsername: username }, { secondUsername: username }] } },
+    {
+      $group: {
+        _id: '$questionDifficulty',
+        count: { $sum: 1 }
+      }
+    }
+  ])
+  console.log(difficultiesCount);
+  return {}
+}
+
 export async function listUserRecords(username, options) {
   return await RecordModel.find({ $or: [{ firstUsername: username }, { secondUsername: username }] })
     .skip(options.offset)

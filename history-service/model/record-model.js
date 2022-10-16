@@ -18,6 +18,10 @@ const RecordModelSchema = new Schema({
         type: Date,
         default: Date.now(),
     },
+    questionDifficulty: {
+        type: String,
+        required: true
+    },
     duration: Number,
 })
 
