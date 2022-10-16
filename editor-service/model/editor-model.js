@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 
 const { Schema } = mongoose;
-const DocumentModelSchema = new Schema({
+const EditorModelSchema = new Schema({
   _id: {
     type: String,
     required: true,
@@ -25,4 +25,4 @@ const DocumentModelSchema = new Schema({
   },
 });
 
-export default mongoose.model('DocumentModel', DocumentModelSchema);
+export default mongoose.model('EditorModel', EditorModelSchema);

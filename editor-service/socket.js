@@ -1,8 +1,8 @@
 import { instrument } from '@socket.io/admin-ui';
 import { Server } from 'socket.io';
 // import { instrument } from '@socket.io/admin-ui';
-import { IO_EVENT, EMIT_EVENT, ON_EVENT } from './libs/constants.js';
-import DocumentModel from './model/document-model.js';
+import { IO_EVENT } from './libs/constants.js';
+import EditorModel from './model/editor-model.js';
 import findOrCreateDocument from './model/repository.js';
 
 let socket;
@@ -35,7 +35,7 @@ const socketInitializer = (httpServer) => {
       });
 
       clientSocket.on('save-document', async (data) => {
-        await DocumentModel.findByIdAndUpdate(documentId, { data });
+        await EditorModel.findByIdAndUpdate(documentId, { data });
       });
     });
   });

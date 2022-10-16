@@ -1,4 +1,4 @@
-import DocumentModel from './document-model.js';
+import EditorModel from './editor-model.js';
 import 'dotenv/config.js';
 
 // Set up mongoose connection
@@ -13,14 +13,13 @@ db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
 const defaultValue = '';
 
-export default async function findOrCreateDocument(id) {
+export default async function findOrCreateEditor(id) {
   if (id == null) return {};
-
-  const document = await DocumentModel.findById(id);
-  if (document) {
-    return document;
+  const editor = await EditorModel.findById(id);
+  if (editor) {
+    return editor;
   }
-  return DocumentModel.create({
+  return EditorModel.create({
     _id: id,
     username_first: 'a',
     username_second: 'b',
