@@ -12,7 +12,7 @@ function LinearProgressWithLabel({ value, ...props }: LinearProgressProps & { va
   return (
     <Box sx={{ display: 'flex', alignItems: 'center' }}>
       <Box sx={{ width: '100%', mr: 1 }}>
-        <LinearProgress variant="determinate" {...props} />
+        <LinearProgress variant="determinate" value={value} {...props} />
       </Box>
       <Box sx={{ minWidth: 100 }}>
         <Typography variant="body2" color="text.secondary">{`${value}/${MAX_EXP} XP`}</Typography>
