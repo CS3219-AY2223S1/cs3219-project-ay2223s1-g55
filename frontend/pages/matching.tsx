@@ -7,7 +7,6 @@ import {
   DialogContentText,
   DialogTitle,
   FormControl,
-  Grid,
   InputLabel,
   List,
   ListItem,
@@ -42,13 +41,6 @@ const SendMessageButton = styled(Button)({
   },
 });
 
-const SocketMessageOutput = styled('h2')({
-  fontSize: '20px',
-  padding: '5px',
-  color: 'black',
-  justifyContent: 'center',
-});
-
 interface callbackInterface {
   (message: string): void;
 }
@@ -75,8 +67,6 @@ const sendMatchRequest = async (username: string, difficulty: string, roomSocket
   console.log('sendMatchRequest called with ', username, difficulty, roomSocketID);
   try {
     const res = await axios.get(URL_MATCHING_REQUEST, {
-      // username,
-      // difficulty,
       headers: {
         username,
         difficulty,
@@ -192,16 +182,10 @@ function Matching() {
     return () => {
       // ! Need to add socket.close?
       // ! Need to move all socket listeners into user effect??
-      // socket.close();
+      socket.close();
       socket.off(ON_EVENT.CONNECT, onConnectionCallback);
     };
   }, []);
-
-  // socket.on(ON_EVENT.CONNECT, () => {
-  //   console.log('socket connection established socket id is  ', socket.id);
-  //   setUsername(user?.username);
-  //   setSocketID(socket.id);
-  // });
 
   const handleConnectToSocket = () => {
     setUsername(user?.username);
