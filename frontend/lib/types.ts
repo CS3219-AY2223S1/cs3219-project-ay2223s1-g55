@@ -89,4 +89,3 @@ export interface QuestionCommentType {
   user: string;
   comment: string;
 }
-
