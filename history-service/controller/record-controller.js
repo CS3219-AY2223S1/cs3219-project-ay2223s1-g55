@@ -1,8 +1,20 @@
 import {
   ormListUserRecords as _listUserRecords,
   ormCreateRecord as _createRecord,
+  ormListUserCompletedQuestions as _listUserCompletedQuestions
 } from '../model/record-orm.js';
 import { validateRecord } from './validations.js';
+
+export async function listUserCompletedQuestions(req, res) {
+  try {
+    const { username } = req.params;
+
+    const questions = await _listUserCompletedQuestions(username);
+    return res.status(200).json(questions);
+  } catch (err) {
+    return res.status(500).json({ message: 'Database failure when retrieving user completed questions.' });
+  }
+}
 
 export async function listUserRecords(req, res) {
   try {

@@ -24,3 +24,8 @@ export async function listUserRecords(username, options) {
 export async function createRecord(params) {
   return new RecordModel(params);
 }
+
+export async function listUserCompletedQuestions(username) {
+  return await RecordModel
+    .distinct('questionName', { $or: [{ firstUsername: username }, { secondUsername: username }] })
+}

@@ -1,7 +1,18 @@
 import {
   listUserRecords,
-  createRecord
+  createRecord,
+  listUserCompletedQuestions
 } from './repository.js';
+
+export async function ormListUserCompletedQuestions(username) {
+  try {
+    const questions = await listUserCompletedQuestions(username);
+    return questions;
+  } catch (err) {
+    console.error("Failed to get questions");
+    return { err }
+  }
+}
 
 export async function ormCreateRecord(params) {
   try {
