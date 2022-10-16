@@ -233,7 +233,9 @@ export default function SessionPage(props: { sessionId: string }) {
 
   useEffect(() => {
     handleFetchAllMessages();
-  }, [sessionRoomId]);
+    // only render this on first render
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     if (!socket) {
@@ -274,7 +276,8 @@ export default function SessionPage(props: { sessionId: string }) {
       socket.off('joinRoomSuccess');
       socket.off('receiveMessage');
     };
-  }, [socket, setMessages]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [socket]);
 
   useEffect(() => {
     const clientSocket = io('http://localhost:8008', {
@@ -295,6 +298,7 @@ export default function SessionPage(props: { sessionId: string }) {
       clientSocket.off('connect');
       clientSocket.close();
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleReceiveMessage = (message: Message) => {
