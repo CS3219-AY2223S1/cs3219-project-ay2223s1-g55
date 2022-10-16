@@ -1,17 +1,8 @@
 import { QuestionType } from '@/lib/types';
-import {
-  Accordion,
-  AccordionSummary,
-  Typography,
-  AccordionDetails,
-  List,
-  ListItem,
-  ListItemText,
-  Divider,
-} from '@mui/material';
+import { Accordion, AccordionSummary, Typography, AccordionDetails, List } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import CheckCircleTwoToneIcon from '@mui/icons-material/CheckCircleTwoTone';
-import CancelTwoToneIcon from '@mui/icons-material/CancelTwoTone';
+import React from 'react';
+import QuestionListItem from './QuestionListItem';
 
 interface QuestionsListProps {
   questions: QuestionType[];
@@ -19,7 +10,7 @@ interface QuestionsListProps {
   completedQuestions?: string[];
 }
 
-const QuestionsList = ({ questions, difficulty, completedQuestions = [] }: QuestionsListProps) => {
+const QuestionsList = ({ questions, difficulty, completedQuestions }: QuestionsListProps) => {
   return (
     <Accordion defaultExpanded>
       <AccordionSummary expandIcon={<ExpandMoreIcon />}>
@@ -28,17 +19,11 @@ const QuestionsList = ({ questions, difficulty, completedQuestions = [] }: Quest
       <AccordionDetails>
         <List>
           {questions?.map((question) => (
-            <>
-              <ListItem sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                <ListItemText primary={question.title} />
-                {completedQuestions?.includes(question.title) ? (
-                  <CheckCircleTwoToneIcon color="success" />
-                ) : (
-                  <CancelTwoToneIcon color="error" />
-                )}
-              </ListItem>
-              <Divider />
-            </>
+            <QuestionListItem
+              question={question}
+              completed={completedQuestions?.includes(question.title)}
+              key={question.title}
+            />
           ))}
         </List>
       </AccordionDetails>

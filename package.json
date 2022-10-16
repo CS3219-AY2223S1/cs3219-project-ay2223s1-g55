@@ -6,7 +6,7 @@
     "question": "cd question-service && npm run dev",
     "history": "cd history-service && npm run dev",
     "all": "concurrent \"npm run frontend\" \"npm run user\" \"npm run matching\" \"npm run history\" \"npm run question\"",
-    "git-pre-commit": "cd frontend && npm run lint"
+    "git-pre-commit": "cd frontend && npm run lint:next"
   },
   "devDependencies": {
     "@vercel/git-hooks": "^1.0.0",

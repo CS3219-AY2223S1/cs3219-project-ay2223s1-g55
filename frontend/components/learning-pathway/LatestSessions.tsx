@@ -36,6 +36,8 @@ const LatestSessions = () => {
             />
           </ListItem>
         ))}
+        {/* TODO: 'ViewMore' functionality */}
+        <p style={{ textAlign: 'center', color: '#b0b0b0', fontSize: 14 }}>End of list.</p>
       </List>
     </Card>
   );
