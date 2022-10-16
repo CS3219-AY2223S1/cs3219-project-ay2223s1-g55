@@ -30,21 +30,6 @@ const PORT = process.env.PORT || 8008;
 
 const httpServer = createServer(app);
 
-// const socketIOServer = new Server(httpServer, {
-//   // Edit here to include new URL to access socket
-//   cors: {
-//     origin: ["http://localhost:3000", "https://admin.socket.io"],
-//     credentials: true,
-//   },
-// });
-
-// socketIOServer.on("connection", (clientSocket) => {
-//   console.log("New client connected");
-//   socket.on("disconnect", () => {
-//     console.log("Client disconnected");
-//   });
-// });
-
 createSocketIOServer(httpServer);
 
 httpServer.listen(PORT, () =>
