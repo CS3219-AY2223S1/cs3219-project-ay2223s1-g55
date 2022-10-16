@@ -1,6 +1,9 @@
 # CS3219-AY22-23-Project-Skeleton
 
+## Production Deployments
+frontend url: https://frontend-lemon-one.vercel.app/signup/
 user-service url: https://user-service-q563p73okq-as.a.run.app/
+matching-service url: https://matching-service-q563p73okq-as.a.run.app/
 
 ## User Service
 1. Rename `.env.sample` file to `.env`.
@@ -11,4 +14,4 @@ user-service url: https://user-service-q563p73okq-as.a.run.app/
 
 ## Frontend
 1. Install npm packages using `npm i`.
-2. Run Frontend using `npm start`.
+2. Run Frontend using `npm run dev`.

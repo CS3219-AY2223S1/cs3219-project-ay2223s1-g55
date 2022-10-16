@@ -21,17 +21,10 @@ import router from 'next/router';
 import useUserStore from '@/lib/store';
 import { clearJwt, getJwtCookie } from '@/lib/cookies';
 import UnauthorizedDialog from '@/components/UnauthorizedDialog';
+import ProfileAvatarButton from '@/components/defaultLayout/ProfileAvatarButton';
+import QuestionList from '@/components/QuestionList';
 
 function Dashboard() {
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const open = Boolean(anchorEl);
-  const handleAvatarClick = (event: ReactMouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
-  const handleAvatarMenuClose = () => {
-    setAnchorEl(null);
-  };
-
   const [difficulty, setDifficulty] = useState('');
 
   const { user, logout } = useUserStore((state) => ({
@@ -45,15 +38,6 @@ function Dashboard() {
 
   const handleMatching = async () => {
     router.push('/match');
-  };
-
-  const handleLogout = async () => {
-    const currToken = getJwtCookie();
-    const res = await logout(currToken);
-    if (res?.status === STATUS_CODE_LOGGED_OUT) {
-      router.push('/login');
-      clearJwt();
-    }
   };
 
   if (!user.loginState) return <UnauthorizedDialog />;
@@ -85,27 +69,6 @@ function Dashboard() {
         </Grid>
         <Grid
           item
-          xs={6}
-          justifySelf="flex-end"
-          sx={{ display: 'flex', justifyContent: 'flex-end' }}
-        >
-          <Tooltip title="Account settings">
-            <IconButton
-              onClick={handleAvatarClick}
-              size="small"
-              sx={{ ml: 2 }}
-              aria-controls={open ? 'account-menu' : undefined}
-              aria-haspopup="true"
-              aria-expanded={open ? 'true' : undefined}
-            >
-              <Avatar sx={{ width: 32, height: 32 }}>
-                {user?.username.charAt(0).toLocaleUpperCase()}
-              </Avatar>
-            </IconButton>
-          </Tooltip>
-        </Grid>
-        <Grid
-          item
           xs={12}
           justifySelf="center"
           sx={{ display: 'flex', justifyContent: 'center', marginTop: '10px' }}
@@ -120,54 +83,7 @@ function Dashboard() {
           </Button>
         </Grid>
       </Grid>
-      <Menu
-        anchorEl={anchorEl}
-        id="account-menu"
-        open={open}
-        onClose={handleAvatarMenuClose}
-        onClick={handleAvatarMenuClose}
-        PaperProps={{
-          elevation: 0,
-          sx: {
-            overflow: 'visible',
-            filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
-            mt: 1.5,
-            '& .MuiAvatar-root': {
-              width: 32,
-              height: 32,
-              ml: -0.5,
-              mr: 1,
-            },
-            '&:before': {
-              content: '""',
-              display: 'block',
-              position: 'absolute',
-              top: 0,
-              right: 14,
-              width: 10,
-              height: 10,
-              bgcolor: 'background.paper',
-              transform: 'translateY(-50%) rotate(45deg)',
-              zIndex: 0,
-            },
-          },
-        }}
-        transformOrigin={{ horizontal: 'right', vertical: 'top' }}
-        anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
-      >
-        <MenuItem onClick={() => router.push('/settings')}>
-          <ListItemIcon>
-            <Settings fontSize="small" />
-          </ListItemIcon>
-          Settings
-        </MenuItem>
-        <MenuItem onClick={handleLogout}>
-          <ListItemIcon>
-            <Logout fontSize="small" />
-          </ListItemIcon>
-          Logout
-        </MenuItem>
-      </Menu>
+      <QuestionList />
     </DefaultLayout>
   );
 }
