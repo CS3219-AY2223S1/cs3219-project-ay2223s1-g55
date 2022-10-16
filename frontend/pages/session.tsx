@@ -79,7 +79,7 @@ function ChatWindow(props: { messageList: Array<Message>; username: string }) {
       <Grid>
         <List>
           {messageList.map((message) => (
-            <ChatMessage message={message} username={username} />
+            <ChatMessage key={message.id} message={message} username={username} />
           ))}
         </List>
       </Grid>
@@ -121,7 +121,6 @@ const fetchAllMessages = async (sessionId: string) => {
     return res;
   } catch (err: any) {
     console.log('error message is: ', err.data);
-    console.log(err.message);
     throw err;
   }
 };
@@ -132,32 +131,23 @@ const createMessage = async (
   senderId: string,
   message: string
 ) => {
-  console.log('Creating message');
-  try {
-    const res = await axios.post(URL_COMMUNICATION_MESSAGE, {
-      sessionId,
-      senderName,
-      senderId,
-      message,
-    });
-    if (res.status === 200 || res.status === 201) {
-      console.log('message from createMessage: ', res.data);
-      return res;
-    }
-    if (res.status === 400 || res.status === 404) {
-      console.log('createMessage failed');
-      return res;
-    }
-    if (res.status === 500) {
-      console.log('createMessage, database failed');
-      return res;
-    }
+  const res = await axios.post(URL_COMMUNICATION_MESSAGE, {
+    sessionId,
+    senderName,
+    senderId,
+    message,
+  });
+
+  if (res.status === 200 || res.status === 201) {
     return res;
-  } catch (err: any) {
-    console.log('error message is: ', err.response.data.message);
-    console.log(err.message);
-    throw err;
   }
+  if (res.status === 400 || res.status === 404) {
+    return res;
+  }
+  if (res.status === 500) {
+    return res;
+  }
+  return res;
 };
 
 export default function SessionPage(props: { sessionId: string }) {
@@ -175,20 +165,19 @@ export default function SessionPage(props: { sessionId: string }) {
   const [sessionRoomId, setSessionId] = useState('2000');
 
   const handleFetchAllMessages = async () => {
-    console.log('fetching message for:', sessionId);
     try {
       const res = await fetchAllMessages(sessionRoomId);
       // const res = await fetchAllMessages(props.sessionId);
       if (res === null) {
         setMessages([]);
       } else if (res.status === 200 || res.status === 201) {
-        console.log('res.data.messages from handleFetchAllMessages: ', res.data.messages);
+        // console.log('res.data.messages from handleFetchAllMessages: ', res.data.messages);
         if (res.data.messages.length === 0) {
           setMessages([]);
         }
         const messageResults: Array<Message> = [];
         res.data.messages.forEach((item: any) => {
-          console.log('item: ', item.senderName, item.message, item.createdAt);
+          // console.log('item: ', item.senderName, item.message, item.createdAt);
           messageResults.push({
             senderName: item.senderName,
             senderId: item.senderId,
@@ -204,7 +193,6 @@ export default function SessionPage(props: { sessionId: string }) {
       }
     } catch (err: any) {
       console.log('error message is: ', err);
-      console.log(err.message);
     }
   };
 
@@ -243,7 +231,6 @@ export default function SessionPage(props: { sessionId: string }) {
     }
     const uid = uuid();
     socket.on('joinRoomSuccess', async (sessionId, username, userId) => {
-      console.log('joinRoomSuccess', sessionId, username, userId);
       // TODO: Change this to a different type not a message
       const newMessage: Message = {
         content: `${username} joined the room`,
@@ -257,7 +244,6 @@ export default function SessionPage(props: { sessionId: string }) {
     });
 
     socket.on('receiveMessage', async (content, senderId, senderName, sessionId, createdAt, id) => {
-      console.log('roomMessage received');
       console.log('roomMessage', content, senderId, senderName, sessionId);
       const newMessage: Message = {
         content,
@@ -267,7 +253,6 @@ export default function SessionPage(props: { sessionId: string }) {
         createdAt: new Date(createdAt),
         id,
       };
-      console.log(messages);
       setMessages((messages) => [...messages, newMessage]);
     });
 
