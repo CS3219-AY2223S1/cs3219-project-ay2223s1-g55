@@ -19,7 +19,7 @@ app.use('/api/collaboration', router).all((_, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
 });
 
-const PORT = process.env.PORT || 8002;
+const PORT = process.env.PORT || 8004;
 
 const httpServer = createServer(app);
 
