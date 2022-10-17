@@ -138,10 +138,9 @@ function Matching() {
   }));
   const [difficulty, setDifficulty] = useState('');
   const [socketMessage, setSocketMessage] = useState('');
-  const [socketID, setSocketID] = useState(socket.id);
+  const [socketID, setSocketID] = useState('');
   const [messages, setMessages] = useState(initialMessages);
-  // const [username, setUsername] = useState('');
-  const username = user?.username;
+  const [username, setUsername] = useState('');
   const [room, setRoom] = useState('');
   const [matchRoomID, setMatchRoomID] = useState('');
   const [message, setMessage] = useState('');
@@ -165,19 +164,13 @@ function Matching() {
     setDialogTitle('Error');
     setDialogMsg(msg);
   };
-
   // user undefined from useSession
   useEffect(() => {
     const onConnectionCallback = () => {
       console.log('socket id in connectionCallback is ', socket.id);
       console.log('user is: ', user);
-      /*
-      edited by glenn
       setUsername(user?.username);
       setSocketID(socket.id);
-      */
-      // updateSocketId(socket.id);
-
       // handleConnectToSocket();
     };
     socket.on(ON_EVENT.CONNECT, onConnectionCallback);
@@ -194,10 +187,7 @@ function Matching() {
   // });
 
   const handleConnectToSocket = () => {
-    /*
-    edited by glenn
     setUsername(user?.username);
-    */
     console.log('username: ', user?.username);
     socket.auth = { username };
     socket.connect();
@@ -278,18 +268,6 @@ function Matching() {
     setDifficulty(e.target.value);
   };
 
-  useEffect(() => {
-    console.log('Curr user.username:', user.username);
-    console.log('Curr username: ', username);
-  }, [user.username, username]);
-
-  useEffect(() => {
-    console.log('Curr socket id', socket.id);
-    console.log('Curr socket id state', socketID);
-    console.log('Curr user: ', user);
-    updateSocketId(socket.id);
-  }, [socket]);
-
   // send match request to server
   // instant find, if no match, insert this match request into database
   // if match found, socket server will inform user from someone else
@@ -350,6 +328,12 @@ function Matching() {
       throw new Error('Please select a difficulty');
     }
   };
+
+  // Temporary fix to get question via current socket id,
+  // TODO: Fix editor-service to store question, can remove storing socketid in user state after.
+  useEffect(() => {
+    updateSocketId(socket.id);
+  }, [socket]);
 
   return (
     <DefaultLayout>

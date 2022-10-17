@@ -9,7 +9,7 @@ import useUserStore from '@/lib/store';
 import { clearJwt, getJwtCookie } from '@/lib/cookies';
 import UnauthorizedDialog from '@/components/UnauthorizedDialog';
 import ProfileAvatarButton from '@/components/defaultLayout/ProfileAvatarButton';
-import QuestionList from '@/components/QuestionList/QuestionList';
+import QuestionList from '@/components/Question/QuestionList';
 
 function Dashboard() {
   const { user } = useUserStore((state) => ({

@@ -4,7 +4,8 @@ import { URL_QUESTION_SVC } from '@/lib/configs';
 import { useEffect, useState } from 'react';
 import { Box, Container, Divider, List, ListItem, Typography } from '@mui/material';
 import { QuestionType } from '@/lib/types';
-import QuestionDiscussion from '@/components/QuestionList/QuestionDiscussion';
+import QuestionDiscussion from '@/components/Question/QuestionDiscussion';
+import QuestionDescription from '@/components/Question/QuestionDescription';
 
 const Question = () => {
   const router = useRouter();
@@ -28,22 +29,23 @@ const Question = () => {
     console.log('qn', question);
   }, [question]);
 
-  const difficultyColor = () => {
-    switch (question?.difficulty) {
-      case 'Easy':
-        return 'green';
-      case 'Medium':
-        return 'orange';
-      case 'Hard':
-        return 'red';
-      default:
-        return 'black';
-    }
-  };
+  // const difficultyColor = () => {
+  //   switch (question?.difficulty) {
+  //     case 'Easy':
+  //       return 'green';
+  //     case 'Medium':
+  //       return 'orange';
+  //     case 'Hard':
+  //       return 'red';
+  //     default:
+  //       return 'black';
+  //   }
+  // };
 
   return (
     <Container>
-      <Typography variant="h4">{question?.title}</Typography>
+      <QuestionDescription question={question} />
+      {/* <Typography variant="h4">{question?.title}</Typography>
       <Typography variant="subtitle2" color={difficultyColor()}>
         {question?.difficulty}
       </Typography>
@@ -86,7 +88,7 @@ const Question = () => {
             <Typography variant="caption">{`${i + 1}. ${c}`}</Typography>
           </ListItem>
         ))}
-      </List>
+      </List> */}
       <Divider />
       <QuestionDiscussion isReady={router.isReady} title={questionTitle ?? ''} />
     </Container>

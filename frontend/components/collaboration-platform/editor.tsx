@@ -4,8 +4,10 @@ import 'react-quill/dist/quill.snow.css';
 import io from 'socket.io-client';
 import { Box, Card, CardContent, Typography } from '@mui/material';
 import axios from 'axios';
-import { URL_MATCHING_REQUEST } from '@/lib/configs';
+import { URL_MATCHING_REQUEST, URL_QUESTION_SVC } from '@/lib/configs';
 import useUserStore from '@/lib/store';
+import { QuestionType } from '@/lib/types';
+import QuestionDescription from '../Question/QuestionDescription';
 
 const SAVE_INTERVAL_MS = 2000;
 const ReactQuill = dynamic(() => import('react-quill'), {
@@ -32,7 +34,8 @@ function Editor(props: { sessionId: string }) {
   const [isConnected, setIsConnected] = useState(false);
   const [value, setValue] = useState('');
   const [isDisabled, setIsDisabled] = useState<boolean>(true);
-  const [question, setQuestion] = useState<string>();
+  const [questionTitle, setQuestionTitle] = useState<string>();
+  const [question, setQuestion] = useState<QuestionType>();
 
   const { user, socketId } = useUserStore((state) => ({
     user: state.user,
@@ -113,26 +116,42 @@ function Editor(props: { sessionId: string }) {
     };
   }, [socket, value]);
 
-  const getQuestion = async () => {
+  const getQuestionTitle = async () => {
     const res = await axios.get(`${URL_MATCHING_REQUEST}`, {
       headers: { username: user?.username, difficulty: 'easy', roomsocketid: user.socketId },
     });
     return res.data.question;
   };
 
+  const getQuestion = async () => {
+    const convertedTitle = questionTitle?.replaceAll(' ', '-').toLocaleLowerCase();
+    const res = await axios.get(`${URL_QUESTION_SVC}/${convertedTitle}`);
+    return res.data.question;
+  };
+
   useEffect(() => {
-    getQuestion()
+    getQuestionTitle()
       .then((res) => {
-        setQuestion(res);
+        setQuestionTitle(res);
+      })
+      .then(() => {
+        getQuestion().then((res) => {
+          setQuestion(res[0]);
+        });
       })
       .finally(() => {
-        console.log(question);
+        console.log(questionTitle);
       });
   }, []);
 
+  useEffect(() => {
+    console.log('question? ', question);
+    console.log('quesiton title? ', questionTitle);
+  }, [question, questionTitle]);
+
   return (
     <Box>
-      <Typography>{question}</Typography>
+      <QuestionDescription question={question} />
       <ReactQuill
         theme="snow"
         modules={modules}

@@ -19,6 +19,10 @@ const EditorModelSchema = new Schema({
     type: String,
     required: true,
   },
+  question: {
+    type: String,
+    required: true,
+  },
   data: {
     type: Object,
     required: true,
