@@ -22,7 +22,7 @@ import useUserStore from '@/lib/store';
 import { clearJwt, getJwtCookie } from '@/lib/cookies';
 import UnauthorizedDialog from '@/components/UnauthorizedDialog';
 import ProfileAvatarButton from '@/components/defaultLayout/ProfileAvatarButton';
-import QuestionList from '@/components/QuestionList';
+import QuestionList from '@/components/QuestionList/QuestionList';
 
 function Dashboard() {
   const [difficulty, setDifficulty] = useState('');

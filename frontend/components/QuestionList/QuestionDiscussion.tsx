@@ -40,7 +40,7 @@ const QuestionDiscussion = ({ isReady, title }: { isReady: boolean; title: strin
       className="outer-container"
       sx={{ display: 'flex', justifyContent: 'space-between' }}
     >
-      <Container className="inner-container" sx={{ height: '200px', overflowY: 'auto' }}>
+      <Container className="inner-container" sx={{ height: '100%', overflowY: 'auto' }}>
         <Typography gutterBottom variant="h6">
           Comments
         </Typography>

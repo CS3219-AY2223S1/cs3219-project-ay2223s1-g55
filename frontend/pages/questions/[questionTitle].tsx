@@ -4,7 +4,7 @@ import { URL_QUESTION_SVC } from '@/lib/configs';
 import { useEffect, useState } from 'react';
 import { Box, Container, Divider, List, ListItem, Typography } from '@mui/material';
 import { QuestionType } from '@/lib/types';
-import QuestionDiscussion from '@/components/QuestionDiscussion';
+import QuestionDiscussion from '@/components/QuestionList/QuestionDiscussion';
 
 const Question = () => {
   const router = useRouter();
