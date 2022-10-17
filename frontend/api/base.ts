@@ -20,5 +20,5 @@ export const get = async <T>(url: string, options?: IGetOptions) => {
 };
 
 export const post = () => {
-  console.log('this is a placeholder. Honestly fuck eslint');
+  console.log('this is a placeholder.');
 };
