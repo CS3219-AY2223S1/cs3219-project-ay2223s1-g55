@@ -1,7 +1,7 @@
 import { URL_QUESTION_SVC } from '@/lib/configs';
 import useUserStore from '@/lib/store';
 import { QuestionCommentType } from '@/lib/types';
-import { Box, Button, Container, TextField, Typography } from '@mui/material';
+import { Box, Button, Container, Divider, Grid, TextField, Typography } from '@mui/material';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 
@@ -35,22 +35,60 @@ const QuestionDiscussion = ({ isReady, title }: { isReady: boolean; title: strin
     fetchComments().then((res) => setCurrComments(res));
   }, [isReady, currComments]);
 
+  const parseDate = (isoDate: string) => {
+    const numMs = Date.parse(isoDate);
+    const currDateObj = new Date(numMs);
+    return {
+      date: currDateObj.getDate(),
+      month: currDateObj.getMonth(),
+      year: currDateObj.getFullYear(),
+      hour: currDateObj.getHours(),
+      min: currDateObj.getMinutes(),
+    };
+  };
+
   return (
     <Container
       className="outer-container"
       sx={{ display: 'flex', justifyContent: 'space-between' }}
     >
-      <Container className="inner-container" sx={{ height: '100%', overflowY: 'auto' }}>
+      <Container className="inner-container" sx={{ height: '210px', overflowY: 'auto' }}>
         <Typography gutterBottom variant="h6">
           Comments
         </Typography>
-        {currComments.map((c, i) => (
-          <Typography key={i} gutterBottom variant="subtitle1">
-            {i}, {c.user}: {c.comment}
-          </Typography>
-        ))}
+        {currComments.map((c, i) => {
+          const dateObj = parseDate(c.created_at as string);
+          const { date, month, year, hour, min } = dateObj;
+
+          const hourStr = +hour < 10 ? `0${hour}` : hour;
+          const minStr = +min < 10 ? `0${min}` : min;
+          const timeStr = `${date}/${month}/${year} ${hourStr}:${minStr}`;
+
+          return (
+            <Box key={i} sx={{ height: '40%' }}>
+              <Container sx={{ maxHeight: 'max-content' }}>
+                <Grid container>
+                  <Grid item xs={6} rowSpacing={1}>
+                    <Typography sx={{ fontSize: 'large', fontWeight: '700' }}>{c.user}</Typography>
+                  </Grid>
+                  <Grid item xs={6} justifyContent="flex-end">
+                    <Typography sx={{ textAlign: 'right', color: 'gray' }}>{timeStr}</Typography>
+                  </Grid>
+                  <Grid item xs={12} justifyContent="center" sx={{ height: '100%' }}>
+                    <Container>
+                      <Typography noWrap gutterBottom variant="body1">
+                        {c.comment}
+                      </Typography>
+                    </Container>
+                  </Grid>
+                </Grid>
+              </Container>
+              <Divider />
+            </Box>
+          );
+        })}
       </Container>
-      <Box style={{ width: '70%' }}>
+      <Container style={{ width: '70%' }}>
         <Typography gutterBottom variant="h6">
           Write a Comment
         </Typography>
@@ -72,7 +110,7 @@ const QuestionDiscussion = ({ isReady, title }: { isReady: boolean; title: strin
         >
           Comment
         </Button>
-      </Box>
+      </Container>
     </Container>
   );
 };
