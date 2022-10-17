@@ -132,14 +132,16 @@ const cancelMatchRequest = async (username: string, difficulty: string) => {
 
 function Matching() {
   const router = useRouter();
-  const { user } = useUserStore((state) => ({
+  const { user, updateSocketId } = useUserStore((state) => ({
     user: state.user,
+    updateSocketId: state.updateSocketId,
   }));
   const [difficulty, setDifficulty] = useState('');
   const [socketMessage, setSocketMessage] = useState('');
-  const [socketID, setSocketID] = useState('');
+  const [socketID, setSocketID] = useState(socket.id);
   const [messages, setMessages] = useState(initialMessages);
-  const [username, setUsername] = useState('');
+  // const [username, setUsername] = useState('');
+  const username = user?.username;
   const [room, setRoom] = useState('');
   const [matchRoomID, setMatchRoomID] = useState('');
   const [message, setMessage] = useState('');
@@ -163,13 +165,19 @@ function Matching() {
     setDialogTitle('Error');
     setDialogMsg(msg);
   };
+
   // user undefined from useSession
   useEffect(() => {
     const onConnectionCallback = () => {
       console.log('socket id in connectionCallback is ', socket.id);
       console.log('user is: ', user);
+      /*
+      edited by glenn
       setUsername(user?.username);
       setSocketID(socket.id);
+      */
+      // updateSocketId(socket.id);
+
       // handleConnectToSocket();
     };
     socket.on(ON_EVENT.CONNECT, onConnectionCallback);
@@ -186,7 +194,10 @@ function Matching() {
   // });
 
   const handleConnectToSocket = () => {
+    /*
+    edited by glenn
     setUsername(user?.username);
+    */
     console.log('username: ', user?.username);
     socket.auth = { username };
     socket.connect();
@@ -266,6 +277,18 @@ function Matching() {
   const handleDifficultyChange = (e: SelectChangeEvent<string>) => {
     setDifficulty(e.target.value);
   };
+
+  useEffect(() => {
+    console.log('Curr user.username:', user.username);
+    console.log('Curr username: ', username);
+  }, [user.username, username]);
+
+  useEffect(() => {
+    console.log('Curr socket id', socket.id);
+    console.log('Curr socket id state', socketID);
+    console.log('Curr user: ', user);
+    updateSocketId(socket.id);
+  }, [socket]);
 
   // send match request to server
   // instant find, if no match, insert this match request into database

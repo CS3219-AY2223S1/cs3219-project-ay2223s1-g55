@@ -2,7 +2,10 @@ import dynamic from 'next/dynamic';
 import { useEffect, useState } from 'react';
 import 'react-quill/dist/quill.snow.css';
 import io from 'socket.io-client';
-import { Card, CardContent, Typography } from '@mui/material';
+import { Box, Card, CardContent, Typography } from '@mui/material';
+import axios from 'axios';
+import { URL_MATCHING_REQUEST } from '@/lib/configs';
+import useUserStore from '@/lib/store';
 
 const SAVE_INTERVAL_MS = 2000;
 const ReactQuill = dynamic(() => import('react-quill'), {
@@ -29,6 +32,16 @@ function Editor(props: { sessionId: string }) {
   const [isConnected, setIsConnected] = useState(false);
   const [value, setValue] = useState('');
   const [isDisabled, setIsDisabled] = useState<boolean>(true);
+  const [question, setQuestion] = useState<string>();
+
+  const { user, socketId } = useUserStore((state) => ({
+    user: state.user,
+    socketId: state.user.socketId,
+  }));
+
+  useEffect(() => {
+    console.log('Curr socket id: ', socketId);
+  }, [user]);
 
   const handleVal = (content: any, delta: any, source: any, editor: any) => {
     if (source !== 'user') return;
@@ -38,7 +51,7 @@ function Editor(props: { sessionId: string }) {
 
   useEffect(() => {
     // check for connection, get room id and connect either here or on top
-    socket = io('http://localhost:8002', {
+    socket = io('http://localhost:8004', {
       transports: ['websocket'],
       // autoConnect: false,
     });
@@ -100,16 +113,36 @@ function Editor(props: { sessionId: string }) {
     };
   }, [socket, value]);
 
+  const getQuestion = async () => {
+    const res = await axios.get(`${URL_MATCHING_REQUEST}`, {
+      headers: { username: user?.username, difficulty: 'easy', roomsocketid: user.socketId },
+    });
+    return res.data.question;
+  };
+
+  useEffect(() => {
+    getQuestion()
+      .then((res) => {
+        setQuestion(res);
+      })
+      .finally(() => {
+        console.log(question);
+      });
+  }, []);
+
   return (
-    <ReactQuill
-      theme="snow"
-      modules={modules}
-      onChange={(content: any, delta: any, source: any, editor: any) =>
-        handleVal(content, delta, source, editor)
-      }
-      value={value}
-      readOnly={isDisabled}
-    />
+    <Box>
+      <Typography>{question}</Typography>
+      <ReactQuill
+        theme="snow"
+        modules={modules}
+        onChange={(content: any, delta: any, source: any, editor: any) =>
+          handleVal(content, delta, source, editor)
+        }
+        value={value}
+        readOnly={isDisabled}
+      />
+    </Box>
   );
 }
 

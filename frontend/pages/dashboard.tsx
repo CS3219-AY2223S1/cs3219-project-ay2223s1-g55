@@ -12,26 +12,15 @@ import ProfileAvatarButton from '@/components/defaultLayout/ProfileAvatarButton'
 import QuestionList from '@/components/QuestionList/QuestionList';
 
 function Dashboard() {
-  const [difficulty, setDifficulty] = useState('');
-
-  const { user, logout } = useUserStore((state) => ({
+  const { user } = useUserStore((state) => ({
     user: state.user,
-    logout: state.logoutUser,
   }));
-
-  const handleDifficultyChange = (e: SelectChangeEvent<string>) => {
-    setDifficulty(e.target.value);
-  };
 
   const handleMatching = async () => {
     router.push('/match');
   };
 
   if (!user.loginState) return <UnauthorizedDialog />;
-
-  const handleChangePassword = () => {
-    router.push('/change-password');
-  };
 
   return (
     <DefaultLayout>

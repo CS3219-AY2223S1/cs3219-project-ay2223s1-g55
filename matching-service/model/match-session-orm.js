@@ -5,7 +5,8 @@ export async function ormCreateMatchSession(
   username1,
   username1socketID,
   username2,
-  username2socketID
+  username2socketID,
+  question
 ) {
   try {
     const newMatchSession = await createMatchSession({
@@ -14,6 +15,7 @@ export async function ormCreateMatchSession(
       username1socketID: username1socketID,
       username2: username2,
       username2socketID: username2socketID,
+      question,
     });
     newMatchSession.save();
     return newMatchSession;

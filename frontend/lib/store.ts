@@ -10,15 +10,16 @@ interface UserStore {
   loginUser: (username: string, password: string, token: string) => any;
   logoutUser: (token: string) => any;
   deleteUser: (token: string) => any;
+  updateSocketId: (socketId: string) => any;
 }
 
 const useUserStore = create<UserStore>((set, get) => ({
-  user: { username: '', loginState: false },
+  user: { username: '', loginState: false, socketId: '' },
   loginUser: async (username: string, password: string, token: string) => {
     try {
       const res = await axios.post(URL_USER_LOGIN, { username, password, token });
       if (res.data.token) {
-        set({ user: { username, loginState: true } });
+        set((state) => ({ user: { ...state.user, username, loginState: true } }));
       }
       return res;
     } catch (err: any) {
@@ -37,7 +38,9 @@ const useUserStore = create<UserStore>((set, get) => ({
       });
 
       if (res.data.username) {
-        set({ user: { username: res.data.username, loginState: true } });
+        set((state) => ({
+          user: { ...state.user, username: res.data.username, loginState: true },
+        }));
       }
     } catch (err) {
       console.error(err);
@@ -49,7 +52,7 @@ const useUserStore = create<UserStore>((set, get) => ({
       const res = await axios.post(URL_USER_LOGOUT, { token });
 
       if (res.status === STATUS_CODE_LOGGED_OUT) {
-        set({ user: { username: '', loginState: false } });
+        set((state) => ({ user: { ...state.user, username: '', loginState: false } }));
       }
       return res;
     } catch (err) {
@@ -63,7 +66,7 @@ const useUserStore = create<UserStore>((set, get) => ({
         headers: { Authorization: `Bearer ${token}` },
       });
       if (res.status === 200) {
-        set({ user: { username: '', loginState: false } });
+        set((state) => ({ user: { ...state.user, username: '', loginState: false } }));
       }
 
       return res;
@@ -71,6 +74,9 @@ const useUserStore = create<UserStore>((set, get) => ({
       console.log(err);
       return { error: 'An error occured while deleting account' };
     }
+  },
+  updateSocketId: (socketId: string) => {
+    set((state) => ({ user: { ...state.user, socketId: socketId } }));
   },
 }));
 
