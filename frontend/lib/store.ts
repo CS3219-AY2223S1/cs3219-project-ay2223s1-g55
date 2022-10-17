@@ -76,7 +76,7 @@ const useUserStore = create<UserStore>((set, get) => ({
     }
   },
   updateSocketId: (socketId: string) => {
-    set((state) => ({ user: { ...state.user, socketId: socketId } }));
+    set((state) => ({ user: { ...state.user, socketId } }));
   },
 }));
 
