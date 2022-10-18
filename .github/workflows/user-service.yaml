@@ -21,45 +21,40 @@ env:
 
 jobs:
   deploy:
-   name: User-Service
-   runs-on: ubuntu-latest
-   env:
-     SERVICE: user-service
-   steps:
-   - name: Checkout repository
-     uses: actions/checkout@v2
+    name: User-Service
+    runs-on: ubuntu-latest
+    env:
+      SERVICE: user-service
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
 
-   - name: Google Auth
-     id: auth
-     uses: 'google-github-actions/auth@v0'
-     with:
-       credentials_json: ${{ secrets.GCP_GAE_CREDENTIALS }}
-   # A plugin that helps to push github secrets into the GAE service -
-   # the google-github-actions/deploy-appengine plugin does not support env vars.
-   - name: GCP app engine yaml compiler
-     uses: gokiwibot/gcp-yaml-compiler@v1.0
-     with:
-       file: ./backend/user-service/app.yaml
-     env:
-       ENV: PROD
-       DB_CLOUD_URI: ${{ secrets.DB_CLOUD_URI }}
-       REDIS_CLOUD_URI: ${{ secrets.REDIS_CLOUD_URI }}
-       REDIS_CLOUD_PORT: ${{ secrets.REDIS_CLOUD_PORT }}
-       REDIS_CLOUD_PASSWORD: ${{ secrets.REDIS_CLOUD_PASSWORD }}
-       JWT_SECRET: ${{ secrets.JWT_SECRET }}
+    - name: Google Auth
+      id: auth
+      uses: 'google-github-actions/auth@v0'
+      with:
+        credentials_json: ${{ secrets.GCP_GAE_CREDENTIALS }}
 
-   - id: 'deploy'
-     name: 'deploy to gae'
-     uses: 'google-github-actions/deploy-appengine@v0'
-     with:
-       deliverables: 'backend/user-service/app.yaml'
-       project_id: '${{ env.GCP_PROJECT }}'
-       env_vars: |
-         ENV=PROD
-         DB_CLOUD_URI=${{ secrets.DB_CLOUD_URI }}
-         REDIS_CLOUD_URI=${{ secrets.REDIS_CLOUD_URI }}
-         REDIS_CLOUD_PORT=${{ secrets.REDIS_CLOUD_PORT }}
-         REDIS_CLOUD_PASSWORD=${{ secrets.REDIS_CLOUD_PASSWORD }}
-         JWT_SECRET=${{ secrets.JWT_SECRET }}
-   - name: 'show output'
-     run: 'echo ${{ steps.deploy.outputs.url }}'
+    # A plugin that helps to push github secrets into the GAE service -
+    # the google-github-actions/deploy-appengine plugin does not support env vars.
+    - name: GCP app engine yaml compiler
+      uses: gokiwibot/gcp-yaml-compiler@v1.0
+      with:
+        file: ./backend/user-service/app.yaml
+      env:
+        ENV: PROD
+        DB_CLOUD_URI: ${{ secrets.DB_CLOUD_URI }}
+        REDIS_CLOUD_URI: ${{ secrets.REDIS_CLOUD_URI }}
+        REDIS_CLOUD_PORT: ${{ secrets.REDIS_CLOUD_PORT }}
+        REDIS_CLOUD_PASSWORD: ${{ secrets.REDIS_CLOUD_PASSWORD }}
+        JWT_SECRET: ${{ secrets.JWT_SECRET }}
+
+    - id: 'deploy'
+      name: 'deploy to gae'
+      uses: 'google-github-actions/deploy-appengine@v0'
+      with:
+        deliverables: 'backend/user-service/app.yaml'
+        project_id: '${{ env.GCP_PROJECT }}'
+
+    - name: 'show output'
+      run: 'echo ${{ steps.deploy.outputs.url }}'
