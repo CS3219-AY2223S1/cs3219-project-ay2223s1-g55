@@ -1,30 +1,20 @@
 name: User Service Deploy
 
-
-# on: [push, pull_request]
+env:
+  PROJECT_ID: cs3219-g55
+  REGION: asia-southeast1
+  SERVICE_NAME: user-service
 
 on:
   push:
     branches: [ combine-services ]
     paths: 
-      - 'backend/user-service/**'
-      - '.github/workflows/user-service.yaml'
-#   pull_request:
-#     branches: [ combine-services ]
-#     paths: 
-#       - 'workflows/user-service.yaml'
-#       - 'backend/user-service/**'
-
-env:
-  PROJECT_ID: cs3219-g55
-  REGION: asia-southeast1
+      - 'backend/${{ env.SERVICE_NAME }}/**'
 
 jobs:
   deploy:
-    name: User-Service
+    name: ${{ env.SERVICE_NAME }}
     runs-on: ubuntu-latest
-    env:
-      SERVICE: user-service
     steps:
     - name: Checkout repository
       uses: actions/checkout@v2
@@ -40,7 +30,7 @@ jobs:
     - name: GCP app engine yaml compiler
       uses: gokiwibot/gcp-yaml-compiler@v1.0
       with:
-        file: ./backend/user-service/app.yaml
+        file: ./backend/${{ env.SERVICE_NAME }}/app.yaml
       env:
         ENV: PROD
         DB_CLOUD_URI: ${{ secrets.DB_CLOUD_URI }}
@@ -53,7 +43,7 @@ jobs:
       name: 'deploy to gae'
       uses: 'google-github-actions/deploy-appengine@v0'
       with:
-        deliverables: 'backend/user-service/app.yaml'
+        deliverables: 'backend/${{ env.SERVICE_NAME}}/app.yaml'
         project_id: '${{ env.GCP_PROJECT }}'
 
     - name: 'show output'
