@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import 'react-quill/dist/quill.snow.css';
 import io from 'socket.io-client';
 import { Card, CardContent, Typography } from '@mui/material';
+import { URL_QUESTION_SVC } from '@/lib/configs';
 
 const SAVE_INTERVAL_MS = 2000;
 const ReactQuill = dynamic(() => import('react-quill'), {
@@ -38,7 +39,7 @@ function Editor(props: { sessionId: string }) {
 
   useEffect(() => {
     // check for connection, get room id and connect either here or on top
-    socket = io('http://localhost:8002', {
+    socket = io(URL_QUESTION_SVC, {
       transports: ['websocket'],
       // autoConnect: false,
     });

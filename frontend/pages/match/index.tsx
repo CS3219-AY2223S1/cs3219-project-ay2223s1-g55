@@ -19,7 +19,7 @@ import {
   Backdrop,
   CircularProgress,
 } from '@mui/material';
-import { URL_MATCHING_CANCEL, URL_MATCHING_REQUEST, URI_MATCHING_SVC } from '@/lib/configs';
+import { URL_MATCHING_CANCEL, URL_MATCHING_REQUEST, URL_MATCHING_SVC } from '@/lib/configs';
 import axios from 'axios';
 import { useRouter } from 'next/router';
 
@@ -52,7 +52,7 @@ const initialMessagesState = {
 const initialMessages = [] as string[];
 
 // backend port used for socket.io
-const socket = io(URI_MATCHING_SVC, {
+const socket = io(URL_MATCHING_SVC, {
   transports: ['websocket'],
   // autoConnect: false,
 });
@@ -161,7 +161,7 @@ function Matching() {
   // user undefined from useSession
   useEffect(() => {
     // backend port used for socket.io
-    const socket = io('http://localhost:8001', {
+    const socket = io(URL_MATCHING_SVC, {
       transports: ['websocket'],
       // autoConnect: false,
     });

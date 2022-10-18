@@ -1,5 +1,5 @@
 import DefaultLayout from '@/layouts/DefaultLayout';
-import { URL_COMMUNICATION_MESSAGE } from '@/lib/configs';
+import { URL_COMMUNICATION_MESSAGE, URL_COMMUNICATION_SVC } from '@/lib/configs';
 import {
   Alert,
   Box,
@@ -109,7 +109,7 @@ const fetchAllMessages = async (sessionId: string) => {
     return null;
   }
   try {
-    const res = await axios.get(`http://localhost:8008/api/communication/message/${sessionId}`);
+    const res = await axios.get(`${URL_COMMUNICATION_MESSAGE}/${sessionId}`);
     console.log('res from fetchAllMessages: ', res.data);
     if (res.status === 200 || res.status === 201) {
       return res;
@@ -265,7 +265,7 @@ export default function SessionPage(props: { sessionId: string }) {
   }, [socket]);
 
   useEffect(() => {
-    const clientSocket = io('http://localhost:8008', {
+    const clientSocket = io(URL_COMMUNICATION_SVC, {
       transports: ['websocket'],
       // autoConnect: false,
     });

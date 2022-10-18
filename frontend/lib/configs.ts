@@ -24,7 +24,11 @@ const URI_HISTORY_SVC = process.env.NODE_ENV === 'development'
     ? 'http://localhost:8003'
     : URI_API_BASE;
 // prettier-ignore
-const URI_COMMUNICATION_SVC = process.env.NODE_ENV === 'development'
+const URI_EDITOR_SVC = process.env.NODE_ENV === 'development'
+    ? 'http://localhost:8004'
+    : URI_API_BASE;
+// prettier-ignore
+export const URI_COMMUNICATION_SVC = process.env.NODE_ENV === 'development'
     ? 'http://localhost:8008'
     : URI_API_BASE;
 
@@ -47,6 +51,9 @@ export const URL_COMMUNICATION_MESSAGE = `${URL_COMMUNICATION_SVC}/message`;
 
 const PREFIX_QUESTION_SVC = '/api/question';
 export const URL_QUESTION_SVC = URI_QUESTION_SVC + PREFIX_QUESTION_SVC;
+
+const PREFIX_EDITOR_SVC = '/api/editor';
+export const URL_EDITOR_SVC = URI_EDITOR_SVC + PREFIX_EDITOR_SVC;
 
 const PREFIX_HISTORY_SVC = '/api/history';
 export const URL_HISTORY_SVC = URI_HISTORY_SVC + PREFIX_HISTORY_SVC;
