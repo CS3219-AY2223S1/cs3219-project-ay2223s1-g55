@@ -1,14 +1,14 @@
 name: User Service Deploy
 
 
-on: push
+# on: [push, pull_request]
 
-# on:
-#   push:
-#     branches: [ combine-services ]
-#     paths: 
-#       - 'workflows/user-service.yaml'
-#       - 'backend/user-service/**'
+on:
+  push:
+    branches: [ combine-services ]
+    paths: 
+      - 'backend/user-service/**'
+      # - 'workflows/user-service.yaml'
 #   pull_request:
 #     branches: [ combine-services ]
 #     paths: 
@@ -22,32 +22,32 @@ env:
 jobs:
   deploy:
    name: User-Service
-    runs-on: ubuntu-latest
-    env:
-      SERVICE: user-service
-    steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
+   runs-on: ubuntu-latest
+   env:
+     SERVICE: user-service
+   steps:
+   - name: Checkout repository
+     uses: actions/checkout@v2
 
-    - name: Google Auth
-      id: auth
-      uses: 'google-github-actions/auth@v0'
-      with:
-        credentials_json: ${{ secrets.GCP_CREDENTIALS }}
+   - name: Google Auth
+     id: auth
+     uses: 'google-github-actions/auth@v0'
+     with:
+       credentials_json: ${{ secrets.GCP_CREDENTIALS }}
 
-    - id: 'deploy'
-      name: 'deploy to gae'
-      uses: 'google-github-actions/deploy-appengine@v0'
-      with:
-        deliverables: 'backend/user-service/app.yaml'
-        project_id: '${{ env.GCP_PROJECT }}'
-        env_vars: |
-          ENV=PROD
-          DB_CLOUD_URI=${{ secrets.DB_CLOUD_URI }}
-          REDIS_CLOUD_URI=${{ secrets.REDIS_CLOUD_URI }}
-          REDIS_CLOUD_PORT=${{ secrets.REDIS_CLOUD_PORT }}
-          REDIS_CLOUD_PASSWORD=${{ secrets.REDIS_CLOUD_PASSWORD }}
-          JWT_SECRET=${{ secrets.JWT_SECRET }}
+   - id: 'deploy'
+     name: 'deploy to gae'
+     uses: 'google-github-actions/deploy-appengine@v0'
+     with:
+       deliverables: 'backend/user-service/app.yaml'
+       project_id: '${{ env.GCP_PROJECT }}'
+       env_vars: |
+         ENV=PROD
+         DB_CLOUD_URI=${{ secrets.DB_CLOUD_URI }}
+         REDIS_CLOUD_URI=${{ secrets.REDIS_CLOUD_URI }}
+         REDIS_CLOUD_PORT=${{ secrets.REDIS_CLOUD_PORT }}
+         REDIS_CLOUD_PASSWORD=${{ secrets.REDIS_CLOUD_PASSWORD }}
+         JWT_SECRET=${{ secrets.JWT_SECRET }}
 
-    - name: 'show output'
-      run: 'echo ${{ steps.deploy.outputs.url }}'
+   - name: 'show output'
+     run: 'echo ${{ steps.deploy.outputs.url }}'
