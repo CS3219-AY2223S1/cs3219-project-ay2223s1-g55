@@ -2,9 +2,17 @@
 
 ## Production Deployments
 frontend url: https://frontend-lemon-one.vercel.app/signup/
-user-service url: https://user-service-q563p73okq-as.a.run.app/
-matching-service url: https://matching-service-q563p73okq-as.a.run.app/
+backend url: https://cs3219-g55.as.r.appspot.com/
 
+### Microservices
+user-service: https://cs3219-g55.as.r.appspot.com/api/user/
+communication-service: https://cs3219-g55.as.r.appspot.com/api/communication/
+matching-service: https://cs3219-g55.as.r.appspot.com/api/match/
+editor-service: https://cs3219-g55.as.r.appspot.com/api/editor/
+history-service: https://cs3219-g55.as.r.appspot.com/api/history/
+question-service: https://cs3219-g55.as.r.appspot.com/api/question/
+
+TODO: update how to set up project
 ## User Service
 1. Rename `.env.sample` file to `.env`.
 2. Create a Cloud DB URL using Mongo Atlas.

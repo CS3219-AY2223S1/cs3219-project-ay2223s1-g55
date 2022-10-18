@@ -1,6 +1,6 @@
-import {Server} from "socket.io";
-import {instrument} from "@socket.io/admin-ui";
-import {ormCreateMessage as _createMessage} from "../model/message-orm.js";
+import { Server } from "socket.io";
+import { instrument } from "@socket.io/admin-ui";
+import { ormCreateMessage as _createMessage } from "../model/message-orm.js";
 
 export const createSocketIOServer = (httpServer) => {
   const io = new Server(httpServer, {
@@ -53,5 +53,5 @@ export const createSocketIOServer = (httpServer) => {
   });
 
   // Admin Dashboard for socket connections, use https://admin.socket.io to access
-  instrument(io, {auth: false});
+  instrument(io, { auth: false });
 };
