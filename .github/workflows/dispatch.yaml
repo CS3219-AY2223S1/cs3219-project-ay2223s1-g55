@@ -2,7 +2,7 @@ name: Deploy Dispatch Settings
 
 on:
   push:
-    branches: [ combine-services ]
+    branches: [ main ]
     paths: 
       - 'backend/dispatch.yaml'
       - '.github/workflows/dispatch.yaml'

@@ -2,7 +2,7 @@ name: Matching Service Deploy
 
 on:
   push:
-    branches: [ combine-services ]
+    branches: [ main ]
     paths: 
       - 'backend/matching-service/**'
       - '.github/workflows/matching-service.yaml'

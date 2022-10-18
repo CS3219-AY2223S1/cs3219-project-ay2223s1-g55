@@ -2,7 +2,7 @@ name: User Service Deploy
 
 on:
   push:
-    branches: [ combine-services ]
+    branches: [ main ]
     paths: 
       - 'backend/user-service/**'
       - '.github/workflows/user-service.yaml'

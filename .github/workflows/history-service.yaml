@@ -2,7 +2,7 @@ name: History Service Deploy
 
 on:
   push:
-    branches: [ combine-services ]
+    branches: [ main ]
     paths: 
       - 'backend/history-service/**'
       - '.github/workflows/history-service.yaml'
