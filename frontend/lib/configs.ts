@@ -5,18 +5,28 @@
  * Our 'get' methods will automatically detect the 'username' parameter provided during the function
  * call and replace the ':username' portion of the url with the supplied username string.
  */
+const URI_API_BASE = 'https://cs3219-g55.as.r.appspot.com';
+
 // prettier-ignore
 const URI_USER_SVC = process.env.NODE_ENV === 'development'
     ? 'http://localhost:8000'
-    : 'https://user-service-q563p73okq-as.a.run.app';
-
-const URI_COMMUNICATION_SVC = 'http://localhost:8008';
+    : URI_API_BASE;
 // prettier-ignore
 export const URI_MATCHING_SVC = process.env.NODE_ENV === 'development'
     ? 'http://localhost:8001'
-    : 'https://matching-service-q563p73okq-as.a.run.app';
-const URI_QUESTION_SVC = process.env.URI_QUESTION_SVC || 'http://localhost:8002';
-const URI_HISTORY_SVC = process.env.URI_HISTORY_SVC || 'http://localhost:8003';
+    : URI_API_BASE;
+// prettier-ignore
+const URI_QUESTION_SVC = process.env.NODE_ENV === 'development'
+    ? 'http://localhost:8002'
+    : URI_API_BASE;
+// prettier-ignore
+const URI_HISTORY_SVC = process.env.NODE_ENV === 'development'
+    ? 'http://localhost:8003'
+    : URI_API_BASE;
+// prettier-ignore
+const URI_COMMUNICATION_SVC = process.env.NODE_ENV === 'development'
+    ? 'http://localhost:8008'
+    : URI_API_BASE;
 
 const PREFIX_USER_SVC = '/api/user';
 
