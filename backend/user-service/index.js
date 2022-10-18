@@ -18,7 +18,7 @@ import {
 const router = express.Router();
 
 // Controller will contain all the User-defined Routes
-router.get('/', (_, res) => res.send('Hello World from user-service'));
+router.get('/', (_, res) => res.send('Hello World from user-service v1'));
 router.post('/', createUser);
 router.delete('/', deleteUser);
 router.post('/login', loginUser);

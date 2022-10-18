@@ -17,7 +17,7 @@ app.options('*', cors());
 
 const router = express.Router();
 router.get('/', (_, res) => {
-  res.send('Hello World from matching-service');
+  res.send('Hello World from matching-service v1');
 });
 
 router.get('/request', findMatchRequest);

@@ -45,7 +45,6 @@ jobs:
       uses: 'google-github-actions/deploy-appengine@v0'
       with:
         deliverables: 'backend/${{ env.SERVICE_NAME}}/app.yaml'
-        project_id: '${{ env.GCP_PROJECT }}'
 
     - name: 'show output'
       run: 'echo ${{ steps.deploy.outputs.url }}'

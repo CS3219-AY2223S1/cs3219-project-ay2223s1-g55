@@ -11,7 +11,7 @@ app.options('*', cors());
 
 const router = express.Router();
 router.get('/', (_, res) => {
-  res.send('Hello World from collaboration-service');
+  res.send('Hello World from collaboration-service v1');
 });
 
 app.use('/api/collaboration', router).all((_, res) => {

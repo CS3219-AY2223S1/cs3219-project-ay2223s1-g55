@@ -16,7 +16,7 @@ import {
 const router = express.Router();
 
 // Controller will contain all the History-defined Routes
-router.get('/', (_, res) => res.send('History-service is up and running!'));
+router.get('/', (_, res) => res.send('History-service is up and running! v1'));
 router.get('/records/:username', listUserRecords);
 router.post('/records/:username', createRecord);
 router.get('/completed/:username', listUserCompletedQuestions);
