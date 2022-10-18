@@ -34,8 +34,8 @@ jobs:
      uses: 'google-github-actions/auth@v0'
      with:
        credentials_json: ${{ secrets.GCP_GAE_CREDENTIALS }}
-   A plugin that helps to push github secrets into the GAE service -
-   the google-github-actions/deploy-appengine plugin does not support env vars.
+   # A plugin that helps to push github secrets into the GAE service -
+   # the google-github-actions/deploy-appengine plugin does not support env vars.
    - name: GCP app engine yaml compiler
      uses: gokiwibot/gcp-yaml-compiler@v1.0
      with:
