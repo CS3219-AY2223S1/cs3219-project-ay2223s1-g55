@@ -12,10 +12,9 @@ env:
   REGION: asia-southeast1
   SERVICE_NAME: user-service
 
-
 jobs:
   deploy:
-    name: ${{ env.SERVICE_NAME }}
+    name: User-Service
     runs-on: ubuntu-latest
     steps:
     - name: Checkout repository
