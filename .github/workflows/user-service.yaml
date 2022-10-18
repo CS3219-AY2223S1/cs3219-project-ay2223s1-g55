@@ -9,8 +9,7 @@ on:
   push:
     branches: [ combine-services ]
     paths: 
-      - 'backend/${{ env.SERVICE_NAME }}/**'
-      - '.github/workflows/${{ env.SERVICE_NAME }}.yaml'
+      - 'backend/user-service/**'
 
 jobs:
   deploy:
