@@ -17,7 +17,7 @@ name: User Service Deploy
 on:
   push:
     branches: [ combine-services ]
-    path: 'backend/user-service/**'
+    paths: 'backend/user-service/**'
   # pull_request:
   #   branches:
   #   - 'example'
