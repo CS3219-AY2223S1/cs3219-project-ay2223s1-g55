@@ -1,0 +1,28 @@
+dispatch:
+  # Default service serves the typical web resources and all static resources.
+  - url: "*/favicon.ico"
+    service: default
+
+  # Default service serves simple hostname request.
+  - url: "cs3219-g55.as.r.appspot.com/"
+    service: default
+
+  # Send all user-service traffic.
+  - url: "cs3219-g55.as.r.appspot.com/api/user*"
+    service: user-service 
+
+  # Send all communication-service traffic.
+  - url: "cs3219-g55.as.r.appspot.com/api/communication*"
+    service: communication-service 
+
+  # Send all history-service traffic.
+  - url: "cs3219-g55.as.r.appspot.com/api/history*"
+    service: history-service 
+
+  # Send all question-service traffic.
+  - url: "cs3219-g55.as.r.appspot.com/api/question*"
+    service: question-service 
+
+  # Send all matching-service traffic.
+  - url: "cs3219-g55.as.r.appspot.com/api/match*"
+    service: matching-service 
