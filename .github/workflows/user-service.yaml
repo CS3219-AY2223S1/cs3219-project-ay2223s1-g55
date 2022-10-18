@@ -1,0 +1,60 @@
+# Copyright 2020 Google, LLC.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#    http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+name: User Service Deploy
+
+on:
+  push:
+    branches: [ combine-services ]
+    path: 'backend/user-service/**'
+  # pull_request:
+  #   branches:
+  #   - 'example'
+
+env:
+  PROJECT_ID: cs3219-g55
+  REGION: asia-southeast1
+
+jobs:
+  deploy:
+   name: User-Service
+    runs-on: ubuntu-latest
+    env:
+      SERVICE: user-service
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Google Auth
+      id: auth
+      uses: 'google-github-actions/auth@v0'
+      with:
+        credentials_json: ${{ secrets.GCP_CREDENTIALS }}
+
+    - id: 'deploy'
+      name: 'deploy to gae'
+      uses: 'google-github-actions/deploy-appengine@v0'
+      with:
+        deliverables: 'backend/user-service/app.yaml'
+        project_id: '${{ env.GCP_PROJECT }}'
+        env_vars: |
+          ENV=PROD
+          DB_CLOUD_URI=${{ secrets.DB_CLOUD_URI }}
+          REDIS_CLOUD_URI=${{ secrets.REDIS_CLOUD_URI }}
+          REDIS_CLOUD_PORT=${{ secrets.REDIS_CLOUD_PORT }}
+          REDIS_CLOUD_PASSWORD=${{ secrets.REDIS_CLOUD_PASSWORD }}
+          JWT_SECRET=${{ secrets.JWT_SECRET }}
+
+    - name: 'show output'
+      run: 'echo ${{ steps.deploy.outputs.url }}'
