@@ -1,15 +1,15 @@
 export function validateRecord(record) {
-    const { questionId, firstUserId, secondUserId } = record;
+    const { questionName, firstUsername, secondUsername } = record;
 
-    if (!questionId) {
-        return { ok: false, err: 'Missing questionId.' }
+    if (!questionName) {
+        return { ok: false, err: 'Missing questionName.' }
     }
 
-    if (!firstUserId || !secondUserId) {
-        return { ok: false, err: 'Missing user id(s).' }
+    if (!firstUsername || !secondUsername) {
+        return { ok: false, err: 'Missing username(s).' }
     }
 
-    if (firstUserId === secondUserId) {
+    if (firstUsername === secondUsername) {
         return { ok: false, err: "Users provided must be different." }
     }
 
