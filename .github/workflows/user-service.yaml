@@ -27,31 +27,35 @@ jobs:
       SERVICE: user-service
       PATH: backend/user-service/app.yaml
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
+      - name: Checkout repository
+        uses: actions/checkout@v2
 
-    - name: Google Auth
-      id: auth
-      uses: 'google-github-actions/auth@v0'
-      with:
-        credentials_json: ${{ secrets.GCP_GAE_CREDENTIALS }}
-    - uses: gokiwibot/gcp-yaml-compiler@v1.0
-      with:
-        file: ./${{ env.PATH }}
-      env:
-        ENV: PROD
-        DB_CLOUD_URI: ${{ secrets.DB_CLOUD_URI }}
-        REDIS_CLOUD_URI: ${{ secrets.REDIS_CLOUD_URI }}
-        REDIS_CLOUD_PORT: ${{ secrets.REDIS_CLOUD_PORT }}
-        REDIS_CLOUD_PASSWORD: ${{ secrets.REDIS_CLOUD_PASSWORD }}
-        JWT_SECRET: ${{ secrets.JWT_SECRET }}
+      - name: Google Auth
+        id: auth
+        uses: 'google-github-actions/auth@v0'
+        with:
+          credentials_json: ${{ secrets.GCP_GAE_CREDENTIALS }}
 
-    - id: 'deploy'
-      name: 'deploy to gae'
-      uses: 'google-github-actions/deploy-appengine@v0'
-      with:
-        deliverables: '${{ env.PATH }}'
-        project_id: '${{ env.GCP_PROJECT }}'
+      # A plugin that helps to push github secrets into the GAE service -
+      # the google-github-actions/deploy-appengine plugin does not support env vars.
+      - name: GCP app engine yaml compiler
+        uses: gokiwibot/gcp-yaml-compiler@v1.0
+        with:
+          file: ./${{ env.PATH }}
+        env:
+          ENV: PROD
+          DB_CLOUD_URI: ${{ secrets.DB_CLOUD_URI }}
+          REDIS_CLOUD_URI: ${{ secrets.REDIS_CLOUD_URI }}
+          REDIS_CLOUD_PORT: ${{ secrets.REDIS_CLOUD_PORT }}
+          REDIS_CLOUD_PASSWORD: ${{ secrets.REDIS_CLOUD_PASSWORD }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
 
-    - name: 'show output'
-      run: 'echo ${{ steps.deploy.outputs.url }}'
+      - id: 'deploy'
+        name: 'deploy to gae'
+        uses: 'google-github-actions/deploy-appengine@v0'
+        with:
+          deliverables: '${{ env.PATH }}'
+          project_id: '${{ env.GCP_PROJECT }}'
+
+      - name: 'show output'
+        run: 'echo ${{ steps.deploy.outputs.url }}'
