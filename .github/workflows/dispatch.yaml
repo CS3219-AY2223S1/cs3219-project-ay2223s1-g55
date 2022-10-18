@@ -4,7 +4,7 @@ on:
   push:
     branches: [ combine-services ]
     paths: 
-      - 'dispatch.yaml'
+      - 'backend/dispatch.yaml'
       - '.github/workflows/dispatch.yaml'
 
 env:
@@ -13,7 +13,7 @@ env:
 
 jobs:
   deploy:
-    name: Editor-Service
+    name: Dispatch-Settings 
     runs-on: ubuntu-latest
     steps:
     - name: Checkout repository
@@ -29,7 +29,7 @@ jobs:
       name: 'deploy to gae'
       uses: 'google-github-actions/deploy-appengine@v0'
       with:
-        deliverables: 'dispatch.yaml'
+        deliverables: 'backend/dispatch.yaml'
 
     - name: 'show output'
       run: 'echo ${{ steps.deploy.outputs.url }}'
