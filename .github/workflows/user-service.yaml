@@ -1,16 +1,17 @@
 name: User Service Deploy
 
-env:
-  PROJECT_ID: cs3219-g55
-  REGION: asia-southeast1
-  SERVICE_NAME: user-service
-
 on:
   push:
     branches: [ combine-services ]
     paths: 
       - 'backend/user-service/**'
       - '.github/workflows/user-service.yaml'
+
+env:
+  PROJECT_ID: cs3219-g55
+  REGION: asia-southeast1
+  SERVICE_NAME: user-service
+
 
 jobs:
   deploy:
