@@ -26,3 +26,7 @@ dispatch:
   # Send all matching-service traffic.
   - url: "cs3219-g55.as.r.appspot.com/api/match*"
     service: matching-service 
+
+  # Send all editor-service traffic.
+  - url: "cs3219-g55.as.r.appspot.com/api/collaboration*"
+    service: editor-service 

@@ -27,7 +27,6 @@ import { styled } from '@mui/material/styles';
 import useUserStore from '@/lib/store';
 import DefaultLayout from '@/layouts/DefaultLayout';
 import { io } from 'socket.io-client';
-import router from 'next/router';
 import { EMIT_EVENT, ON_EVENT } from '@/lib/constants';
 
 const SendMessageButton = styled(Button)({
