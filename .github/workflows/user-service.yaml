@@ -20,9 +20,11 @@ on:
     paths: 
       - 'workflows/user-service.yaml'
       - 'backend/user-service/**'
-  # pull_request:
-  #   branches:
-  #   - 'example'
+  pull_request:
+    branches: [ combine-services ]
+    paths: 
+      - 'workflows/user-service.yaml'
+      - 'backend/user-service/**'
 
 env:
   PROJECT_ID: cs3219-g55
