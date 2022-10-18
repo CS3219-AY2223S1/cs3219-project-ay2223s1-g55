@@ -10,7 +10,7 @@ const socketInitializer = (httpServer) => {
   socket = new Server(httpServer, {
     // Edit here to include new URL to access socket
     cors: {
-      origin: ['http://localhost:3000', 'https://admin.socket.io'],
+      origin: ['http://localhost:3000', 'https://admin.socket.io', 'https://frontend-git-combine-services-cs-3219-g55.vercel.app'],
       credentials: true,
     },
   });
