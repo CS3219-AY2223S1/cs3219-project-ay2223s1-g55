@@ -2,7 +2,7 @@ name: Cloud Run Deploy Editor-Service
 
 on:
   push:
-    branches: [ ezek/deploy-microservices ]
+    branches: [ main ]
     paths: 
       - 'editor-service/**'
       - '.github/workflows/editor.yml'

@@ -3,7 +3,9 @@ name: Cloud Run Deploy Matching-Service
 on:
   push:
     branches: [ main ]
-    path: 'matching-service/**'
+    path: 
+      - 'matching-service/**'
+      - '.github/workflows/matching.yml'
 
 env:
   PROJECT_ID: cs3219-g55

@@ -3,7 +3,9 @@ name: Cloud Run Deploy User-Service
 on:
   push:
     branches: [ main ]
-    path: 'user-service/**'
+    path: 
+      - 'user-service/**'
+      - '.github/workflows/user.yml'
 
 env:
   PROJECT_ID: cs3219-g55

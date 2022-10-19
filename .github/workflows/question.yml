@@ -2,7 +2,7 @@ name: Cloud Run Deploy Question-Service
 
 on:
   push:
-    branches: [ ezek/deploy-microservices ]
+    branches: [ main ]
     paths: 
       - 'question-service/**'
       - '.github/workflows/question.yml'
