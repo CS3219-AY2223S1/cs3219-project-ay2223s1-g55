@@ -5,11 +5,11 @@
  * Our 'get' methods will automatically detect the 'username' parameter provided during the function
  * call and replace the ':username' portion of the url with the supplied username string.
  */
-const URI_USER_SVC = process.env.URI_USER_SVC || 'http://localhost:8000';
-export const URI_MATCHING_SVC = process.env.URI_MATCHING_SVC || 'http://localhost:8001';
-const URI_QUESTION_SVC = process.env.URI_QUESTION_SVC || 'http://localhost:8002';
-const URI_HISTORY_SVC = process.env.URI_HISTORY_SVC || 'http://localhost:8003';
-const URI_EDITOR_SVC = process.env.URI_EDITOR_SVC || 'http://localhost:8004';
+const URI_USER_SVC = process.env.NEXT_PUBLIC_URI_USER_SVC || 'http://localhost:8000';
+export const URI_MATCHING_SVC = process.env.NEXT_PUBLIC_URI_MATCHING_SVC || 'http://localhost:8001';
+const URI_QUESTION_SVC = process.env.NEXT_PUBLIC_URI_QUESTION_SVC || 'http://localhost:8002';
+const URI_HISTORY_SVC = process.env.NEXT_PUBLIC_URI_HISTORY_SVC || 'http://localhost:8003';
+const URI_EDITOR_SVC = process.env.NEXT_PUBLIC_URI_EDITOR_SVC || 'http://localhost:8004';
 
 const PREFIX_USER_SVC = '/api/user';
 export const URL_USER_SVC = URI_USER_SVC + PREFIX_USER_SVC;
