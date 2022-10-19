@@ -5,19 +5,13 @@
  * Our 'get' methods will automatically detect the 'username' parameter provided during the function
  * call and replace the ':username' portion of the url with the supplied username string.
  */
-// prettier-ignore
-const URI_USER_SVC = process.env.NODE_ENV === 'development'
-    ? 'http://localhost:8000'
-    : 'https://user-service-q563p73okq-as.a.run.app';
-// prettier-ignore
-export const URI_MATCHING_SVC = process.env.NODE_ENV === 'development'
-    ? 'http://localhost:8001'
-    : 'https://matching-service-q563p73okq-as.a.run.app';
+const URI_USER_SVC = process.env.URI_USER_SVC || 'http://localhost:8000';
+const URI_MATCHING_SVC = process.env.URI_MATCHING_SVC || 'http://localhost:8001';
 const URI_QUESTION_SVC = process.env.URI_QUESTION_SVC || 'http://localhost:8002';
 const URI_HISTORY_SVC = process.env.URI_HISTORY_SVC || 'http://localhost:8003';
+const URI_EDITOR_SVC = process.env.URI_EDITOR_SVC || 'http://localhost:8004';
 
 const PREFIX_USER_SVC = '/api/user';
-
 export const URL_USER_SVC = URI_USER_SVC + PREFIX_USER_SVC;
 export const URL_USER_LOGIN = `${URL_USER_SVC}/login`;
 export const URL_USER_SESSION = `${URL_USER_SVC}/session`;

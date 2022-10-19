@@ -1,4 +1,4 @@
-name: Cloud Run Deploy
+name: Cloud Run Deploy Matching-Service
 
 on:
   push:

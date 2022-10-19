@@ -1,19 +1,20 @@
-name: Cloud Run Deploy User-Service
+name: Cloud Run Deploy Question-Service
 
 on:
   push:
-    branches: [ main ]
-    path: 'user-service/**'
+    branches: [ ezek/deploy-microservices ]
+    paths: 
+      - 'question-service/**'
+      - '.github/workflows/question.yml'
 
 env:
-  PROJECT_ID: cs3219-g55
   REGION: asia-southeast1
+  SERVICE: question-service
 
 jobs:
-    deploy_1:
+    deploy_2:
+        name: Question-Service
         runs-on: ubuntu-latest
-        env:
-          SERVICE: user-service
         steps:
         - name: Checkout repository
           uses: actions/checkout@v2
