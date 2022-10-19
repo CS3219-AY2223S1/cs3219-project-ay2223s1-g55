@@ -1,4 +1,5 @@
 runtime: nodejs16
+env: flex
 service: matching-service
 env_variables:
   ENV: $ENV
