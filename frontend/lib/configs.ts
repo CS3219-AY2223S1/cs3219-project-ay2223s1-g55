@@ -6,7 +6,7 @@
  * call and replace the ':username' portion of the url with the supplied username string.
  */
 const URI_USER_SVC = process.env.URI_USER_SVC || 'http://localhost:8000';
-const URI_MATCHING_SVC = process.env.URI_MATCHING_SVC || 'http://localhost:8001';
+export const URI_MATCHING_SVC = process.env.URI_MATCHING_SVC || 'http://localhost:8001';
 const URI_QUESTION_SVC = process.env.URI_QUESTION_SVC || 'http://localhost:8002';
 const URI_HISTORY_SVC = process.env.URI_HISTORY_SVC || 'http://localhost:8003';
 const URI_EDITOR_SVC = process.env.URI_EDITOR_SVC || 'http://localhost:8004';
