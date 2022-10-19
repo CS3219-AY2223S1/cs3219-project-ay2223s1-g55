@@ -8,13 +8,12 @@ on:
 env:
   PROJECT_ID: cs3219-g55
   REGION: asia-southeast1
+  SERVICE: matching-service
 
 jobs:
     deploy_2:
         name: Matching-Service
         runs-on: ubuntu-latest
-        env:
-          SERVICE: matching-service
         steps:
         - name: Checkout repository
           uses: actions/checkout@v2
