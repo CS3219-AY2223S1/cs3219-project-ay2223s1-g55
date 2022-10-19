@@ -14,7 +14,7 @@ const URI_USER_SVC = process.env.NODE_ENV === 'development'
 // prettier-ignore
 export const URI_MATCHING_SVC = process.env.NODE_ENV === 'development'
     ? 'http://localhost:8001'
-    : URI_API_BASE;
+    : 'https://matching-service-dot-cs3219-g55.as.r.appspot.com';
 // prettier-ignore
 const URI_QUESTION_SVC = process.env.NODE_ENV === 'development'
     ? 'http://localhost:8002'
