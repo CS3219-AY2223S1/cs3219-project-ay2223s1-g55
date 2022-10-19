@@ -1,6 +1,8 @@
-runtime: nodejs16
+runtime: nodejs
 env: flex
 service: matching-service
+network:
+  session_affinity: true
 env_variables:
   ENV: $ENV
   DB_CLOUD_URI: $DB_CLOUD_URI
