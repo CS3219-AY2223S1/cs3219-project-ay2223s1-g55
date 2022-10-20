@@ -7,6 +7,7 @@ import Chat from '@/components/chat';
 export default function CollaborationPlatform() {
   const router = useRouter();
   const { id: sessionId }: { id?: string } = router.query;
+  console.log('sessionId is: ', sessionId);
   return (
     <div style={{ padding: 40 }}>
       <Grid container spacing={3}>

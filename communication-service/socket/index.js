@@ -17,6 +17,10 @@ export const createSocketIOServer = (httpServer) => {
 
     // announcement when user connects
     socket.emit("message", "Welcome to Server!");
+    // See which client socket has disconnected
+    socket.on("disconnect", () => {
+      console.log("Client disconnected: ", socket.id);
+    });
 
     // TODO: FetchAllRoomMessages to after the person just join, if no messages yet(sessionId dont exists in collection) send empty array
     // Assuming no private messaging only messaging through a room now

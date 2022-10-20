@@ -26,7 +26,7 @@ app.use("/api/communication", router).all((_, res) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
 });
 
-const PORT = process.env.PORT || 8008;
+const PORT = process.env.PORT || 8005;
 
 const httpServer = createServer(app);
 

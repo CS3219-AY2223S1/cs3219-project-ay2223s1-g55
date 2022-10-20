@@ -12,6 +12,7 @@ import {
   ListItemText,
   TextField,
   Typography,
+  Paper,
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import axios from 'axios';
@@ -76,11 +77,13 @@ function ChatWindow(props: { messageList: Array<Message>; username: string }) {
       }}
     >
       <Grid>
-        <List>
-          {messageList.map((message) => (
-            <ChatMessage key={message.id} message={message} username={username} />
-          ))}
-        </List>
+        <Paper style={{ minHeight: 400, maxHeight: 500, overflow: 'auto' }}>
+          <List>
+            {messageList.map((message) => (
+              <ChatMessage key={message.id} message={message} username={username} />
+            ))}
+          </List>
+        </Paper>
       </Grid>
     </Box>
   );
@@ -133,7 +136,7 @@ const createMessage = async (
   return res;
 };
 
-export default function SessionPage(props: { sessionId: string }) {
+export default function Chat(props: { sessionId: string }) {
   const { sessionId } = props;
   const { user } = useUserStore((state) => ({
     user: state.user,
@@ -149,7 +152,7 @@ export default function SessionPage(props: { sessionId: string }) {
 
   const handleFetchAllMessages = async () => {
     try {
-      const res = await fetchAllMessages(sessionRoomId);
+      const res = await fetchAllMessages(sessionId);
       // const res = await fetchAllMessages(props.sessionId);
       if (res === null) {
         setMessages([]);
@@ -212,6 +215,7 @@ export default function SessionPage(props: { sessionId: string }) {
     }
 
     socket.on('joinRoomSuccess', async (sessionId, username, userId) => {
+      console.log('joinRoomSuccess on socket');
       const newMessage: Message = {
         content: `${username} joined the room`,
         senderId: userId,
@@ -220,7 +224,7 @@ export default function SessionPage(props: { sessionId: string }) {
         createdAt: new Date(Date.now()),
         id: await randomiseJoinRoomId(),
       };
-      console.log('joinRoomMessage: ', newMessage);
+      console.log('joinRoomSuccessMessage: ', newMessage);
       setMessages((messages) => [...messages, newMessage]);
     });
 
@@ -238,8 +242,8 @@ export default function SessionPage(props: { sessionId: string }) {
 
     return () => {
       console.log('offing join and message event');
-      socket.off('joinRoomSuccess');
-      socket.off('receiveMessage');
+      // socket.off('joinRoomSuccess');
+      // socket.off('receiveMessage');
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isConnected]);
@@ -254,14 +258,18 @@ export default function SessionPage(props: { sessionId: string }) {
       // reactStrictMode: true causes this to run twice
       setIsConnected(true);
       // ! user.id not implemented yet
+      // TODO: Store user.id to be used for authentication for joining room
+      // ! Or do authorization on something else
       setSocket(clientSocket);
-      clientSocket.emit('joinRoom', sessionRoomId, user.username, '1');
+      if (user) {
+        clientSocket.emit('joinRoom', sessionId, user.username, '1');
+      }
     });
 
     return () => {
       console.log('unmounting socket connecting');
       clientSocket.off('connect');
-      clientSocket.close();
+      // clientSocket.close();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -278,7 +286,7 @@ export default function SessionPage(props: { sessionId: string }) {
       return;
     }
     setLoading(true);
-    const res = await handleCreateMessage(sessionRoomId, user.username, '1', message);
+    const res = await handleCreateMessage(sessionId, user.username, '1', message);
     if (res && res.status === 201) {
       const { message, senderId, senderName, sessionId, createdAt, _id } = res.data.data;
       socket.emit('roomMessage', message, senderId, senderName, sessionId, createdAt, _id);
@@ -294,44 +302,40 @@ export default function SessionPage(props: { sessionId: string }) {
 
   if (!user.loginState) return <UnauthorizedDialog />;
   return (
-    <DefaultLayout>
-      {/* <SessionProvider /> */}
-      <div>Hello World</div>
-      <Box display="flex" justifyContent="flex-start" flexDirection="column">
-        <Typography>Messages</Typography>
-        <ChatWindow messageList={messages} username={user.username} />
-        <TextField
-          label="Message"
-          variant="standard"
-          value={messageInput}
-          onChange={handleMessageInput}
-          // (e) => setMessageInput(e.target.value)}
-          sx={{ marginBottom: '1rem' }}
-          autoFocus
-        />
+    <Box display="flex" justifyContent="flex-start" flexDirection="column">
+      <Typography>Messages</Typography>
+      <ChatWindow messageList={messages} username={user.username} />
+      <TextField
+        label="Message"
+        variant="standard"
+        value={messageInput}
+        onChange={handleMessageInput}
+        // (e) => setMessageInput(e.target.value)}
+        sx={{ marginBottom: '1rem' }}
+        autoFocus
+      />
 
-        <Box display="flex" flexDirection="row">
-          <Box sx={{ m: 1, position: 'relative' }}>
-            <SendMessageButton disabled={!messageInput} onClick={handleSendMessage}>
-              Send Message
-            </SendMessageButton>
-            {loading && (
-              <CircularProgress
-                size={24}
-                sx={{
-                  color: blue[500],
-                  position: 'absolute',
-                  top: '50%',
-                  left: '50%',
-                  marginTop: '-12px',
-                  marginLeft: '-12px',
-                }}
-              />
-            )}
-          </Box>
-          {isMessageSent ? null : <Alert severity="error">Message failed to send</Alert>}
+      <Box display="flex" flexDirection="row">
+        <Box sx={{ m: 1, position: 'relative' }}>
+          <SendMessageButton disabled={!messageInput} onClick={handleSendMessage}>
+            Send Message
+          </SendMessageButton>
+          {loading && (
+            <CircularProgress
+              size={24}
+              sx={{
+                color: blue[500],
+                position: 'absolute',
+                top: '50%',
+                left: '50%',
+                marginTop: '-12px',
+                marginLeft: '-12px',
+              }}
+            />
+          )}
         </Box>
+        {isMessageSent ? null : <Alert severity="error">Message failed to send</Alert>}
       </Box>
-    </DefaultLayout>
+    </Box>
   );
 }
