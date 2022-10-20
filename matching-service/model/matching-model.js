@@ -16,7 +16,7 @@ const MatchingModelSchema = new Schema({
     required: true,
     unique: true,
   },
-  username1socketID: {
+  user1RequestId: {
     type: String,
     required: true,
     unique: true,
@@ -26,7 +26,7 @@ const MatchingModelSchema = new Schema({
     required: false,
     unique: false,
   },
-  username2socketID: {
+  user2RequestId: {
     type: String,
     required: false,
     unique: false,

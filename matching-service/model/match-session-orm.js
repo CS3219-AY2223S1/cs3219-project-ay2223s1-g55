@@ -3,17 +3,17 @@ import { createMatchSession, findMatchSession } from './respository.js';
 export async function ormCreateMatchSession(
   difficulty,
   username1,
-  username1socketID,
+  user1RequestId,
   username2,
-  username2socketID
+  user2RequestId
 ) {
   try {
     const newMatchSession = await createMatchSession({
       difficulty: difficulty,
       username1: username1,
-      username1socketID: username1socketID,
+      user1RequestId: user1RequestId,
       username2: username2,
-      username2socketID: username2socketID,
+      user2RequestId: user2RequestId,
     });
     newMatchSession.save();
     return newMatchSession;
@@ -23,13 +23,13 @@ export async function ormCreateMatchSession(
   }
 }
 
-export async function ormFindMatchSession(username, difficulty, username1socketID) {
+export async function ormFindMatchSession(username, difficulty, user1RequestId) {
   console.log('Running ormFindMatchSession');
   try {
     return await findMatchSession({
       username1: username,
       difficulty: difficulty,
-      username1socketID: username1socketID,
+      user1RequestId: user1RequestId,
     });
   } catch (err) {
     console.log('ERROR: Error occured when finding users:', err.body);

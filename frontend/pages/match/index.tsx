@@ -34,23 +34,20 @@ import DefaultLayout from '@/layouts/DefaultLayout';
 import { io } from 'socket.io-client';
 import { EMIT_EVENT, ON_EVENT } from '@/lib/constants';
 import Link from 'next/link';
+import { v4 as uuidv4 } from 'uuid';
 
-interface callbackInterface {
-  (message: string): void;
-}
-
-const sendMatchRequest = async (username: string, difficulty: string, roomSocketID: string) => {
-  console.log('sendMatchRequest called with ', username, difficulty, roomSocketID);
+const sendMatchRequest = async (username: string, difficulty: string, requestId: string) => {
+  console.log('sendMatchRequest called with ', username, difficulty, requestId);
   try {
     const res = await axios.get(URL_MATCHING_REQUEST, {
       headers: {
         username,
         difficulty,
-        roomSocketID,
+        requestId,
       },
     });
     console.log('res from sendMatchRequest: ', res.data);
-    // { message, username1, username1socketID, username2, username2socketID, matchRoomID }
+    // { message, username1, user1RequestId, username2, user1RequestId, matchRoomID }
     if (res.status === 200 || res.status === 201) {
       console.log('match request sent');
       // contains json of mongodbID, username, difficulty, createdAt, message
@@ -77,7 +74,7 @@ const cancelMatchRequest = async (username: string, difficulty: string) => {
       difficulty,
     });
     console.log('res from cancelMatchRequest: ', res.data);
-    // { message, username1, username1socketID, username2, username2socketID, matchRoomID }
+    // { message, username1, user1RequestId, username2, user1RequestId, matchRoomID }
     if (res.status === 200 || res.status === 201) {
       console.log('cancel match request sent');
       // contains json of mongodbID, username, difficulty, createdAt, message
@@ -102,7 +99,7 @@ function Matching() {
     user: state.user,
   }));
   const [difficulty, setDifficulty] = useState('');
-  const [socketID, setSocketID] = useState('');
+  const [requestId, setRequestId] = useState('');
   const [username, setUsername] = useState('');
   const [room, setRoom] = useState('');
   const [matchRoomID, setMatchRoomID] = useState('');
@@ -126,40 +123,15 @@ function Matching() {
     setDialogMsg(msg);
   };
 
-  // user undefined from useSession
   useEffect(() => {
-    // backend port used for socket.io
-    const socket = io(URL_MATCHING_SVC, {
-      transports: ['websocket'],
-      // autoConnect: false,
-    });
-
-    // catch-all listener for development
-    socket.onAny((event, ...args) => {
-      console.log('Logging Listener: ', event, args);
-      console.log(event, args);
-    });
-
-    const onConnectionCallback = () => {
-      console.log('socket id in connectionCallback is ', socket.id);
-      console.log('user is: ', user);
-      setUsername(user?.username);
-      setSocketID(socket.id);
-      // handleConnectToSocket();
-    };
-    socket.on(ON_EVENT.CONNECT, onConnectionCallback);
-
-    return () => {
-      // ! Need to add socket.close?
-      // ! Need to move all socket listeners into user effect??
-      socket.close();
-      socket.off(ON_EVENT.CONNECT, onConnectionCallback);
-    };
+    if (user) {
+      setUsername(user.username);
+    }
+    setRequestId(uuidv4());
   }, []);
 
   const handleMatchFound = async (payload: any) => {
-    const { message, username1, username1socketID, username2, username2socketID, matchRoomID } =
-      payload;
+    const { message, username1, user1RequestId, username2, user2RequestId, matchRoomID } = payload;
     setPendingMatchRequest(false);
     const timeId = setTimeout(() => {
       // After 3 seconds redirect
@@ -172,7 +144,7 @@ function Matching() {
     );
     setMatchRoomID(payload.matchRoomID);
     setRoom(matchRoomID);
-    // socket.emit('match-found', { username, difficulty, matchRoomID, roomSocketID: socketID });
+    // socket.emit('match-found', { username, difficulty, matchRoomID, requestId: requestId });
   };
 
   const handleDifficultyChange = (e: SelectChangeEvent<string>) => {
@@ -184,9 +156,9 @@ function Matching() {
   // if match found, socket server will inform user from someone else
   const handleSendMatchRequest = async () => {
     console.log('difficulty: ', difficulty);
-    console.log('username: ', username);
+    console.log('username: ', user.username);
     try {
-      if (!username || !difficulty) {
+      if (!user.username || !difficulty) {
         console.log('Please enter a username and difficulty');
         throw new Error('Please select a difficulty');
       }
@@ -195,20 +167,16 @@ function Matching() {
       setErrorDialog(err.message);
     }
 
-    if (username && difficulty) {
+    if (user.username && difficulty) {
       try {
         setPendingMatchRequest(true);
-        const res = await sendMatchRequest(username, difficulty, socketID);
+        const res = await sendMatchRequest(user.username, difficulty, requestId);
         console.log('sendMatchRequest res: ', res.data);
         if (res.status === 201 || res.status === 200) {
           await handleMatchFound(res.data);
           console.log(res.data);
           return res;
         }
-
-        // if (res.data.message == 'Match request is cancelled') {
-        //   setSuccessDialog(`Cancelled match request successfully! \n ${res.data.message}`);
-        // }
       } catch (err: any) {
         setPendingMatchRequest(false);
         if (err.response.data.message === 'Match request is cancelled') {
@@ -245,7 +213,10 @@ function Matching() {
       <Box display="flex" flexDirection="column" width="80%">
         <Box display="flex" flexDirection="column" width="inherit">
           <Typography variant="h5" marginBottom="1rem">
-            My socket id: {socketID}
+            username: {user.username}
+          </Typography>
+          <Typography variant="h5" marginBottom="1rem">
+            My request id: {requestId}
           </Typography>
           <Typography variant="h5" marginBottom=".5rem">
             Current Room {room}
