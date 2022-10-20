@@ -26,12 +26,12 @@ import {
   URL_MATCHING_SVC,
 } from '@/lib/configs';
 import axios from 'axios';
+import { useRouter } from 'next/router';
 
 import { styled } from '@mui/material/styles';
 import useUserStore from '@/lib/store';
 import DefaultLayout from '@/layouts/DefaultLayout';
 import { io } from 'socket.io-client';
-import router from 'next/router';
 import { EMIT_EVENT, ON_EVENT } from '@/lib/constants';
 import Link from 'next/link';
 
@@ -127,6 +127,7 @@ const cancelMatchRequest = async (username: string, difficulty: string) => {
 };
 
 function Matching() {
+  const router = useRouter();
   const { user } = useUserStore((state) => ({
     user: state.user,
   }));
@@ -144,6 +145,7 @@ function Matching() {
   const [dialogTitle, setDialogTitle] = useState('');
   const [dialogMsg, setDialogMsg] = useState('');
   const [isBackdropOpen, setIsBackdropOpen] = useState(false);
+  const [countdownSeconds, setCountdownSeconds] = useState(5);
   const closeDialog = () => setIsDialogOpen(false);
 
   // const handleSession = async () => {
@@ -254,8 +256,14 @@ function Matching() {
     const { message, username1, username1socketID, username2, username2socketID, matchRoomID } =
       payload;
     setPendingMatchRequest(false);
+    const timeId = setTimeout(() => {
+      // After 3 seconds redirect
+      const url = `/match/session/${payload.matchRoomID}`;
+      router.push(url);
+    }, 5000);
+    setInterval(() => setCountdownSeconds(countdownSeconds - 1), 1000);
     setSuccessDialog(
-      `Found Match! \n ${message} \n ${payload.matchRoomID} \n Click Join Room to join`
+      `Found Match! \n ${message} \n ${payload.matchRoomID} \n Redirecting in ${countdownSeconds}`
     );
     setMatchRoomID(payload.matchRoomID);
     setRoom(matchRoomID);

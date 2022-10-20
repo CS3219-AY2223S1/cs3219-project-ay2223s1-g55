@@ -2,24 +2,25 @@ import mongoose from 'mongoose'
 
 const { Schema } = mongoose;
 const RecordModelSchema = new Schema({
-    questionId: {
-        type: Number,
+    questionName: {
+        type: String,
         required: true,
     },
-    firstUserId: {
-        type: Number,
+    firstUsername: {
+        type: String,
         required: true,
     },
-    secondUserId: {
-        type: Number,
-        required: true,
+    secondUsername: {
+        type: String,
+        required: true
     },
-    questionName: String,
-    firstUserName: String,
-    secondUserName: String,
     startedAt: {
         type: Date,
         default: Date.now(),
+    },
+    questionDifficulty: {
+        type: String,
+        required: true
     },
     duration: Number,
 })

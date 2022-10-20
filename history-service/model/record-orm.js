@@ -1,7 +1,29 @@
 import {
   listUserRecords,
-  createRecord
+  createRecord,
+  listUserCompletedQuestions,
+  getUserExperienceLevel
 } from './repository.js';
+
+export async function ormGetUserExperienceLevel(username) {
+  try {
+    const experience = await getUserExperienceLevel(username);
+    return experience;
+  } catch (err) {
+    console.error("Failed to get user experience level");
+    return { err }
+  }
+}
+
+export async function ormListUserCompletedQuestions(username) {
+  try {
+    const questions = await listUserCompletedQuestions(username);
+    return questions;
+  } catch (err) {
+    console.error("Failed to get questions");
+    return { err }
+  }
+}
 
 export async function ormCreateRecord(params) {
   try {
@@ -14,9 +36,9 @@ export async function ormCreateRecord(params) {
   }
 }
 
-export async function ormListUserRecords(userId, options) {
+export async function ormListUserRecords(username, options) {
   try {
-    const records = await listUserRecords(userId, options);
+    const records = await listUserRecords(username, options);
     return records;
   } catch (err) {
     console.error("Failed to get records");

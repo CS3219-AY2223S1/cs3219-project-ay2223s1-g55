@@ -37,7 +37,7 @@ function Dashboard() {
   };
 
   const handleMatching = async () => {
-    router.push('/matching');
+    router.push('/match');
   };
 
   if (!user.loginState) return <UnauthorizedDialog />;
