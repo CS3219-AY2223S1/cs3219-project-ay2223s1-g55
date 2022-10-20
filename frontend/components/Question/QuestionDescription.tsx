@@ -1,23 +1,16 @@
 import { Box, Typography, Divider, List, ListItem, Container } from '@mui/material';
 
 const QuestionDescription = ({ question }) => {
-  const difficultyColor = () => {
-    switch (question?.difficulty) {
-      case 'Easy':
-        return 'green';
-      case 'Medium':
-        return 'orange';
-      case 'Hard':
-        return 'red';
-      default:
-        return 'black';
-    }
+  const QuestionDifficultyToColorMap = {
+    Easy: 'green',
+    Medium: 'orange',
+    Hard: 'red',
   };
 
   return (
     <Box>
       <Typography variant="h4">{question?.title}</Typography>
-      <Typography variant="subtitle2" color={difficultyColor()}>
+      <Typography variant="subtitle2" color={QuestionDifficultyToColorMap[question?.difficulty]}>
         {question?.difficulty}
       </Typography>
       <Divider />
