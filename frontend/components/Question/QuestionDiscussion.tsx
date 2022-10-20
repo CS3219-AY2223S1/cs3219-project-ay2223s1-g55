@@ -4,6 +4,7 @@ import { QuestionCommentType } from '@/lib/types';
 import { Box, Button, Container, Divider, Grid, TextField, Typography } from '@mui/material';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
+import dayjs from 'dayjs';
 
 const QuestionDiscussion = ({ isReady, title }: { isReady: boolean; title: string | string[] }) => {
   const [currComments, setCurrComments] = useState<QuestionCommentType[]>([]);
@@ -35,18 +36,6 @@ const QuestionDiscussion = ({ isReady, title }: { isReady: boolean; title: strin
     fetchComments().then((res) => setCurrComments(res));
   }, [isReady, currComments]);
 
-  const parseDate = (isoDate: string) => {
-    const numMs = Date.parse(isoDate);
-    const currDateObj = new Date(numMs);
-    return {
-      date: currDateObj.getDate(),
-      month: currDateObj.getMonth(),
-      year: currDateObj.getFullYear(),
-      hour: currDateObj.getHours(),
-      min: currDateObj.getMinutes(),
-    };
-  };
-
   return (
     <Container
       className="outer-container"
@@ -57,12 +46,7 @@ const QuestionDiscussion = ({ isReady, title }: { isReady: boolean; title: strin
           Comments
         </Typography>
         {currComments.map((c, i) => {
-          const dateObj = parseDate(c.created_at as string);
-          const { date, month, year, hour, min } = dateObj;
-
-          const hourStr = +hour < 10 ? `0${hour}` : hour;
-          const minStr = +min < 10 ? `0${min}` : min;
-          const timeStr = `${date}/${month}/${year} ${hourStr}:${minStr}`;
+          const dateTime = dayjs(c.created_at).format('DD/MM/YYYY h:mmA');
 
           return (
             <Box key={i} sx={{ height: '40%' }}>
@@ -72,7 +56,7 @@ const QuestionDiscussion = ({ isReady, title }: { isReady: boolean; title: strin
                     <Typography sx={{ fontSize: 'large', fontWeight: '700' }}>{c.user}</Typography>
                   </Grid>
                   <Grid item xs={6} justifyContent="flex-end">
-                    <Typography sx={{ textAlign: 'right', color: 'gray' }}>{timeStr}</Typography>
+                    <Typography sx={{ textAlign: 'right', color: 'gray' }}>{dateTime}</Typography>
                   </Grid>
                   <Grid item xs={12} justifyContent="center" sx={{ height: '100%' }}>
                     <Container>
