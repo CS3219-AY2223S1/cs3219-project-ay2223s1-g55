@@ -1,4 +1,4 @@
-import { createMatchSession, findMatchSession } from './respository.js';
+import { createMatchSession, findMatchSession, findQuestionById } from './respository.js';
 
 export async function ormCreateMatchSession(
   difficulty,
@@ -36,5 +36,13 @@ export async function ormFindMatchSession(username, difficulty, username1socketI
   } catch (err) {
     console.log('ERROR: Error occured when finding users:', err.body);
     return { err };
+  }
+}
+
+export async function ormGetQuestionFromSession(sessionId) {
+  try {
+    return await findQuestionById(sessionId);
+  } catch (err) {
+    console.log('ERROR: Error occured when retrieving question in session');
   }
 }

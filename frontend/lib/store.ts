@@ -10,11 +10,10 @@ interface UserStore {
   loginUser: (username: string, password: string, token: string) => any;
   logoutUser: (token: string) => any;
   deleteUser: (token: string) => any;
-  updateSocketId: (socketId: string) => any;
 }
 
 const useUserStore = create<UserStore>((set, get) => ({
-  user: { username: '', loginState: false, socketId: '' },
+  user: { username: '', loginState: false },
   loginUser: async (username: string, password: string, token: string) => {
     try {
       const res = await axios.post(URL_USER_LOGIN, { username, password, token });
@@ -74,9 +73,6 @@ const useUserStore = create<UserStore>((set, get) => ({
       console.log(err);
       return { error: 'An error occured while deleting account' };
     }
-  },
-  updateSocketId: (socketId: string) => {
-    set((state) => ({ user: { ...state.user, socketId } }));
   },
 }));
 

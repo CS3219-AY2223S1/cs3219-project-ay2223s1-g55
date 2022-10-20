@@ -2,7 +2,6 @@
 export interface User {
   username: string;
   loginState: boolean;
-  socketId: string;
 }
 
 // Question types

@@ -141,3 +141,7 @@ export async function findMatchSession(params) {
   });
   return foundMatchSession != null ? foundMatchSession : false;
 }
+
+export async function findQuestionById(sessionId) {
+  return await MatchSessionModel.findById(sessionId);
+}

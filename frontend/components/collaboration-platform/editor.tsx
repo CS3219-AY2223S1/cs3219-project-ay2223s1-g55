@@ -4,7 +4,7 @@ import 'react-quill/dist/quill.snow.css';
 import io from 'socket.io-client';
 import { Box, Card, CardContent, Typography } from '@mui/material';
 import axios from 'axios';
-import { URL_MATCHING_REQUEST, URL_QUESTION_SVC } from '@/lib/configs';
+import { URL_MATCHING_SVC, URL_QUESTION_SVC } from '@/lib/configs';
 import useUserStore from '@/lib/store';
 import { QuestionType } from '@/lib/types';
 import QuestionDescription from '../Question/QuestionDescription';
@@ -37,14 +37,9 @@ function Editor(props: { sessionId: string }) {
   const [questionTitle, setQuestionTitle] = useState<string>();
   const [question, setQuestion] = useState<QuestionType>();
 
-  const { user, socketId } = useUserStore((state) => ({
+  const { user } = useUserStore((state) => ({
     user: state.user,
-    socketId: state.user.socketId,
   }));
-
-  useEffect(() => {
-    console.log('Curr socket id: ', socketId);
-  }, [user]);
 
   const handleVal = (content: any, delta: any, source: any, editor: any) => {
     if (source !== 'user') return;
@@ -117,10 +112,8 @@ function Editor(props: { sessionId: string }) {
   }, [socket, value]);
 
   const getQuestionTitle = async () => {
-    const res = await axios.get(`${URL_MATCHING_REQUEST}`, {
-      headers: { username: user?.username, difficulty: 'easy', roomsocketid: user.socketId },
-    });
-    return res.data.question;
+    const res = await axios.get(`${URL_MATCHING_SVC}/session/${sessionId}`);
+    return res.data;
   };
 
   const getQuestion = async () => {
@@ -132,7 +125,7 @@ function Editor(props: { sessionId: string }) {
   useEffect(() => {
     getQuestionTitle()
       .then((res) => {
-        setQuestionTitle(res);
+        setQuestionTitle(res.data.question);
       })
       .then(() => {
         getQuestion().then((res) => {
@@ -145,9 +138,10 @@ function Editor(props: { sessionId: string }) {
   }, []);
 
   useEffect(() => {
-    console.log('question? ', question);
-    console.log('quesiton title? ', questionTitle);
-  }, [question, questionTitle]);
+    getQuestion().then((res) => {
+      setQuestion(res[0]);
+    });
+  }, [questionTitle]);
 
   return (
     <Box>

@@ -132,15 +132,15 @@ const cancelMatchRequest = async (username: string, difficulty: string) => {
 
 function Matching() {
   const router = useRouter();
-  const { user, updateSocketId } = useUserStore((state) => ({
+  const { user } = useUserStore((state) => ({
     user: state.user,
-    updateSocketId: state.updateSocketId,
   }));
   const [difficulty, setDifficulty] = useState('');
   const [socketMessage, setSocketMessage] = useState('');
-  const [socketID, setSocketID] = useState('');
+  // const [socketID, setSocketID] = useState('');
+  const [socketID, setSocketID] = useState(socket.id);
   const [messages, setMessages] = useState(initialMessages);
-  const [username, setUsername] = useState('');
+  const [username, setUsername] = useState(user?.username);
   const [room, setRoom] = useState('');
   const [matchRoomID, setMatchRoomID] = useState('');
   const [message, setMessage] = useState('');
@@ -328,12 +328,6 @@ function Matching() {
       throw new Error('Please select a difficulty');
     }
   };
-
-  // Temporary fix to get question via current socket id,
-  // TODO: Fix editor-service to store question, can remove storing socketid in user state after.
-  useEffect(() => {
-    updateSocketId(socket.id);
-  }, [socket]);
 
   return (
     <DefaultLayout>
