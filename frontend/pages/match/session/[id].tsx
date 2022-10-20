@@ -2,6 +2,7 @@ import { useRouter } from 'next/router';
 import { EditRoad } from '@mui/icons-material';
 import { Card, Grid, CardContent } from '@mui/material';
 import Editor from '@/components/collaboration-platform/editor';
+import Chat from '@/components/chat';
 
 export default function CollaborationPlatform() {
   const router = useRouter();
@@ -17,7 +18,9 @@ export default function CollaborationPlatform() {
           </Card>
         </Grid>
         <Grid xs={12} md={4}>
-          <Card sx={{ m: 3 }}>Messaging system </Card>
+          <Card sx={{ m: 3 }}>
+            <Chat sessionId={sessionId ?? ''} />
+          </Card>
         </Grid>
       </Grid>
     </div>
