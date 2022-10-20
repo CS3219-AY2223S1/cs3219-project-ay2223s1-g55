@@ -32,6 +32,6 @@ export async function checkSessionExists(params) {
 export async function fetchAllMessages(params) {
   const foundMessages = await MessageModel.find({
     sessionId: params.sessionId,
-  });
+  }).sort({createdAt: "ascending"});
   return foundMessages != null ? foundMessages : false;
 }

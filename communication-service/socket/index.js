@@ -23,10 +23,11 @@ export const createSocketIOServer = (httpServer) => {
     // TODO: on need (arg) but emit is arg1, arg2 instead
     socket.on(
       "roomMessage",
-      async (content, senderId, senderName, sessionId, createdAt) => {
+      async (content, senderId, senderName, sessionId, createdAt, id) => {
         console.log(
           `roomMessage event from payload content is ${sessionId}`,
-          senderName
+          senderName,
+          id
         );
 
         io.in(sessionId).emit(
@@ -35,7 +36,8 @@ export const createSocketIOServer = (httpServer) => {
           senderId,
           senderName,
           sessionId,
-          createdAt
+          createdAt,
+          id
         );
       }
     );

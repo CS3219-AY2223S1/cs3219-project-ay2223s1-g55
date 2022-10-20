@@ -3,7 +3,7 @@ const URI_USER_SVC = process.env.NODE_ENV === 'development'
     ? 'http://localhost:8000'
     : 'https://user-service-q563p73okq-as.a.run.app';
 
-const URI_COMMUNICATION_SVC = 'http://localhost:8008';
+export const URI_COMMUNICATION_SVC = 'http://localhost:8008';
 // prettier-ignore
 export const URI_MATCHING_SVC = process.env.NODE_ENV === 'development'
     ? 'http://localhost:8001'

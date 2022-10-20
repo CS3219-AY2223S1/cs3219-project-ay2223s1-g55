@@ -19,7 +19,12 @@ import {
   Backdrop,
   CircularProgress,
 } from '@mui/material';
-import { URL_MATCHING_CANCEL, URL_MATCHING_REQUEST, URI_MATCHING_SVC } from '@/lib/configs';
+import {
+  URL_MATCHING_CANCEL,
+  URL_MATCHING_REQUEST,
+  URI_MATCHING_SVC,
+  URL_MATCHING_SVC,
+} from '@/lib/configs';
 import axios from 'axios';
 
 import { styled } from '@mui/material/styles';
@@ -28,6 +33,7 @@ import DefaultLayout from '@/layouts/DefaultLayout';
 import { io } from 'socket.io-client';
 import router from 'next/router';
 import { EMIT_EVENT, ON_EVENT } from '@/lib/constants';
+import Link from 'next/link';
 
 const SendMessageButton = styled(Button)({
   backgroundColor: '#3f51b5',
@@ -140,9 +146,9 @@ function Matching() {
   const [isBackdropOpen, setIsBackdropOpen] = useState(false);
   const closeDialog = () => setIsDialogOpen(false);
 
-  const handleSession = async () => {
-    router.push('/session');
-  };
+  // const handleSession = async () => {
+  //   router.push('/session');
+  // };
 
   const setSuccessDialog = (msg: string) => {
     setIsDialogOpen(true);
@@ -159,7 +165,7 @@ function Matching() {
   // user undefined from useSession
   useEffect(() => {
     // backend port used for socket.io
-    const socket = io('http://localhost:8001', {
+    const socket = io(URL_MATCHING_SVC, {
       transports: ['websocket'],
       // autoConnect: false,
     });
@@ -411,9 +417,9 @@ function Matching() {
             Look for Match
           </Button>
 
-          <Button variant="outlined" onClick={() => handleSession()}>
-            Session
-          </Button>
+          <Link href="/session">
+            <Button variant="outlined">Session</Button>
+          </Link>
         </Box>
         <Box display="flex" justifyContent="flex-start" flexDirection="column">
           <Typography>Messages</Typography>

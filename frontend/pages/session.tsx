@@ -1,5 +1,5 @@
 import DefaultLayout from '@/layouts/DefaultLayout';
-import { URL_COMMUNICATION_MESSAGE } from '@/lib/configs';
+import { URL_COMMUNICATION_MESSAGE, URI_COMMUNICATION_SVC } from '@/lib/configs';
 import {
   Alert,
   Box,
@@ -16,12 +16,12 @@ import {
 import { styled } from '@mui/material/styles';
 import axios from 'axios';
 import { io, Socket } from 'socket.io-client';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ServerToClientEvents, ClientToServerEvents, Message } from '@/lib/types';
 import useUserStore from '@/lib/store';
 import UnauthorizedDialog from '@/components/UnauthorizedDialog';
 import { blue } from '@mui/material/colors';
-import uuid from 'react-uuid';
+import { v4 as uuidv4 } from 'uuid';
 
 function ChatMessage(props: { message: Message; username: string }) {
   const { message, username } = props;
@@ -69,7 +69,6 @@ function ChatWindow(props: { messageList: Array<Message>; username: string }) {
       sx={{
         mr: '10%',
         ml: '10%',
-        width: '100%',
         border: 1,
         borderColor: 'divider',
         pr: '1%',
@@ -103,25 +102,19 @@ const SendMessageButton = styled(Button)({
   },
 });
 const fetchAllMessages = async (sessionId: string) => {
-  console.log('Fetching all messages of: ', sessionId);
   if (!sessionId) {
-    console.log('No sessionId given');
     return null;
   }
   try {
-    const res = await axios.get(`http://localhost:8008/api/communication/message/${sessionId}`);
-    console.log('res from fetchAllMessages: ', res.data);
+    const res = await axios.get(`${URL_COMMUNICATION_MESSAGE}/${sessionId}`);
     if (res.status === 200 || res.status === 201) {
       return res;
     }
-    if (res.status === 400 || res.status === 404) {
-      console.log('fetchAllMessages failed');
-      return res;
-    }
-    return res;
+    throw new Error('Error fetching messages');
   } catch (err: any) {
-    console.log('error message is: ', err.data);
-    throw err;
+    console.error(err);
+    // throw err;
+    return null;
   }
 };
 
@@ -137,16 +130,6 @@ const createMessage = async (
     senderId,
     message,
   });
-
-  if (res.status === 200 || res.status === 201) {
-    return res;
-  }
-  if (res.status === 400 || res.status === 404) {
-    return res;
-  }
-  if (res.status === 500) {
-    return res;
-  }
   return res;
 };
 
@@ -171,13 +154,11 @@ export default function SessionPage(props: { sessionId: string }) {
       if (res === null) {
         setMessages([]);
       } else if (res.status === 200 || res.status === 201) {
-        // console.log('res.data.messages from handleFetchAllMessages: ', res.data.messages);
         if (res.data.messages.length === 0) {
           setMessages([]);
         }
         const messageResults: Array<Message> = [];
         res.data.messages.forEach((item: any) => {
-          // console.log('item: ', item.senderName, item.message, item.createdAt);
           messageResults.push({
             senderName: item.senderName,
             senderId: item.senderId,
@@ -189,11 +170,16 @@ export default function SessionPage(props: { sessionId: string }) {
         });
         setMessages(messageResults);
       } else {
-        console.log('fetchAllMessages failed');
+        throw new Error('Something went wrong');
       }
     } catch (err: any) {
       console.log('error message is: ', err);
     }
+  };
+
+  const randomiseJoinRoomId = async () => {
+    const uid = uuidv4();
+    return uid;
   };
 
   const handleCreateMessage = async (
@@ -204,47 +190,41 @@ export default function SessionPage(props: { sessionId: string }) {
   ) => {
     try {
       const res = await createMessage(sessionId, senderName, senderId, message);
-      console.log('res from handleCreateMessage: ', res.status);
-
-      if (res.status === 200 || res.status === 201) {
-        console.log('res from handleCreateMessage: ', res);
-      } else {
-        console.log('createMessage failed');
-      }
       return res;
     } catch (err: any) {
-      console.log('error message is: ', err.response.data.message);
-      console.log(err.message);
       return { status: 500, error: 'Error creating message', data: null };
     }
   };
+  const handleMessageInput = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setMessageInput(event.target.value);
+  };
 
   useEffect(() => {
+    // ! Being done after join room is done
     handleFetchAllMessages();
     // only render this on first render
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [isConnected]);
 
   useEffect(() => {
-    if (!socket) {
+    if (!socket || socket === null || socket === undefined) {
       return;
     }
-    const uid = uuid();
+
     socket.on('joinRoomSuccess', async (sessionId, username, userId) => {
-      // TODO: Change this to a different type not a message
       const newMessage: Message = {
         content: `${username} joined the room`,
         senderId: userId,
         senderName: username,
         sessionId,
         createdAt: new Date(Date.now()),
-        id: uid,
+        id: await randomiseJoinRoomId(),
       };
+      console.log('joinRoomMessage: ', newMessage);
       setMessages((messages) => [...messages, newMessage]);
     });
 
     socket.on('receiveMessage', async (content, senderId, senderName, sessionId, createdAt, id) => {
-      console.log('roomMessage', content, senderId, senderName, sessionId);
       const newMessage: Message = {
         content,
         senderId,
@@ -262,10 +242,10 @@ export default function SessionPage(props: { sessionId: string }) {
       socket.off('receiveMessage');
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [socket]);
+  }, [isConnected]);
 
   useEffect(() => {
-    const clientSocket = io('http://localhost:8008', {
+    const clientSocket = io(URI_COMMUNICATION_SVC, {
       transports: ['websocket'],
       // autoConnect: false,
     });
@@ -274,8 +254,8 @@ export default function SessionPage(props: { sessionId: string }) {
       // reactStrictMode: true causes this to run twice
       setIsConnected(true);
       // ! user.id not implemented yet
-      clientSocket.emit('joinRoom', sessionRoomId, user.username, '1');
       setSocket(clientSocket);
+      clientSocket.emit('joinRoom', sessionRoomId, user.username, '1');
     });
 
     return () => {
@@ -286,33 +266,25 @@ export default function SessionPage(props: { sessionId: string }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const handleReceiveMessage = (message: Message) => {
-    setMessages([...messages, message]);
-  };
-
-  const handleSendMessage = async (message: string) => {
+  const handleSendMessage = async () => {
+    const message = messageInput;
     if (socket == null) {
-      console.log('socket is null');
       return;
     }
     if (message.trim().length === 0) {
-      console.log('empty message');
       return;
     }
     if (!user.username) {
-      console.log('no user information, cannot send message');
       return;
     }
     setLoading(true);
     const res = await handleCreateMessage(sessionRoomId, user.username, '1', message);
-    console.log('res from handleSendMessage: ', res);
     if (res && res.status === 201) {
       const { message, senderId, senderName, sessionId, createdAt, _id } = res.data.data;
       socket.emit('roomMessage', message, senderId, senderName, sessionId, createdAt, _id);
       setLoading(false);
       setIsMessageSent(true);
     } else if (res && res.status === 500) {
-      console.log('error creating message');
       setIsMessageSent(false);
       setLoading(false);
       return;
@@ -326,21 +298,21 @@ export default function SessionPage(props: { sessionId: string }) {
       {/* <SessionProvider /> */}
       <div>Hello World</div>
       <Box display="flex" justifyContent="flex-start" flexDirection="column">
+        <Typography>Messages</Typography>
+        <ChatWindow messageList={messages} username={user.username} />
         <TextField
           label="Message"
           variant="standard"
           value={messageInput}
-          onChange={(e) => setMessageInput(e.target.value)}
+          onChange={handleMessageInput}
+          // (e) => setMessageInput(e.target.value)}
           sx={{ marginBottom: '1rem' }}
           autoFocus
         />
 
         <Box display="flex" flexDirection="row">
           <Box sx={{ m: 1, position: 'relative' }}>
-            <SendMessageButton
-              disabled={!messageInput}
-              onClick={() => handleSendMessage(messageInput)}
-            >
+            <SendMessageButton disabled={!messageInput} onClick={handleSendMessage}>
               Send Message
             </SendMessageButton>
             {loading && (
@@ -359,8 +331,6 @@ export default function SessionPage(props: { sessionId: string }) {
           </Box>
           {isMessageSent ? null : <Alert severity="error">Message failed to send</Alert>}
         </Box>
-        <Typography>Messages</Typography>
-        <ChatWindow messageList={messages} username={user.username} />
       </Box>
     </DefaultLayout>
   );
