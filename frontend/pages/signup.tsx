@@ -1,6 +1,7 @@
 import {
   Box,
   Button,
+  Container,
   Dialog,
   DialogActions,
   DialogContent,
@@ -15,7 +16,6 @@ import { URL_USER_SVC } from '@/lib/configs';
 import { STATUS_CODE_CONFLICT, STATUS_CODE_CREATED } from '@/lib/constants';
 import Link from 'next/link';
 import router from 'next/router';
-import DefaultLayout from '@/layouts/DefaultLayout';
 
 function SignupPage() {
   const [username, setUsername] = useState('');
@@ -56,7 +56,7 @@ function SignupPage() {
 
   const handleLoginClick = () => router.push('/login');
   return (
-    <DefaultLayout>
+    <Container maxWidth="80%">
       <Box display="flex" flexDirection="column" width="30%">
         <Typography variant="h3" marginBottom="2rem">
           Sign Up
@@ -103,7 +103,7 @@ function SignupPage() {
       <Box display="flex" flexDirection="row" justifyContent="flex-start">
         <Button onClick={handleLoginClick}>Have an account? Login here!</Button>
       </Box>
-    </DefaultLayout>
+    </Container>
   );
 }
 
