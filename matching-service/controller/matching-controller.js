@@ -17,9 +17,9 @@ import { sleep } from '../utils/sleep.js';
 
 export async function createMatchRequest(req, res) {
   try {
-    const { username, difficulty, roomSocketID } = req.body;
-    if (username && difficulty && roomSocketID) {
-      const resp = await _createMatchRequest(username, difficulty, roomSocketID);
+    const { username, difficulty, requestId } = req.body;
+    if (username && difficulty && requestId) {
+      const resp = await _createMatchRequest(username, difficulty, requestId);
       console.log(resp);
       if (resp.err) {
         return res.status(400).json({ message: 'Could not create a new user!' });
@@ -47,18 +47,19 @@ export async function findMatchRequest(req, res) {
   let count = 0;
   let matchFound = false;
   let username1;
-  let username1socketID;
+  let user1RequestId;
   let username2;
-  let username2socketID;
-  let matchRoomID;
+  let user2RequestId;
+  let matchRoomId;
   let message;
   let question;
   console.log(`Running findMatchRequest for ${count} time`);
-  console.log('req.head for findMatch is', req.headers);
+  console.log('req.body for findMatch is', req.body);
   try {
-    const { username, difficulty, roomsocketid } = req.headers;
+    const { username, difficulty, requestId } = req.body;
 
-    if (!username || !difficulty || !roomsocketid) {
+    if (!username || !difficulty || !requestId) {
+      console.log(username, difficulty, requestId);
       return res
         .status(400)
         .json({ message: 'Username and/or Difficulty and/or SocketID are missing!' });
@@ -84,7 +85,7 @@ export async function findMatchRequest(req, res) {
           console.log('Match request does not exist, creating new match request');
           // TODO: Decouple logic here
           try {
-            await _createMatchRequest(username, difficulty, roomsocketid);
+            await _createMatchRequest(username, difficulty, requestId);
           } catch (err) {
             console.log('Error creating match request', err);
           }
@@ -95,13 +96,13 @@ export async function findMatchRequest(req, res) {
             console.log('Match request is matched, deleting match request');
             try {
               await _deleteMatchRequest(difficulty, true, username);
-              const matchSession = await _findMatchSession(username, difficulty, roomsocketid);
+              const matchSession = await _findMatchSession(username, difficulty, requestId);
               message = `Found match between ${matchSession.username1} and ${matchSession.username2} successfully!`;
               username1 = matchSession.username1;
-              username1socketID = matchSession.username1socketID;
+              user1RequestId = matchSession.user1RequestId;
               username2 = matchSession.username2;
-              username2socketID = matchSession.username2socketID;
-              matchRoomID = matchSession._id;
+              user2RequestId = matchSession.user2RequestId;
+              matchRoomId = matchSession._id;
               matchFound = true;
               console.log('isMatched is true, match found : ', message);
               break;
@@ -120,9 +121,9 @@ export async function findMatchRequest(req, res) {
           difficulty,
           resp.isMatched,
           resp.username1,
-          resp.username1socketID,
+          resp.user1RequestId,
           username,
-          roomsocketid
+          requestId
         );
         console.log('updatedMatchRequest', updatedMatchRequest);
 
@@ -133,10 +134,9 @@ export async function findMatchRequest(req, res) {
           const matchSession = await _createMatchSession(
             updatedMatchRequest.difficulty,
             updatedMatchRequest.username1,
-            updatedMatchRequest.username1socketID,
+            updatedMatchRequest.user1RequestId,
             updatedMatchRequest.username2,
-            updatedMatchRequest.username2socketID,
-            question
+            updatedMatchRequest.user2RequestId
           );
           console.log('Created match session successfully:', matchSession);
           if (matchSession) {
@@ -144,10 +144,10 @@ export async function findMatchRequest(req, res) {
             // return res.status(200).json({
             message = `Found match between ${matchSession.username1} and ${matchSession.username2} successfully!`;
             username1 = matchSession.username1;
-            username1socketID = matchSession.username1socketID;
+            user1RequestId = matchSession.user1RequestId;
             username2 = matchSession.username2;
-            username2socketID = matchSession.username2socketID;
-            matchRoomID = matchSession._id;
+            user2RequestId = matchSession.user2RequestId;
+            matchRoomId = matchSession._id;
             matchFound = true;
             question = matchSession.question;
             // });
@@ -172,11 +172,10 @@ export async function findMatchRequest(req, res) {
     return res.status(200).json({
       message,
       username1,
-      username1socketID,
+      user1RequestId,
       username2,
-      username2socketID,
-      matchRoomID,
-      question,
+      user2RequestId,
+      matchRoomId,
     });
   } catch (err) {
     // }

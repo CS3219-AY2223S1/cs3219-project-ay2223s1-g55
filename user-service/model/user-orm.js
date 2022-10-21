@@ -27,7 +27,7 @@ export async function ormCreateUser(username, password) {
 
 export async function ormLoginUser(username, password) {
   try {
-    const user = await UserModel.findOne({ username });
+    const user = await findUser(username);
     const correctPassword = await bcrypt.compare(password, user.password);
     if (user && correctPassword) {
       return await loginUser({ username });

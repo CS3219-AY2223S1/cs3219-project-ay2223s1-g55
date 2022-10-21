@@ -12,7 +12,7 @@ const MatchSessionModelSchema = new Schema({
     required: true,
     unique: false,
   },
-  username1socketID: {
+  user1RequestId: {
     type: String,
     required: true,
     unique: false,
@@ -22,7 +22,7 @@ const MatchSessionModelSchema = new Schema({
     required: true,
     unique: false,
   },
-  username2socketID: {
+  user2RequestId: {
     type: String,
     required: true,
     unique: false,
@@ -32,12 +32,6 @@ const MatchSessionModelSchema = new Schema({
     type: Date,
     default: Date.now,
   },
-  // ! MatchRoomID will be the object id of the matchSession
-  // matchRoomId: {
-  //   type: String,
-  //   required: true,
-  //   unique: true,
-  // },
 });
 
 export default mongoose.model('MatchSessionModel', MatchSessionModelSchema);

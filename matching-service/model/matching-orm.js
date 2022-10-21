@@ -9,13 +9,13 @@ import {
 } from './respository.js';
 // need to separate orm functions from repository to decouple business logic from persistence
 
-export async function ormCreateMatchRequest(username, difficulty, socketID) {
+export async function ormCreateMatchRequest(username, difficulty, requestId) {
   try {
     const newMatchRequest = await createMatchRequest({
       difficulty: difficulty,
       isMatched: false,
       username1: username,
-      username1socketID: socketID,
+      user1RequestId: requestId,
     });
     newMatchRequest.save();
     return true;
@@ -80,18 +80,18 @@ export async function ormUpdateMatchRequest(
   difficulty,
   isMatched,
   username1,
-  username1socketID,
+  user1RequestId,
   username2,
-  username2socketID
+  user2RequestId
 ) {
   try {
     const updatedMatchRequest = await updateMatchRequest({
       difficulty: difficulty,
       isMatched: isMatched,
       username1: username1,
-      username1socketID: username1socketID,
+      user1RequestId: user1RequestId,
       username2: username2,
-      username2socketID: username2socketID,
+      user2RequestId: user2RequestId,
     });
     console.log('Updated match request successfully');
     if (updatedMatchRequest == null) {

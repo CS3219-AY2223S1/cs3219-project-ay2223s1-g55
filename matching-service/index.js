@@ -1,9 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import { createServer } from 'http';
-import { createSocketIOServer } from './socket.js';
 import {
-  createMatchRequest,
   findMatchRequest,
   deleteMatchRequest,
   cancelMatchRequest,
@@ -21,8 +19,7 @@ router.get('/', (_, res) => {
   res.send('Hello World from matching-service');
 });
 
-router.get('/request', findMatchRequest);
-router.post('/request', createMatchRequest);
+router.post('/request', findMatchRequest);
 router.delete('/request', deleteMatchRequest);
 router.get('/sessions/:sessionId', getMatchSession);
 router.post('/cancel', cancelMatchRequest);
@@ -35,7 +32,5 @@ app.use('/api/match', router).all((_, res) => {
 const PORT = process.env.PORT || 8001;
 
 const httpServer = createServer(app);
-
-createSocketIOServer(httpServer);
 
 httpServer.listen(PORT, () => console.log(`matching-service listening on port ${PORT}`));
