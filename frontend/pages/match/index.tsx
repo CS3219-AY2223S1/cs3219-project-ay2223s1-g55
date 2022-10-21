@@ -23,7 +23,6 @@ import {
   Container,
   Stack,
 } from '@mui/material';
-import LoadingButton from '@mui/lab/LoadingButton';
 import { URL_MATCHING_CANCEL, URL_MATCHING_REQUEST, URI_MATCHING_SVC } from '@/lib/configs';
 import axios from 'axios';
 import { useRouter } from 'next/router';
@@ -60,7 +59,7 @@ const MatchButton = styled(ButtonBase)(({ theme }) => ({
   fontSize: 16,
 }));
 
-const CancelButton = styled(LoadingButton)(({ theme }) => ({
+const CancelButton = styled(ButtonBase)(({ theme }) => ({
   position: 'relative',
   border: '2px solid black',
   borderRadius: '50%',
