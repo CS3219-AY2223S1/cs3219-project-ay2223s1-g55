@@ -136,11 +136,11 @@ export async function findMatchRequest(req, res) {
             updatedMatchRequest.username1,
             updatedMatchRequest.user1RequestId,
             updatedMatchRequest.username2,
-            updatedMatchRequest.user2RequestId
+            updatedMatchRequest.user2RequestId,
+            question
           );
           console.log('Created match session successfully:', matchSession);
           if (matchSession) {
-            console.log('Match session GLENN', matchSession);
             // return res.status(200).json({
             message = `Found match between ${matchSession.username1} and ${matchSession.username2} successfully!`;
             username1 = matchSession.username1;
@@ -176,6 +176,7 @@ export async function findMatchRequest(req, res) {
       username2,
       user2RequestId,
       matchRoomId,
+      question,
     });
   } catch (err) {
     // }
