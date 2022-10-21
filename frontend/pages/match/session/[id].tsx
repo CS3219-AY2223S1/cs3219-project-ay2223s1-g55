@@ -32,6 +32,7 @@ export default function CollaborationPlatform() {
   };
 
   useEffect(() => {
+    if (!router.isReady) return;
     getQuestionTitle()
       .then((res) => {
         setQuestionTitle(res);
@@ -44,7 +45,7 @@ export default function CollaborationPlatform() {
       .finally(() => {
         console.log(questionTitle);
       });
-  }, []);
+  }, [router.isReady]);
 
   useEffect(() => {
     getQuestion().then((res) => {
