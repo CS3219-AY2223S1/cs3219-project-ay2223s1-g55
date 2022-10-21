@@ -4,7 +4,7 @@ import 'react-quill/dist/quill.snow.css';
 import io from 'socket.io-client';
 import { Box, Card, CardContent, Typography } from '@mui/material';
 import axios from 'axios';
-import { URL_MATCHING_SVC, URL_QUESTION_SVC } from '@/lib/configs';
+import { URL_MATCHING_SESSION, URL_MATCHING_SVC, URL_QUESTION_SVC } from '@/lib/configs';
 import useUserStore from '@/lib/store';
 import { QuestionType } from '@/lib/types';
 import QuestionDescription from '../Question/QuestionDescription';
@@ -112,7 +112,7 @@ function Editor(props: { sessionId: string }) {
   }, [socket, value]);
 
   const getQuestionTitle = async () => {
-    const res = await axios.get(`${URL_MATCHING_SVC}/session/${sessionId}`);
+    const res = await axios.get(`${URL_MATCHING_SESSION}/${sessionId}`);
     return res.data.data.question;
   };
 

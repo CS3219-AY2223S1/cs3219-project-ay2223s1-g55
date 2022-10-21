@@ -24,7 +24,7 @@ router.get('/', (_, res) => {
 router.get('/request', findMatchRequest);
 router.post('/request', createMatchRequest);
 router.delete('/request', deleteMatchRequest);
-router.get('/session/:sessionId', getMatchSession);
+router.get('/sessions/:sessionId', getMatchSession);
 router.post('/cancel', cancelMatchRequest);
 
 app.use('/api/match', router).all((_, res) => {
