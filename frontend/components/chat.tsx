@@ -80,7 +80,7 @@ function ChatWindow(props: { messageList: Array<Message>; username: string }) {
       }}
     >
       <Grid>
-        <Paper style={{ maxHeight: '100vh', overflow: 'auto' }}>
+        <Paper style={{ height: '100vh', overflow: 'auto' }}>
           <List>
             {messageList.map((message) => (
               <ChatMessage key={message.id} message={message} username={username} />
@@ -239,9 +239,9 @@ export default function Chat(props: { sessionId: string }) {
   }, []);
 
   useEffect(() => {
-    if (socket == null || sessionId == null) return;
+    if (socket == null || sessionId == null || !user.username) return;
     socket.emit('joinRoom', sessionId, user.username, uuidv4());
-  }, [isConnected, sessionId]);
+  }, [sessionId]);
 
   // After join room
   useEffect(() => {
@@ -258,16 +258,16 @@ export default function Chat(props: { sessionId: string }) {
     socket.on('joinRoomSuccess', async (sessionId, username, userId) => {
       console.log('joinRoomSuccess on socket:', username, sessionId);
       setIsRoomJoined(true);
-      // const newMessage: Message = {
-      //   content: `${username} joined the room`,
-      //   senderId: userId,
-      //   senderName: username,
-      //   sessionId,
-      //   createdAt: new Date(Date.now()),
-      //   id: await randomiseJoinRoomId(),
-      // };
-      // console.log('joinRoomSuccessMessage: ', newMessage);
-      // setMessages((messages) => [...messages, newMessage]);
+      const newMessage: Message = {
+        content: `${username} joined the room`,
+        senderId: userId,
+        senderName: username,
+        sessionId,
+        createdAt: new Date(Date.now()),
+        id: await randomiseJoinRoomId(),
+      };
+      console.log('joinRoomSuccessMessage: ', newMessage);
+      setMessages((messages) => [...messages, newMessage]);
     });
 
     return () => {
