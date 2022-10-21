@@ -21,20 +21,20 @@ const socketInitializer = (httpServer) => {
   socket.on(IO_EVENT.CONNECTION, (clientSocket) => {
     console.log('New WS Connection...', clientSocket.id);
 
-    clientSocket.on('get-document', async (documentId) => {
+    clientSocket.on('get-editor', async (editorId) => {
       // retrive data
-      const document = await ormFindOrCreateEditor(documentId);
-      // check if documentId is legit for this user
+      const editor = await ormFindOrCreateEditor(editorId);
+      // check if editorId is legit for this user
       // check()
-      clientSocket.join(documentId);
-      clientSocket.emit('load-document', document.data);
+      clientSocket.join(editorId);
+      clientSocket.emit('load-editor', editor.data);
 
       clientSocket.on('send-changes', (delta) => {
-        clientSocket.broadcast.to(documentId).emit('receive-changes', delta);
+        clientSocket.broadcast.to(editorId).emit('receive-changes', delta);
       });
 
-      clientSocket.on('save-document', async (data) => {
-        await ormFindEditorAndUpdate(documentId, data);
+      clientSocket.on('save-editor', async (data) => {
+        await ormFindEditorAndUpdate(editorId, data);
       });
     });
   });

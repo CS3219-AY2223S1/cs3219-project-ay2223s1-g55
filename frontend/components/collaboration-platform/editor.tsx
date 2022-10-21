@@ -63,12 +63,12 @@ function Editor(props: { sessionId: string }) {
     if (!isConnected || socket == null) return;
     console.log(sessionId);
 
-    socket.once('load-document', (document: any) => {
-      setValue(document);
+    socket.once('load-editor', (editor: any) => {
+      setValue(editor);
       setIsDisabled(false);
     });
 
-    socket.emit('get-document', sessionId);
+    socket.emit('get-editor', sessionId);
   }, [isConnected]);
 
   useEffect(() => {
@@ -91,7 +91,7 @@ function Editor(props: { sessionId: string }) {
     if (socket == null) return;
 
     const interval = setInterval(() => {
-      socket.emit('save-document', value);
+      socket.emit('save-editor', value);
     }, SAVE_INTERVAL_MS);
 
     return () => {
