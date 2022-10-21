@@ -2,8 +2,7 @@ import { instrument } from '@socket.io/admin-ui';
 import { Server } from 'socket.io';
 // import { instrument } from '@socket.io/admin-ui';
 import { IO_EVENT } from './libs/constants.js';
-import EditorModel from './model/editor-model.js';
-import findOrCreateDocument from './model/repository.js';
+import { ormFindEditorAndUpdate, ormFindOrCreateEditor } from './model/editor-orm.js';
 
 let socket;
 const socketInitializer = (httpServer) => {
@@ -24,7 +23,7 @@ const socketInitializer = (httpServer) => {
 
     clientSocket.on('get-document', async (documentId) => {
       // retrive data
-      const document = await findOrCreateDocument(documentId);
+      const document = await ormFindOrCreateEditor(documentId);
       // check if documentId is legit for this user
       // check()
       clientSocket.join(documentId);
@@ -35,7 +34,7 @@ const socketInitializer = (httpServer) => {
       });
 
       clientSocket.on('save-document', async (data) => {
-        await EditorModel.findByIdAndUpdate(documentId, { data });
+        await ormFindEditorAndUpdate(documentId, data);
       });
     });
   });
