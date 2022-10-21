@@ -22,6 +22,7 @@ export const EMIT_EVENT = {
 // Listener
 export const ON_EVENT = {
   CONNECT: 'connect',
+  DISCONNECT: 'disconnect',
   MESSAGE: 'message',
   SEND_MESSAGE: 'send-message',
   RECEIVE_MESSAGE: 'receive-message',
@@ -29,5 +30,5 @@ export const ON_EVENT = {
   JOIN_ROOM_SUCCESS: 'join-room-success',
   LEAVE_ROOM: 'leave-room',
   MATCH_FOUND: 'match-found',
-  DISCONNECT: 'disconnect',
+  PRIVATE_MESSAGE: 'private-message',
 };

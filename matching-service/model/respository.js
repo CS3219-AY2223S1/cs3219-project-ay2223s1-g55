@@ -7,7 +7,6 @@ import mongoose from 'mongoose';
 
 const mongoDB = process.env.ENV == 'PROD' ? process.env.DB_CLOUD_URI : process.env.DB_LOCAL_URI;
 
-// TODO: dbname inside curly brace
 mongoose.connect(mongoDB, {
   dbname: 'matchServiceDB',
   useNewUrlParser: true,
@@ -18,16 +17,16 @@ const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
 export async function createMatchRequest(params) {
-  // { difficulty, isMatched, username1, username1socketID, username2, username2socketID }
+  // { difficulty, isMatched, username1, user1RequestId, username2, user2RequestId }
   return new MatchingModel(params);
 }
 
 /**
  * Look for matchRequest and update matchRequest in the MatchingModel collection
- * @param { difficulty, isMatched, username1, username1socketID,
- *        username2, username2socketID } params
- * @returns { difficulty, isMatched, username1, username1socketID,
- *         username2, username2socketID }
+ * @param { difficulty, isMatched, username1, user1RequestId,
+ *        username2, user2RequestId } params
+ * @returns { difficulty, isMatched, username1, user1RequestId,
+ *         username2, user2RequestId }
  *        foundMatchRequest
  *        Updated matchRequest from MatchingModel collection
  */
@@ -39,7 +38,7 @@ export async function updateMatchRequest(params) {
   };
   const update = {
     username2: params.username2,
-    username2socketID: params.username2socketID,
+    user2RequestId: params.user2RequestId,
     isMatched: true,
     question: params.question,
   };
@@ -52,8 +51,8 @@ export async function updateMatchRequest(params) {
 /**
  * Look for matchRequest in the MatchingModel collection
  * @param { difficulty, username2 } params
- * @returns { difficulty, isMatched, username1, username1socketID,
- *         username2, username2socketID }
+ * @returns { difficulty, isMatched, username1, user1RequestId,
+ *         username2, user2RequestId }
  *        foundMatchRequest
  *        The matchRequest from MatchingModel collection
  */
@@ -124,8 +123,8 @@ export async function cancelMatchRequest(params) {
 
 /**
  * Create MatchSession in MatchSessionModel collection
- * @param { difficulty, username1, username1socketID, username2, username2socketID, question} params
- * @returns { difficulty, username1, username1socketID, username2, username2socketID, question, _id } matchSession
+ * @param { difficulty, username1, user1RequestId, username2, user2RequestId } params
+ * @returns { difficulty, username1, user1RequestId, username2, user2RequestId, _id } matchSession
  */
 export async function createMatchSession(params) {
   console.log('[respository.js] createMatchSession params:', params);
@@ -137,7 +136,7 @@ export async function findMatchSession(params) {
   const foundMatchSession = await MatchSessionModel.findOne({
     difficulty: params.difficulty,
     username1: params.username1,
-    username1socketID: params.username1socketID,
+    user1RequestId: params.user1RequestId,
   });
   return foundMatchSession != null ? foundMatchSession : false;
 }

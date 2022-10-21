@@ -7,42 +7,23 @@ import {
   DialogContentText,
   DialogTitle,
   FormControl,
-  Grid,
   InputLabel,
-  List,
-  ListItem,
-  ListItemText,
   MenuItem,
   Select,
   SelectChangeEvent,
-  TextField,
-  Typography,
   CircularProgress,
   Card,
   ButtonBase,
   Container,
-  Stack,
+  Grid,
 } from '@mui/material';
-import { URL_MATCHING_CANCEL, URL_MATCHING_REQUEST, URI_MATCHING_SVC } from '@/lib/configs';
+import { URL_MATCHING_CANCEL, URL_MATCHING_REQUEST } from '@/lib/configs';
 import axios from 'axios';
 import { useRouter } from 'next/router';
 import { styled } from '@mui/material/styles';
 import useUserStore from '@/lib/store';
 import DefaultLayout from '@/layouts/DefaultLayout';
-import { io } from 'socket.io-client';
-import { EMIT_EVENT, ON_EVENT } from '@/lib/constants';
-
-const SendMessageButton = styled(Button)({
-  backgroundColor: '#3f51b5',
-  color: 'white',
-  '&:hover': {
-    backgroundColor: 'grey',
-    color: 'black',
-  },
-  '&:active': {
-    backgroundColor: 'green',
-  },
-});
+import { v4 as uuidv4 } from 'uuid';
 
 const MatchButton = styled(ButtonBase)(({ theme }) => ({
   position: 'relative',
@@ -74,31 +55,13 @@ const CancelButton = styled(ButtonBase)(({ theme }) => ({
   fontSize: 16,
 }));
 
-interface callbackInterface {
-  (message: string): void;
-}
-const initialMessages = [] as string[];
-
-// backend port used for socket.io
-const socket = io(URI_MATCHING_SVC, {
-  transports: ['websocket'],
-});
-
-// catch-all listener for development
-socket.onAny((event, ...args) => {
-  console.log('Logging Listener: ', event, args);
-  console.log(event, args);
-});
-
-const sendMatchRequest = async (username: string, difficulty: string, roomSocketID: string) => {
-  console.log('sendMatchRequest called with ', username, difficulty, roomSocketID);
+const sendMatchRequest = async (username: string, difficulty: string, requestId: string) => {
+  console.log('sendMatchRequest called with ', username, difficulty, requestId);
   try {
-    const res = await axios.get(URL_MATCHING_REQUEST, {
-      headers: {
-        username,
-        difficulty,
-        roomSocketID,
-      },
+    const res = await axios.post(URL_MATCHING_REQUEST, {
+      username,
+      difficulty,
+      requestId,
     });
     console.log('res from sendMatchRequest: ', res.data);
     return res;
@@ -131,12 +94,10 @@ function Matching() {
   const username = user?.username;
 
   const [difficulty, setDifficulty] = useState('');
-  const [socketID, setSocketID] = useState(socket.id);
-  const [messages, setMessages] = useState(initialMessages);
+  const [requestId, setRequestId] = useState('');
 
   const [room, setRoom] = useState('');
-  const [matchRoomID, setMatchRoomID] = useState('');
-  const [message, setMessage] = useState('');
+  const [matchRoomId, setMatchRoomId] = useState('');
   const [pendingMatchRequest, setPendingMatchRequest] = useState(false);
   // dialogs
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -151,64 +112,30 @@ function Matching() {
     setDialogMsg(msg);
   };
 
-  // Set up Socket listeners
   useEffect(() => {
-    const onConnectionCallback = () => {
-      console.log('socket id in connectionCallback is ', socket.id);
-      console.log('user is: ', user);
-      setSocketID(socket.id);
-    };
-    const handleIncomingMessages = (payload) => setMessages(payload.content);
-
-    socket.on(ON_EVENT.CONNECT, onConnectionCallback);
-    socket.on(ON_EVENT.RECEIVE_MESSAGE, handleIncomingMessages);
-
-    return () => {
-      socket.off(ON_EVENT.CONNECT, onConnectionCallback);
-      socket.off(ON_EVENT.RECEIVE_MESSAGE, handleIncomingMessages);
-    };
-  }, [socket]);
+    setRequestId(uuidv4());
+  }, []);
 
   /** * HANDLERS ** */
   const handleDifficultyChange = (e: SelectChangeEvent<string>) => {
     setDifficulty(e.target.value);
   };
 
-  // join Room when match is successful and room is created
-  const handleJoinRoom = async () => {
-    setRoom(matchRoomID);
-    socket.emit(EMIT_EVENT.JOIN_ROOM, { username, matchRoomID }, (callback: callbackInterface) => {
-      console.log('callback: ', callback);
-    });
-  };
-
-  // Send message with sepcific matchRoomID to the server if there is
-  const handleSendSocketMessage = async () => {
-    const payload = {
-      content: [...messages, message] ?? `hello from client ${username}`,
-      sender: socketID ?? '',
-      roomId: room === '' ? matchRoomID : room,
-      chatName: 'private chat',
-    };
-    socket.emit(EMIT_EVENT.SEND_MESSAGE, payload);
-    setMessages([...messages, message]);
-  };
-
   const handleMatchFound = async (payload: any) => {
-    const { matchRoomID } = payload;
+    const { message, username1, user1RequestId, username2, user2RequestId, matchRoomId } = payload;
     setCountdownSeconds(5);
 
     setTimeout(() => {
       // After 3 seconds redirect
-      const url = `/match/session/${payload.matchRoomID}`;
+      const url = `/match/session/${payload.matchRoomId}`;
       router.push(url);
     }, 5000);
 
     setInterval(() => setCountdownSeconds((p) => (p < 0 ? 3 : p - 1)), 1000);
 
-    setMatchRoomID(payload.matchRoomID);
-    setRoom(matchRoomID);
-    await handleJoinRoom();
+    setMatchRoomId(payload.matchRoomId);
+    setRoom(matchRoomId);
+    // socket.emit('match-found', { username, difficulty, matchRoomId, requestId: requestId });
   };
 
   // send match request to server
@@ -227,7 +154,7 @@ function Matching() {
 
     try {
       setPendingMatchRequest(true);
-      const res = await sendMatchRequest(username, difficulty, socketID);
+      const res = await sendMatchRequest(username, difficulty, requestId);
       console.log('sendMatchRequest res: ', res.data);
       if (res.status === 201 || res.status === 200) {
         await handleMatchFound(res.data);
@@ -306,32 +233,6 @@ function Matching() {
             </Grid>
           </Card>
         </Box>
-
-        <Stack>
-          <TextField
-            label="Message"
-            variant="standard"
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-            sx={{ marginBottom: '1rem' }}
-            autoFocus
-          />
-
-          <SendMessageButton onClick={() => handleSendSocketMessage()}>
-            Send Message
-          </SendMessageButton>
-
-          <Box display="flex" justifyContent="flex-start" flexDirection="column">
-            <Typography>Messages</Typography>
-            <List>
-              {messages.map((msg, index) => (
-                <ListItem key={index}>
-                  <ListItemText primary={msg} />
-                </ListItem>
-              ))}
-            </List>
-          </Box>
-        </Stack>
       </Container>
 
       <Dialog open={isDialogOpen} onClose={closeDialog} maxWidth="xl">
