@@ -6,7 +6,11 @@ export const createSocketIOServer = (httpServer) => {
   const io = new Server(httpServer, {
     // Edit here to include new URL to access socket
     cors: {
-      origin: ["http://localhost:3000", "https://admin.socket.io"],
+      origin: [
+        process.env.LOCAL_URL,
+        process.env.DEPLOYMENT_URL,
+        process.env.SOCKET_ADMIN_URL,
+      ],
       credentials: true,
     },
   });
