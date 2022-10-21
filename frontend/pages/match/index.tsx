@@ -39,12 +39,10 @@ import { v4 as uuidv4 } from 'uuid';
 const sendMatchRequest = async (username: string, difficulty: string, requestId: string) => {
   console.log('sendMatchRequest called with ', username, difficulty, requestId);
   try {
-    const res = await axios.get(URL_MATCHING_REQUEST, {
-      headers: {
-        username,
-        difficulty,
-        requestId,
-      },
+    const res = await axios.post(URL_MATCHING_REQUEST, {
+      username,
+      difficulty,
+      requestId,
     });
     console.log('res from sendMatchRequest: ', res.data);
     // { message, username1, user1RequestId, username2, user1RequestId, matchRoomID }

@@ -20,8 +20,7 @@ router.get('/', (_, res) => {
   res.send('Hello World from matching-service');
 });
 
-router.get('/request', findMatchRequest);
-router.post('/request', createMatchRequest);
+router.post('/request', findMatchRequest);
 router.delete('/request', deleteMatchRequest);
 router.post('/cancel', cancelMatchRequest);
 

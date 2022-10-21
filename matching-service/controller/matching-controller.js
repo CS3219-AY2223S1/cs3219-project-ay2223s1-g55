@@ -52,12 +52,12 @@ export async function findMatchRequest(req, res) {
   let matchRoomID;
   let message;
   console.log(`Running findMatchRequest for ${count} time`);
-  console.log('req.head for findMatch is', req.headers);
+  console.log('req.body for findMatch is', req.body);
   try {
-    const { username, difficulty, requestid } = req.headers;
+    const { username, difficulty, requestId } = req.body;
 
-    if (!username || !difficulty || !requestid) {
-      console.log(username, difficulty, requestid);
+    if (!username || !difficulty || !requestId) {
+      console.log(username, difficulty, requestId);
       return res
         .status(400)
         .json({ message: 'Username and/or Difficulty and/or SocketID are missing!' });
@@ -83,7 +83,7 @@ export async function findMatchRequest(req, res) {
           console.log('Match request does not exist, creating new match request');
           // TODO: Decouple logic here
           try {
-            await _createMatchRequest(username, difficulty, requestid);
+            await _createMatchRequest(username, difficulty, requestId);
           } catch (err) {
             console.log('Error creating match request', err);
           }
@@ -94,7 +94,7 @@ export async function findMatchRequest(req, res) {
             console.log('Match request is matched, deleting match request');
             try {
               await _deleteMatchRequest(difficulty, true, username);
-              const matchSession = await _findMatchSession(username, difficulty, requestid);
+              const matchSession = await _findMatchSession(username, difficulty, requestId);
               message = `Found match between ${matchSession.username1} and ${matchSession.username2} successfully!`;
               username1 = matchSession.username1;
               user1RequestId = matchSession.user1RequestId;
@@ -121,7 +121,7 @@ export async function findMatchRequest(req, res) {
           resp.username1,
           resp.user1RequestId,
           username,
-          requestid
+          requestId
         );
         console.log('updatedMatchRequest', updatedMatchRequest);
 
