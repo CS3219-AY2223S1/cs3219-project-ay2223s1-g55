@@ -9,7 +9,7 @@ const socketInitializer = (httpServer) => {
   socket = new Server(httpServer, {
     // Edit here to include new URL to access socket
     cors: {
-      origin: ['http://localhost:3000', 'https://admin.socket.io'],
+      origin: [process.env.LOCAL_URL, process.env.DEPLOYMENT_URL, process.env.ADMIN_URL],
       credentials: true,
     },
   });
