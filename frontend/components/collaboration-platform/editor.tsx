@@ -113,7 +113,7 @@ function Editor(props: { sessionId: string }) {
 
   const getQuestionTitle = async () => {
     const res = await axios.get(`${URL_MATCHING_SVC}/session/${sessionId}`);
-    return res.data;
+    return res.data.data.question;
   };
 
   const getQuestion = async () => {
@@ -125,7 +125,7 @@ function Editor(props: { sessionId: string }) {
   useEffect(() => {
     getQuestionTitle()
       .then((res) => {
-        setQuestionTitle(res.data.question);
+        setQuestionTitle(res);
       })
       .then(() => {
         getQuestion().then((res) => {

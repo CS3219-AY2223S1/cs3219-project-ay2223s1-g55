@@ -9,14 +9,14 @@ export default function CollaborationPlatform() {
   return (
     <div style={{ padding: 40 }}>
       <Grid container spacing={3}>
-        <Grid xs={12} md={8}>
+        <Grid item xs={12} md={8}>
           <Card elevation={3} sx={{ p: 2 }}>
             <CardContent>
               <Editor sessionId={sessionId ?? ''} />
             </CardContent>
           </Card>
         </Grid>
-        <Grid xs={12} md={4}>
+        <Grid item xs={12} md={4}>
           <Card sx={{ m: 3 }}>Messaging system </Card>
         </Grid>
       </Grid>

@@ -11,7 +11,7 @@ import {
 import {
   ormCreateMatchSession as _createMatchSession,
   ormFindMatchSession as _findMatchSession,
-  ormGetQuestionFromSession as _getQuestionFromSession,
+  ormFindSessionById as _findSessionById,
 } from '../model/match-session-orm.js';
 import { sleep } from '../utils/sleep.js';
 
@@ -262,11 +262,11 @@ export async function getSession(req, res) {
   }
 }
 
-export const getSessionQuestion = async (req, res) => {
+export const getMatchSession = async (req, res) => {
   const sessionId = req.params.sessionId;
   if (!sessionId) return res.status(400).send({ message: 'Session id not found' });
 
-  const resp = await _getQuestionFromSession(sessionId);
+  const resp = await _findSessionById(sessionId);
   if (!resp) return res.status(400).send({ message: 'Failed to retrieve question' });
 
   return res.status(200).json({ data: resp });
