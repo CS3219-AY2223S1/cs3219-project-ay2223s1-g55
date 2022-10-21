@@ -222,7 +222,7 @@ function Matching() {
     }
 
     if (!difficulty) {
-      setErrorDialog('Plase select a diffuclty');
+      setErrorDialog('Plase select a difficulty');
       return;
     }
 
