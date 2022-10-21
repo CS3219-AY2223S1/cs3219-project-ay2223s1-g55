@@ -75,14 +75,12 @@ function ChatWindow(props: { messageList: Array<Message>; username: string }) {
       sx={{
         mr: '10%',
         ml: '10%',
-        border: 1,
-        borderColor: 'divider',
         pr: '1%',
         pl: '1%',
       }}
     >
       <Grid>
-        <Paper style={{ minHeight: 400, maxHeight: 500, overflow: 'auto' }}>
+        <Paper style={{ maxHeight: '100vh', overflow: 'auto' }}>
           <List>
             {messageList.map((message) => (
               <ChatMessage key={message.id} message={message} username={username} />
@@ -328,7 +326,7 @@ export default function Chat(props: { sessionId: string }) {
   if (!user.loginState) return <UnauthorizedDialog />;
   return (
     <Box display="flex" justifyContent="flex-start" flexDirection="column">
-      <Typography>Messages</Typography>
+      <Typography sx={{ fontSize: 'h4', alignSelf: 'center' }}>Chat</Typography>
       <ChatWindow messageList={messages} username={user.username} />
       <TextField
         label="Message"
