@@ -89,6 +89,7 @@ export interface QuestionExampleType {
 export interface QuestionCommentType {
   user: string;
   comment: string;
+  created_at?: string;
 }
 
 // History Service types

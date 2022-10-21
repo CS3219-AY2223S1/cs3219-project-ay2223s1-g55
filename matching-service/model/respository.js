@@ -7,7 +7,6 @@ import mongoose from 'mongoose';
 
 const mongoDB = process.env.ENV == 'PROD' ? process.env.DB_CLOUD_URI : process.env.DB_LOCAL_URI;
 
-// TODO: dbname inside curly brace
 mongoose.connect(mongoDB, {
   dbname: 'matchServiceDB',
   useNewUrlParser: true,
@@ -41,6 +40,7 @@ export async function updateMatchRequest(params) {
     username2: params.username2,
     user2RequestId: params.user2RequestId,
     isMatched: true,
+    question: params.question,
   };
   const updatedMatchRequest = await MatchingModel.findOneAndUpdate(filter, update, { new: true });
   console.log('[repository] Updated match request successfully: ', updatedMatchRequest.username2);
@@ -139,4 +139,8 @@ export async function findMatchSession(params) {
     user1RequestId: params.user1RequestId,
   });
   return foundMatchSession != null ? foundMatchSession : false;
+}
+
+export async function findSessionById(sessionId) {
+  return await MatchSessionModel.findById(sessionId);
 }

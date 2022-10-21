@@ -40,7 +40,6 @@ const QuestionList = () => {
       }
       const params = new URLSearchParams({ difficulty });
       const res = await axios.get(`${URL_QUESTION_SVC}?${params.toString()}`);
-      console.log('res', res);
       return res.data;
     } catch (err) {
       console.error(err);

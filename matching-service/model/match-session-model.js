@@ -27,6 +27,7 @@ const MatchSessionModelSchema = new Schema({
     required: true,
     unique: false,
   },
+  question: { type: String, required: true, unique: false },
   createdAt: {
     type: Date,
     default: Date.now,
