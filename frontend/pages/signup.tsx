@@ -56,7 +56,7 @@ function SignupPage() {
 
   const handleLoginClick = () => router.push('/login');
   return (
-    <Container maxWidth="80%">
+    <Container maxWidth="md">
       <Box display="flex" flexDirection="column" width="30%">
         <Typography variant="h3" marginBottom="2rem">
           Sign Up
