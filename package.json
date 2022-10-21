@@ -5,7 +5,8 @@
     "matching": "cd matching-service && npm run dev",
     "question": "cd question-service && npm run dev",
     "history": "cd history-service && npm run dev",
-    "all": "concurrent \"npm run frontend\" \"npm run user\" \"npm run matching\" \"npm run history\" \"npm run question\"",
+    "editor": "cd editor-service && npm run dev",
+    "all": "concurrent \"npm run frontend\" \"npm run user\" \"npm run matching\" \"npm run history\" \"npm run question\" \"npm run editor\"",
     "git-pre-commit": "cd frontend && npm run lint:next"
   },
   "devDependencies": {

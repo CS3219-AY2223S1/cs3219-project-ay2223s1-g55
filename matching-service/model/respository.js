@@ -41,6 +41,7 @@ export async function updateMatchRequest(params) {
     username2: params.username2,
     username2socketID: params.username2socketID,
     isMatched: true,
+    question: params.question,
   };
   const updatedMatchRequest = await MatchingModel.findOneAndUpdate(filter, update, { new: true });
   console.log('[repository] Updated match request successfully: ', updatedMatchRequest.username2);
@@ -123,8 +124,8 @@ export async function cancelMatchRequest(params) {
 
 /**
  * Create MatchSession in MatchSessionModel collection
- * @param { difficulty, username1, username1socketID, username2, username2socketID } params
- * @returns { difficulty, username1, username1socketID, username2, username2socketID, _id } matchSession
+ * @param { difficulty, username1, username1socketID, username2, username2socketID, question} params
+ * @returns { difficulty, username1, username1socketID, username2, username2socketID, question, _id } matchSession
  */
 export async function createMatchSession(params) {
   console.log('[respository.js] createMatchSession params:', params);
@@ -139,4 +140,8 @@ export async function findMatchSession(params) {
     username1socketID: params.username1socketID,
   });
   return foundMatchSession != null ? foundMatchSession : false;
+}
+
+export async function findSessionById(sessionId) {
+  return await MatchSessionModel.findById(sessionId);
 }

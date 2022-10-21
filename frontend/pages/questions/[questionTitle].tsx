@@ -4,12 +4,12 @@ import { URL_QUESTION_SVC } from '@/lib/configs';
 import { useEffect, useState } from 'react';
 import { Box, Container, Divider, List, ListItem, Typography } from '@mui/material';
 import { QuestionType } from '@/lib/types';
-import QuestionDiscussion from '@/components/QuestionDiscussion';
+import QuestionDiscussion from '@/components/Question/QuestionDiscussion';
+import QuestionDescription from '@/components/Question/QuestionDescription';
 
 const Question = () => {
   const router = useRouter();
   const { questionTitle } = router.query;
-  console.log('router query', router.query);
   const [question, setQuestion] = useState<QuestionType>();
   const [commentsAdded, setCommentsAdded] = useState<boolean>(false);
 
@@ -29,27 +29,34 @@ const Question = () => {
     console.log('qn', question);
   }, [question]);
 
+  // const difficultyColor = () => {
+  //   switch (question?.difficulty) {
+  //     case 'Easy':
+  //       return 'green';
+  //     case 'Medium':
+  //       return 'orange';
+  //     case 'Hard':
+  //       return 'red';
+  //     default:
+  //       return 'black';
+  //   }
+  // };
+
   return (
     <Container>
-      <Typography variant="h4">{question?.title}</Typography>
-      <Typography
-        variant="subtitle2"
-        // sx={{
-        //   color:
-        //     question?.difficulty === 'Easy'
-        //       ? 'green'
-        //       : question?.difficulty === 'Medium'
-        //       ? 'orange'
-        //       : 'red',
-        // }}
-      >
+      <QuestionDescription question={question} />
+      {/* <Typography variant="h4">{question?.title}</Typography>
+      <Typography variant="subtitle2" color={difficultyColor()}>
         {question?.difficulty}
       </Typography>
-      <Typography variant="body1">{question?.description}</Typography>
+      <Divider />
+      <Box sx={{ padding: '20px 0px 20px 0px' }}>
+        <Typography variant="body1">{question?.description}</Typography>
+      </Box>
       <Typography variant="h6">Examples</Typography>
       <Box>
         {question?.examples.map((e, i) => (
-          <List>
+          <List key={i}>
             <ListItem>
               <Typography variant="subtitle1">{`Example ${i + 1}.`}</Typography>
             </ListItem>
@@ -77,11 +84,11 @@ const Question = () => {
       <Typography variant="h6">Constraints</Typography>
       <List>
         {question?.constraints.map((c, i) => (
-          <ListItem>
+          <ListItem key={i}>
             <Typography variant="caption">{`${i + 1}. ${c}`}</Typography>
           </ListItem>
         ))}
-      </List>
+      </List> */}
       <Divider />
       <QuestionDiscussion isReady={router.isReady} title={questionTitle ?? ''} />
     </Container>

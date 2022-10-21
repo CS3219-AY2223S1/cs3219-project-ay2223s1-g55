@@ -22,6 +22,7 @@ export const URL_MATCHING_SVC = URI_MATCHING_SVC + PREFIX_MATCHING_SVC;
 export const URL_MATCHING_MATCH = `${URL_MATCHING_SVC}/match`;
 export const URL_MATCHING_REQUEST = `${URL_MATCHING_SVC}/request`;
 export const URL_MATCHING_CANCEL = `${URL_MATCHING_SVC}/cancel`;
+export const URL_MATCHING_SESSION = `${URL_MATCHING_SVC}/sessions`;
 
 const PREFIX_QUESTION_SVC = '/api/question';
 export const URL_QUESTION_SVC = URI_QUESTION_SVC + PREFIX_QUESTION_SVC;

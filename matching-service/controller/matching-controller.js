@@ -11,6 +11,7 @@ import {
 import {
   ormCreateMatchSession as _createMatchSession,
   ormFindMatchSession as _findMatchSession,
+  ormFindSessionById as _findSessionById,
 } from '../model/match-session-orm.js';
 import { sleep } from '../utils/sleep.js';
 
@@ -51,6 +52,7 @@ export async function findMatchRequest(req, res) {
   let username2socketID;
   let matchRoomID;
   let message;
+  let question;
   console.log(`Running findMatchRequest for ${count} time`);
   console.log('req.head for findMatch is', req.headers);
   try {
@@ -126,15 +128,19 @@ export async function findMatchRequest(req, res) {
 
         if (updatedMatchRequest) {
           console.log('Updated match request successfully');
+          // TODO: Figure out algorithm for selecting question, and also according to difficulty.
+          question = 'Two Sum';
           const matchSession = await _createMatchSession(
             updatedMatchRequest.difficulty,
             updatedMatchRequest.username1,
             updatedMatchRequest.username1socketID,
             updatedMatchRequest.username2,
-            updatedMatchRequest.username2socketID
+            updatedMatchRequest.username2socketID,
+            question
           );
           console.log('Created match session successfully:', matchSession);
           if (matchSession) {
+            console.log('Match session GLENN', matchSession);
             // return res.status(200).json({
             message = `Found match between ${matchSession.username1} and ${matchSession.username2} successfully!`;
             username1 = matchSession.username1;
@@ -143,6 +149,7 @@ export async function findMatchRequest(req, res) {
             username2socketID = matchSession.username2socketID;
             matchRoomID = matchSession._id;
             matchFound = true;
+            question = matchSession.question;
             // });
           }
         }
@@ -169,6 +176,7 @@ export async function findMatchRequest(req, res) {
       username2,
       username2socketID,
       matchRoomID,
+      question,
     });
   } catch (err) {
     // }
@@ -253,3 +261,13 @@ export async function getSession(req, res) {
     return res.status(500).json({ message: 'Failed to retrieve session!' });
   }
 }
+
+export const getMatchSession = async (req, res) => {
+  const sessionId = req.params.sessionId;
+  if (!sessionId) return res.status(400).send({ message: 'Session id not found' });
+
+  const resp = await _findSessionById(sessionId);
+  if (!resp) return res.status(400).send({ message: 'Failed to retrieve question' });
+
+  return res.status(200).json({ data: resp });
+};

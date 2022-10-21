@@ -28,6 +28,8 @@ export default async function findOrCreateEditor(id) {
     username_first: 'a',
     username_second: 'b',
     session_id: 'aa',
+    // TODO: Figure out algorithm to select question and link with matching
+    question: 'Two Sum',
     data: defaultValue,
   });
 }

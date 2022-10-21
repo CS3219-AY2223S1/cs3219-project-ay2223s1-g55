@@ -1,11 +1,12 @@
-import { createMatchSession, findMatchSession } from './respository.js';
+import { createMatchSession, findMatchSession, findSessionById } from './respository.js';
 
 export async function ormCreateMatchSession(
   difficulty,
   username1,
   username1socketID,
   username2,
-  username2socketID
+  username2socketID,
+  question
 ) {
   try {
     const newMatchSession = await createMatchSession({
@@ -14,6 +15,7 @@ export async function ormCreateMatchSession(
       username1socketID: username1socketID,
       username2: username2,
       username2socketID: username2socketID,
+      question,
     });
     newMatchSession.save();
     return newMatchSession;
@@ -34,5 +36,13 @@ export async function ormFindMatchSession(username, difficulty, username1socketI
   } catch (err) {
     console.log('ERROR: Error occured when finding users:', err.body);
     return { err };
+  }
+}
+
+export async function ormFindSessionById(sessionId) {
+  try {
+    return await findSessionById(sessionId);
+  } catch (err) {
+    console.log('ERROR: Error occured when retrieving question in session');
   }
 }

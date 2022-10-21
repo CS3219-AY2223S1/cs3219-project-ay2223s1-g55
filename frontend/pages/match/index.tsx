@@ -131,7 +131,7 @@ function Matching() {
   const username = user?.username;
 
   const [difficulty, setDifficulty] = useState('');
-  const [socketID, setSocketID] = useState('');
+  const [socketID, setSocketID] = useState(socket.id);
   const [messages, setMessages] = useState(initialMessages);
 
   const [room, setRoom] = useState('');
