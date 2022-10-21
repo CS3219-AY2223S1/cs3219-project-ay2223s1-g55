@@ -1,20 +1,21 @@
-name: Cloud Run Deploy
+name: Cloud Run Deploy Matching-Service
 
 on:
   push:
     branches: [ main ]
-    path: 'matching-service/**'
+    path: 
+      - 'matching-service/**'
+      - '.github/workflows/matching.yml'
 
 env:
   PROJECT_ID: cs3219-g55
   REGION: asia-southeast1
+  SERVICE: matching-service
 
 jobs:
     deploy_2:
         name: Matching-Service
         runs-on: ubuntu-latest
-        env:
-          SERVICE: matching-service
         steps:
         - name: Checkout repository
           uses: actions/checkout@v2
