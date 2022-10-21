@@ -141,7 +141,6 @@ export default function Chat(props: { sessionId: string }) {
   const { user } = useUserStore((state) => ({
     user: state.user,
   }));
-  const [username, setUsername] = useState('');
   const [socket, setSocket] = useState<Socket<ServerToClientEvents, ClientToServerEvents>>();
   const [messages, setMessages] = useState<Message[]>([]);
   const [messageInput, setMessageInput] = useState('');
@@ -152,6 +151,7 @@ export default function Chat(props: { sessionId: string }) {
 
   const handleFetchAllMessages = async () => {
     try {
+      // ! sessionId can be empty
       const res = await fetchAllMessages(sessionId);
       // const res = await fetchAllMessages(props.sessionId);
       if (res === null) {

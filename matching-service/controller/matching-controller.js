@@ -49,7 +49,7 @@ export async function findMatchRequest(req, res) {
   let user1RequestId;
   let username2;
   let user2RequestId;
-  let matchRoomID;
+  let matchRoomId;
   let message;
   console.log(`Running findMatchRequest for ${count} time`);
   console.log('req.body for findMatch is', req.body);
@@ -100,7 +100,7 @@ export async function findMatchRequest(req, res) {
               user1RequestId = matchSession.user1RequestId;
               username2 = matchSession.username2;
               user2RequestId = matchSession.user2RequestId;
-              matchRoomID = matchSession._id;
+              matchRoomId = matchSession._id;
               matchFound = true;
               console.log('isMatched is true, match found : ', message);
               break;
@@ -142,7 +142,7 @@ export async function findMatchRequest(req, res) {
             user1RequestId = matchSession.user1RequestId;
             username2 = matchSession.username2;
             user2RequestId = matchSession.user2RequestId;
-            matchRoomID = matchSession._id;
+            matchRoomId = matchSession._id;
             matchFound = true;
             // });
           }
@@ -169,7 +169,7 @@ export async function findMatchRequest(req, res) {
       user1RequestId,
       username2,
       user2RequestId,
-      matchRoomID,
+      matchRoomId,
     });
   } catch (err) {
     // }

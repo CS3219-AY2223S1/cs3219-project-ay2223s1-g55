@@ -1,9 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import { createServer } from 'http';
-import { createSocketIOServer } from './socket.js';
 import {
-  createMatchRequest,
   findMatchRequest,
   deleteMatchRequest,
   cancelMatchRequest,
@@ -32,7 +30,5 @@ app.use('/api/match', router).all((_, res) => {
 const PORT = process.env.PORT || 8001;
 
 const httpServer = createServer(app);
-
-createSocketIOServer(httpServer);
 
 httpServer.listen(PORT, () => console.log(`matching-service listening on port ${PORT}`));
