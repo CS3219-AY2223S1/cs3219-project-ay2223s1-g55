@@ -2,12 +2,6 @@ import dynamic from 'next/dynamic';
 import { useEffect, useState } from 'react';
 import 'react-quill/dist/quill.snow.css';
 import io from 'socket.io-client';
-import { Box, Card, CardContent, Typography } from '@mui/material';
-import axios from 'axios';
-import { URL_MATCHING_SESSION, URL_MATCHING_SVC, URL_QUESTION_SVC } from '@/lib/configs';
-import useUserStore from '@/lib/store';
-import { QuestionType } from '@/lib/types';
-import QuestionDescription from '../Question/QuestionDescription';
 
 const SAVE_INTERVAL_MS = 2000;
 const ReactQuill = dynamic(() => import('react-quill'), {
@@ -34,12 +28,6 @@ function Editor(props: { sessionId: string }) {
   const [isConnected, setIsConnected] = useState(false);
   const [value, setValue] = useState('');
   const [isDisabled, setIsDisabled] = useState<boolean>(true);
-  const [questionTitle, setQuestionTitle] = useState<string>();
-  const [question, setQuestion] = useState<QuestionType>();
-
-  const { user } = useUserStore((state) => ({
-    user: state.user,
-  }));
 
   const handleVal = (content: any, delta: any, source: any, editor: any) => {
     if (source !== 'user') return;
@@ -111,51 +99,16 @@ function Editor(props: { sessionId: string }) {
     };
   }, [socket, value]);
 
-  const getQuestionTitle = async () => {
-    const res = await axios.get(`${URL_MATCHING_SESSION}/${sessionId}`);
-    return res.data.data.question;
-  };
-
-  const getQuestion = async () => {
-    const convertedTitle = questionTitle?.replaceAll(' ', '-').toLocaleLowerCase();
-    const res = await axios.get(`${URL_QUESTION_SVC}/${convertedTitle}`);
-    return res.data.question;
-  };
-
-  useEffect(() => {
-    getQuestionTitle()
-      .then((res) => {
-        setQuestionTitle(res);
-      })
-      .then(() => {
-        getQuestion().then((res) => {
-          setQuestion(res[0]);
-        });
-      })
-      .finally(() => {
-        console.log(questionTitle);
-      });
-  }, []);
-
-  useEffect(() => {
-    getQuestion().then((res) => {
-      setQuestion(res[0]);
-    });
-  }, [questionTitle]);
-
   return (
-    <Box>
-      <QuestionDescription question={question} />
-      <ReactQuill
-        theme="snow"
-        modules={modules}
-        onChange={(content: any, delta: any, source: any, editor: any) =>
-          handleVal(content, delta, source, editor)
-        }
-        value={value}
-        readOnly={isDisabled}
-      />
-    </Box>
+    <ReactQuill
+      theme="snow"
+      modules={modules}
+      onChange={(content: any, delta: any, source: any, editor: any) =>
+        handleVal(content, delta, source, editor)
+      }
+      value={value}
+      readOnly={isDisabled}
+    />
   );
 }
 
