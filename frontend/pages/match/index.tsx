@@ -137,10 +137,9 @@ function Matching() {
   }));
   const [difficulty, setDifficulty] = useState('');
   const [socketMessage, setSocketMessage] = useState('');
-  // const [socketID, setSocketID] = useState('');
-  const [socketID, setSocketID] = useState(socket.id);
+  const [socketID, setSocketID] = useState('');
   const [messages, setMessages] = useState(initialMessages);
-  const [username, setUsername] = useState(user?.username);
+  const [username, setUsername] = useState('');
   const [room, setRoom] = useState('');
   const [matchRoomID, setMatchRoomID] = useState('');
   const [message, setMessage] = useState('');
