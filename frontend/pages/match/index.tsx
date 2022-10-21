@@ -17,13 +17,16 @@ import {
   SelectChangeEvent,
   TextField,
   Typography,
-  Backdrop,
   CircularProgress,
+  Card,
+  ButtonBase,
+  Container,
+  Stack,
 } from '@mui/material';
+import LoadingButton from '@mui/lab/LoadingButton';
 import { URL_MATCHING_CANCEL, URL_MATCHING_REQUEST, URI_MATCHING_SVC } from '@/lib/configs';
 import axios from 'axios';
 import { useRouter } from 'next/router';
-
 import { styled } from '@mui/material/styles';
 import useUserStore from '@/lib/store';
 import DefaultLayout from '@/layouts/DefaultLayout';
@@ -42,27 +45,44 @@ const SendMessageButton = styled(Button)({
   },
 });
 
-const SocketMessageOutput = styled('h2')({
-  fontSize: '20px',
-  padding: '5px',
+const MatchButton = styled(ButtonBase)(({ theme }) => ({
+  position: 'relative',
+  border: '2px solid black',
+  borderRadius: '50%',
+  height: 150,
+  width: 150,
+  backgroundColor: theme.palette.primary.light,
+  '&:hover': {
+    backgroundColor: theme.palette.primary.light,
+    opacity: 0.8,
+  },
   color: 'black',
-  justifyContent: 'center',
-});
+  fontSize: 16,
+}));
+
+const CancelButton = styled(LoadingButton)(({ theme }) => ({
+  position: 'relative',
+  border: '2px solid black',
+  borderRadius: '50%',
+  height: 150,
+  width: 150,
+  backgroundColor: theme.palette.error.main,
+  '&:hover': {
+    backgroundColor: theme.palette.error.main,
+    opacity: 0.8,
+  },
+  color: 'black',
+  fontSize: 16,
+}));
 
 interface callbackInterface {
   (message: string): void;
 }
-const initialMessagesState = {
-  general: [],
-  random: [],
-};
-
 const initialMessages = [] as string[];
 
 // backend port used for socket.io
 const socket = io(URI_MATCHING_SVC, {
   transports: ['websocket'],
-  // autoConnect: false,
 });
 
 // catch-all listener for development
@@ -75,8 +95,6 @@ const sendMatchRequest = async (username: string, difficulty: string, roomSocket
   console.log('sendMatchRequest called with ', username, difficulty, roomSocketID);
   try {
     const res = await axios.get(URL_MATCHING_REQUEST, {
-      // username,
-      // difficulty,
       headers: {
         username,
         difficulty,
@@ -84,17 +102,6 @@ const sendMatchRequest = async (username: string, difficulty: string, roomSocket
       },
     });
     console.log('res from sendMatchRequest: ', res.data);
-    // { message, username1, username1socketID, username2, username2socketID, matchRoomID }
-    if (res.status === 200 || res.status === 201) {
-      console.log('match request sent');
-      // contains json of mongodbID, username, difficulty, createdAt, message
-      return res;
-    }
-    if (res.status === 400 || res.status === 404) {
-      console.log('match request failed');
-      return res;
-    }
-    console.log('match request failed');
     return res;
   } catch (err: any) {
     console.log('error message is: ', err.response.data.message);
@@ -104,24 +111,11 @@ const sendMatchRequest = async (username: string, difficulty: string, roomSocket
 };
 
 const cancelMatchRequest = async (username: string, difficulty: string) => {
-  console.log('cancelMatchRequest called with ', username, difficulty);
   try {
     const res = await axios.post(URL_MATCHING_CANCEL, {
       username,
       difficulty,
     });
-    console.log('res from cancelMatchRequest: ', res.data);
-    // { message, username1, username1socketID, username2, username2socketID, matchRoomID }
-    if (res.status === 200 || res.status === 201) {
-      console.log('cancel match request sent');
-      // contains json of mongodbID, username, difficulty, createdAt, message
-      return res;
-    }
-    if (res.status === 400 || res.status === 404) {
-      console.log('cancel match request failed');
-      return res;
-    }
-    console.log('cancel match request failed');
     return res;
   } catch (err: any) {
     console.log('error message is: ', err.response.data.message);
@@ -135,11 +129,12 @@ function Matching() {
   const { user } = useUserStore((state) => ({
     user: state.user,
   }));
+  const username = user?.username;
+
   const [difficulty, setDifficulty] = useState('');
-  const [socketMessage, setSocketMessage] = useState('');
   const [socketID, setSocketID] = useState('');
   const [messages, setMessages] = useState(initialMessages);
-  const [username, setUsername] = useState('');
+
   const [room, setRoom] = useState('');
   const [matchRoomID, setMatchRoomID] = useState('');
   const [message, setMessage] = useState('');
@@ -148,82 +143,45 @@ function Matching() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [dialogTitle, setDialogTitle] = useState('');
   const [dialogMsg, setDialogMsg] = useState('');
-  const [isBackdropOpen, setIsBackdropOpen] = useState(false);
-  const [countdownSeconds, setCountdownSeconds] = useState(5);
+  const [countdownSeconds, setCountdownSeconds] = useState<number>(-1);
   const closeDialog = () => setIsDialogOpen(false);
-
-  const setSuccessDialog = (msg: string) => {
-    setIsDialogOpen(true);
-    setDialogTitle('Success');
-    setDialogMsg(msg);
-  };
 
   const setErrorDialog = (msg: string) => {
     setIsDialogOpen(true);
     setDialogTitle('Error');
     setDialogMsg(msg);
   };
-  // user undefined from useSession
+
+  // Set up Socket listeners
   useEffect(() => {
     const onConnectionCallback = () => {
       console.log('socket id in connectionCallback is ', socket.id);
       console.log('user is: ', user);
-      setUsername(user?.username);
       setSocketID(socket.id);
-      // handleConnectToSocket();
     };
+    const handleIncomingMessages = (payload) => setMessages(payload.content);
+
     socket.on(ON_EVENT.CONNECT, onConnectionCallback);
+    socket.on(ON_EVENT.RECEIVE_MESSAGE, handleIncomingMessages);
+
     return () => {
       socket.off(ON_EVENT.CONNECT, onConnectionCallback);
+      socket.off(ON_EVENT.RECEIVE_MESSAGE, handleIncomingMessages);
     };
   }, [socket]);
 
-  // socket connection established
-  // socket.on(ON_EVENT.CONNECT, () => {
-  //   console.log('socket id is ', socket.id);
-  //   setUsername(user?.username);
-  //   setSocketID(socket.id);
-  // });
-
-  const handleConnectToSocket = () => {
-    setUsername(user?.username);
-    console.log('username: ', user?.username);
-    socket.auth = { username };
-    socket.connect();
+  /** * HANDLERS ** */
+  const handleDifficultyChange = (e: SelectChangeEvent<string>) => {
+    setDifficulty(e.target.value);
   };
 
-  socket.on(ON_EVENT.MESSAGE, (payload) => {
-    // setSocketID(socket.id);
-    // setUsername(user?.username);
-    console.log('socket id in client: ', socket.id);
-    console.log('message from socket: ', payload);
-  });
-
   // join Room when match is successful and room is created
-
   const handleJoinRoom = async () => {
     setRoom(matchRoomID);
     socket.emit(EMIT_EVENT.JOIN_ROOM, { username, matchRoomID }, (callback: callbackInterface) => {
       console.log('callback: ', callback);
     });
   };
-
-  const handleLeaveRoom = () => {
-    socket.emit(EMIT_EVENT.LEAVE_ROOM, { username, room }, (callback: callbackInterface) => {
-      console.log('callback: ', callback);
-      setRoom('');
-    });
-  };
-
-  socket.on(ON_EVENT.JOIN_ROOM_SUCCESS, (payload) => {
-    const { username, id, matchRoomID } = payload;
-    console.log('join-room-success:', payload);
-    // setRoom(matchRoomID);
-  });
-
-  socket.on(ON_EVENT.LEAVE_ROOM, ({ leaveRoomMessage, leaveRoomUsername }) => {
-    console.log('message from server for: ', leaveRoomMessage);
-  });
 
   // Send message with sepcific matchRoomID to the server if there is
   const handleSendSocketMessage = async () => {
@@ -237,110 +195,120 @@ function Matching() {
     setMessages([...messages, message]);
   };
 
-  socket.on(ON_EVENT.RECEIVE_MESSAGE, (payload) => {
-    const { content, sender, roomId, chatName } = payload;
-    console.log('message from sendMessage socket: ', payload.content);
-    // sender is now new receiver to reply using same room ID
-    setMessages(payload.content);
-  });
-
   const handleMatchFound = async (payload: any) => {
-    const { message, username1, username1socketID, username2, username2socketID, matchRoomID } =
-      payload;
-    setPendingMatchRequest(false);
-    const timeId = setTimeout(() => {
+    const { matchRoomID } = payload;
+    setCountdownSeconds(5);
+
+    setTimeout(() => {
       // After 3 seconds redirect
       const url = `/match/session/${payload.matchRoomID}`;
       router.push(url);
     }, 5000);
-    setInterval(() => setCountdownSeconds(countdownSeconds - 1), 1000);
-    setSuccessDialog(
-      `Found Match! \n ${message} \n ${payload.matchRoomID} \n Redirecting in ${countdownSeconds}`
-    );
+
+    setInterval(() => setCountdownSeconds((p) => (p < 0 ? 3 : p - 1)), 1000);
+
     setMatchRoomID(payload.matchRoomID);
     setRoom(matchRoomID);
     await handleJoinRoom();
-    // socket.emit('match-found', { username, difficulty, matchRoomID, roomSocketID: socketID });
-  };
-
-  const handleDifficultyChange = (e: SelectChangeEvent<string>) => {
-    setDifficulty(e.target.value);
   };
 
   // send match request to server
   // instant find, if no match, insert this match request into database
   // if match found, socket server will inform user from someone else
   const handleSendMatchRequest = async () => {
-    console.log('difficulty: ', difficulty);
-    console.log('username: ', username);
-    try {
-      if (!username || !difficulty) {
-        console.log('Please enter a username and difficulty');
-        throw new Error('Please select a difficulty');
-      }
-    } catch (err: any) {
-      console.log('Error: ', err);
-      setErrorDialog(err.message);
+    if (!username) {
+      setErrorDialog('Username not found');
+      return;
     }
 
-    if (username && difficulty) {
-      try {
-        setPendingMatchRequest(true);
-        const res = await sendMatchRequest(username, difficulty, socketID);
-        console.log('sendMatchRequest res: ', res.data);
-        if (res.status === 201 || res.status === 200) {
-          await handleMatchFound(res.data);
-          console.log(res.data);
-          return res;
-        }
+    if (!difficulty) {
+      setErrorDialog('Plase select a difficulty');
+      return;
+    }
 
-        // if (res.data.message == 'Match request is cancelled') {
-        //   setSuccessDialog(`Cancelled match request successfully! \n ${res.data.message}`);
-        // }
-      } catch (err: any) {
-        setPendingMatchRequest(false);
-        if (err.response.data.message === 'Match request is cancelled') {
-          setErrorDialog('Match Request successfully cancelled');
-        } else if (err.response.data.status === 500) {
-          setErrorDialog('Failed to find a match');
-        } else {
-          setErrorDialog('Please try again later');
-        }
+    try {
+      setPendingMatchRequest(true);
+      const res = await sendMatchRequest(username, difficulty, socketID);
+      console.log('sendMatchRequest res: ', res.data);
+      if (res.status === 201 || res.status === 200) {
+        await handleMatchFound(res.data);
+        return res;
+      }
+    } catch (err: any) {
+      setPendingMatchRequest(false);
+      if (err.response.data.status === 500) {
+        setErrorDialog('Failed to find a match');
+      } else {
+        setErrorDialog('Please try again later');
       }
     }
   };
 
   const handleCancelMatchRequest = async () => {
-    if (username && difficulty) {
-      try {
-        setPendingMatchRequest(false);
-        const res = await cancelMatchRequest(username, difficulty);
-        if (res.status === 200) {
-          console.log('cancelMatchRequest res: ', res);
-        }
-      } catch (err: any) {
-        console.log('Error in cancelling match request: ', err);
-      }
-    }
-    if (!username || !difficulty) {
-      console.log('Please enter a username and difficulty');
-      throw new Error('Please select a difficulty');
+    try {
+      setPendingMatchRequest(false);
+      await cancelMatchRequest(username, difficulty);
+    } catch (err: any) {
+      console.log('Error in cancelling match request: ', err);
     }
   };
 
   return (
     <DefaultLayout>
-      <Box display="flex" flexDirection="column" width="80%">
-        <Box display="flex" flexDirection="column" width="inherit">
-          <Typography variant="h5" marginBottom="1rem">
-            My socket id: {socketID}
-          </Typography>
-          <Typography variant="h5" marginBottom=".5rem">
-            Current Room {room}
-          </Typography>
-          <Typography variant="h5" marginBottom=".5rem">
-            Match Room ID {matchRoomID}
-          </Typography>
+      <Container maxWidth="md" sx={{ padding: 10 }}>
+        <Box display="flex" justifyContent="center">
+          <Card sx={{ width: '50%', padding: 10 }}>
+            <Grid container justifyContent="center" rowSpacing={5}>
+              <Grid container item xs={12} justifyContent="center" alignItems="center" spacing={2}>
+                {pendingMatchRequest && countdownSeconds < 0 && (
+                  <Grid item>
+                    <CircularProgress value={2} />
+                  </Grid>
+                )}
+                <Grid item>
+                  <h1 style={{ textAlign: 'center' }}>
+                    {pendingMatchRequest ? 'Finding A Match...' : 'Find A Match'}
+                  </h1>
+                </Grid>
+              </Grid>
+
+              <Grid container justifyContent="center">
+                {pendingMatchRequest ? (
+                  <CancelButton onClick={handleCancelMatchRequest} disabled={countdownSeconds >= 0}>
+                    {countdownSeconds >= 0 ? countdownSeconds : 'Cancel Search'}
+                  </CancelButton>
+                ) : (
+                  <MatchButton onClick={handleSendMatchRequest}>Match</MatchButton>
+                )}
+              </Grid>
+
+              <Grid container item xs={4} justifyContent="center">
+                <FormControl fullWidth>
+                  <InputLabel>Difficulty</InputLabel>
+                  <Select
+                    disabled={pendingMatchRequest}
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"
+                    value={difficulty}
+                    label="Difficulty"
+                    onChange={handleDifficultyChange}
+                  >
+                    <MenuItem value="Easy">Easy</MenuItem>
+                    <MenuItem value="Medium">Medium</MenuItem>
+                    <MenuItem value="Hard">Hard</MenuItem>
+                  </Select>
+                </FormControl>
+              </Grid>
+              <Grid container justifyContent="center">
+                {pendingMatchRequest && (
+                  <p style={{ textAlign: 'center' }}>Please do not refresh or leave the page...</p>
+                )}
+              </Grid>
+            </Grid>
+          </Card>
+        </Box>
+
+        <Stack>
           <TextField
             label="Message"
             variant="standard"
@@ -349,85 +317,33 @@ function Matching() {
             sx={{ marginBottom: '1rem' }}
             autoFocus
           />
+
           <SendMessageButton onClick={() => handleSendSocketMessage()}>
             Send Message
           </SendMessageButton>
-          <TextField
-            label="Room"
-            variant="standard"
-            value={matchRoomID}
-            onChange={(e) => setMatchRoomID(e.target.value)}
-            sx={{ marginBottom: '2rem' }}
-          />
-          <Button variant="outlined" onClick={() => handleJoinRoom()}>
-            Join Room
-          </Button>
-          <Button variant="outlined" onClick={() => handleLeaveRoom()}>
-            Leave Room
-          </Button>
 
-          <Button variant="outlined" onClick={() => handleConnectToSocket()}>
-            Connect
-          </Button>
-          {/* // TODO: Add cancel match UI element as well as backend implementation, 
-              // TODO: but have to be able to stop current request being sent which is not possible unless 
-              // TODO: separate backend calls into single calls, and frontend do the interval calls 
-            */}
-
-          <Backdrop
-            sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
-            open={pendingMatchRequest}
-            onClick={() => {
-              console.log('backdrop clicked');
-            }}
-          >
-            <CircularProgress color="inherit" value={10} />
-
-            <Button variant="contained" onClick={() => handleCancelMatchRequest()}>
-              Cancel Request
-            </Button>
-          </Backdrop>
-
-          <Dialog open={isDialogOpen} onClose={closeDialog} maxWidth="xl">
-            <Box flexDirection="column" width="50%" justifyContent="center" alignSelf="center">
-              <DialogTitle>{dialogTitle}</DialogTitle>
-              <DialogContent>
-                <DialogContentText flexDirection="column">{dialogMsg}</DialogContentText>
-              </DialogContent>
-              <Button onClick={closeDialog}>OK</Button>
-            </Box>
-          </Dialog>
-          <Box marginTop="1rem">
-            <FormControl fullWidth>
-              <InputLabel>Difficulty</InputLabel>
-              <Select
-                labelId="demo-simple-select-label"
-                id="demo-simple-select"
-                value={difficulty}
-                label="Difficulty"
-                onChange={handleDifficultyChange}
-              >
-                <MenuItem value="Easy">Easy</MenuItem>
-                <MenuItem value="Medium">Medium</MenuItem>
-                <MenuItem value="Hard">Hard</MenuItem>
-              </Select>
-            </FormControl>
+          <Box display="flex" justifyContent="flex-start" flexDirection="column">
+            <Typography>Messages</Typography>
+            <List>
+              {messages.map((msg, index) => (
+                <ListItem key={index}>
+                  <ListItemText primary={msg} />
+                </ListItem>
+              ))}
+            </List>
           </Box>
-          <Button variant="outlined" onClick={() => handleSendMatchRequest()}>
-            Look for Match
-          </Button>
+        </Stack>
+      </Container>
+
+      <Dialog open={isDialogOpen} onClose={closeDialog} maxWidth="xl">
+        <Box flexDirection="column" width="50%" justifyContent="center" alignSelf="center">
+          <DialogTitle>{dialogTitle}</DialogTitle>
+          <DialogContent>
+            <DialogContentText flexDirection="column">{dialogMsg}</DialogContentText>
+          </DialogContent>
+          <Button onClick={closeDialog}>OK</Button>
         </Box>
-        <Box display="flex" justifyContent="flex-start" flexDirection="column">
-          <Typography>Messages</Typography>
-          <List>
-            {messages.map((msg, index) => (
-              <ListItem key={index}>
-                <ListItemText primary={msg} />
-              </ListItem>
-            ))}
-          </List>
-        </Box>
-      </Box>
+      </Dialog>
     </DefaultLayout>
   );
 }
