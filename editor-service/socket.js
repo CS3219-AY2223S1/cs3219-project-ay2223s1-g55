@@ -2,15 +2,14 @@ import { instrument } from '@socket.io/admin-ui';
 import { Server } from 'socket.io';
 // import { instrument } from '@socket.io/admin-ui';
 import { IO_EVENT } from './libs/constants.js';
-import EditorModel from './model/editor-model.js';
-import findOrCreateDocument from './model/repository.js';
+import { ormFindEditorAndUpdate, ormFindOrCreateEditor } from './model/editor-orm.js';
 
 let socket;
 const socketInitializer = (httpServer) => {
   socket = new Server(httpServer, {
     // Edit here to include new URL to access socket
     cors: {
-      origin: ['http://localhost:3000', 'https://admin.socket.io'],
+      origin: [process.env.LOCAL_URL, process.env.DEPLOYMENT_URL, process.env.ADMIN_URL],
       credentials: true,
     },
   });
@@ -22,20 +21,20 @@ const socketInitializer = (httpServer) => {
   socket.on(IO_EVENT.CONNECTION, (clientSocket) => {
     console.log('New WS Connection...', clientSocket.id);
 
-    clientSocket.on('get-document', async (documentId) => {
+    clientSocket.on('get-editor', async (editorId) => {
       // retrive data
-      const document = await findOrCreateDocument(documentId);
-      // check if documentId is legit for this user
+      const editor = await ormFindOrCreateEditor(editorId);
+      // check if editorId is legit for this user
       // check()
-      clientSocket.join(documentId);
-      clientSocket.emit('load-document', document.data);
+      clientSocket.join(editorId);
+      clientSocket.emit('load-editor', editor.data);
 
       clientSocket.on('send-changes', (delta) => {
-        clientSocket.broadcast.to(documentId).emit('receive-changes', delta);
+        clientSocket.broadcast.to(editorId).emit('receive-changes', delta);
       });
 
-      clientSocket.on('save-document', async (data) => {
-        await EditorModel.findByIdAndUpdate(documentId, { data });
+      clientSocket.on('save-editor', async (data) => {
+        await ormFindEditorAndUpdate(editorId, data);
       });
     });
   });

@@ -9,7 +9,7 @@ const URI_USER_SVC = process.env.NEXT_PUBLIC_URI_USER_SVC || 'http://localhost:8
 export const URI_MATCHING_SVC = process.env.NEXT_PUBLIC_URI_MATCHING_SVC || 'http://localhost:8001';
 const URI_QUESTION_SVC = process.env.NEXT_PUBLIC_URI_QUESTION_SVC || 'http://localhost:8002';
 const URI_HISTORY_SVC = process.env.NEXT_PUBLIC_URI_HISTORY_SVC || 'http://localhost:8003';
-const URI_EDITOR_SVC = process.env.NEXT_PUBLIC_URI_EDITOR_SVC || 'http://localhost:8004';
+export const URI_EDITOR_SVC = process.env.NEXT_PUBLIC_URI_EDITOR_SVC || 'http://localhost:8004';
 export const URI_COMMUNICATION_SVC =
   process.env.NEXT_PUBLIC_URI_COMMUNICATION_SVC || 'http://localhost:8005';
 
