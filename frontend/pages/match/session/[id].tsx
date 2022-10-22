@@ -9,6 +9,7 @@ import { QuestionType } from '@/lib/types';
 import axios from 'axios';
 import { useState, useEffect } from 'react';
 import QuestionDescription from '@/components/Question/QuestionDescription';
+import DefaultLayout from '@/layouts/DefaultLayout';
 
 export default function CollaborationPlatform() {
   const router = useRouter();
@@ -32,6 +33,7 @@ export default function CollaborationPlatform() {
   };
 
   useEffect(() => {
+    if (!router.isReady) return;
     getQuestionTitle()
       .then((res) => {
         setQuestionTitle(res);
@@ -44,7 +46,7 @@ export default function CollaborationPlatform() {
       .finally(() => {
         console.log(questionTitle);
       });
-  }, []);
+  }, [router.isReady]);
 
   useEffect(() => {
     getQuestion().then((res) => {
@@ -53,24 +55,26 @@ export default function CollaborationPlatform() {
   }, [questionTitle]);
 
   return (
-    <div style={{ padding: 40 }}>
-      <Grid container spacing={3}>
-        <Grid item xs={12} md={8}>
-          <Stack>
-            <QuestionDescription question={question} />
-            <Card elevation={3} sx={{ p: 2 }}>
-              <CardContent>
-                <Editor sessionId={sessionId ?? ''} />
-              </CardContent>
+    <DefaultLayout>
+      <div style={{ padding: 40 }}>
+        <Grid container spacing={3}>
+          <Grid item xs={12} md={8}>
+            <Stack>
+              <QuestionDescription question={question} />
+              <Card elevation={3} sx={{ p: 2 }}>
+                <CardContent>
+                  <Editor sessionId={sessionId ?? ''} />
+                </CardContent>
+              </Card>
+            </Stack>
+          </Grid>
+          <Grid xs={12} md={4}>
+            <Card sx={{ m: 3 }}>
+              <Chat sessionId={sessionId ?? ''} />
             </Card>
-          </Stack>
+          </Grid>
         </Grid>
-        <Grid xs={12} md={4}>
-          <Card sx={{ m: 3 }}>
-            <Chat sessionId={sessionId ?? ''} />
-          </Card>
-        </Grid>
-      </Grid>
-    </div>
+      </div>
+    </DefaultLayout>
   );
 }
