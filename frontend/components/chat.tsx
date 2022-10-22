@@ -17,7 +17,7 @@ import {
 import { styled } from '@mui/material/styles';
 import axios from 'axios';
 import { io, Socket } from 'socket.io-client';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { ServerToClientEvents, ClientToServerEvents, Message } from '@/lib/types';
 import useUserStore from '@/lib/store';
 import UnauthorizedDialog from '@/components/UnauthorizedDialog';
@@ -27,6 +27,7 @@ import { v4 as uuidv4 } from 'uuid';
 function ChatMessage(props: { message: Message; username: string }) {
   const { message, username } = props;
   const isSelf = message.senderName === username;
+
   return (
     <Container>
       <ListItem
@@ -64,24 +65,27 @@ function ChatMessage(props: { message: Message; username: string }) {
 }
 
 function ChatWindow(props: { messageList: Array<Message>; username: string }) {
+  const bottomRef = useRef<null | HTMLDivElement>(null);
   const { messageList, username } = props;
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messageList]);
   return (
     <Box
       sx={{
         mr: '10%',
         ml: '10%',
-        border: 1,
-        borderColor: 'divider',
         pr: '1%',
         pl: '1%',
       }}
     >
       <Grid>
-        <Paper style={{ minHeight: 400, maxHeight: 500, overflow: 'auto' }}>
+        <Paper style={{ height: '100vh', overflow: 'auto' }}>
           <List>
             {messageList.map((message) => (
               <ChatMessage key={message.id} message={message} username={username} />
             ))}
+            <div ref={bottomRef} />
           </List>
         </Paper>
       </Grid>
@@ -105,6 +109,7 @@ const SendMessageButton = styled(Button)({
   },
 });
 const fetchAllMessages = async (sessionId: string) => {
+  console.log('Fetch all messages for : ', sessionId);
   if (!sessionId) {
     return null;
   }
@@ -136,22 +141,26 @@ const createMessage = async (
   return res;
 };
 
+let socket: Socket<ServerToClientEvents, ClientToServerEvents>;
+
 export default function Chat(props: { sessionId: string }) {
   const { sessionId } = props;
   const { user } = useUserStore((state) => ({
     user: state.user,
   }));
-  const [socket, setSocket] = useState<Socket<ServerToClientEvents, ClientToServerEvents>>();
+  // const [socket, setSocket] = useState<Socket<ServerToClientEvents, ClientToServerEvents>>();
   const [messages, setMessages] = useState<Message[]>([]);
   const [messageInput, setMessageInput] = useState('');
   const [isConnected, setIsConnected] = useState(false);
+  const [isRoomJoined, setIsRoomJoined] = useState(false);
   const [isMessageSent, setIsMessageSent] = useState(true);
   const [loading, setLoading] = useState(false);
-  const [sessionRoomId, setSessionId] = useState('2000');
 
   const handleFetchAllMessages = async () => {
     try {
-      // ! sessionId can be empty
+      if (!sessionId) {
+        return;
+      }
       const res = await fetchAllMessages(sessionId);
       // const res = await fetchAllMessages(props.sessionId);
       if (res === null) {
@@ -203,11 +212,43 @@ export default function Chat(props: { sessionId: string }) {
   };
 
   useEffect(() => {
-    // ! Being done after join room is done
-    handleFetchAllMessages();
-    // only render this on first render
+    if (sessionId === null) {
+      return;
+    }
+    socket = io(URI_COMMUNICATION_SVC, {
+      transports: ['websocket'],
+    });
+
+    socket.on('connect', async () => {
+      setIsConnected(true);
+    });
+
+    socket.on('disconnect', (reason: any) => {
+      if (reason === 'io server disconnect') {
+        // socket.connect();
+      }
+      setIsConnected(false);
+    });
+
+    return () => {
+      console.log('unmounting socket connecting');
+      socket.off('connect');
+      socket.off('disconnect');
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isConnected]);
+  }, []);
+
+  useEffect(() => {
+    if (socket == null || sessionId == null || !user.username) return;
+    socket.emit('joinRoom', sessionId, user.username, uuidv4());
+  }, [sessionId]);
+
+  // After join room
+  useEffect(() => {
+    if (!isConnected || socket == null || sessionId == null || !isRoomJoined) return;
+    handleFetchAllMessages();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isRoomJoined]);
 
   useEffect(() => {
     if (!socket || socket === null || socket === undefined) {
@@ -215,7 +256,8 @@ export default function Chat(props: { sessionId: string }) {
     }
 
     socket.on('joinRoomSuccess', async (sessionId, username, userId) => {
-      console.log('joinRoomSuccess on socket');
+      console.log('joinRoomSuccess on socket:', username, sessionId);
+      setIsRoomJoined(true);
       const newMessage: Message = {
         content: `${username} joined the room`,
         senderId: userId,
@@ -227,6 +269,18 @@ export default function Chat(props: { sessionId: string }) {
       console.log('joinRoomSuccessMessage: ', newMessage);
       setMessages((messages) => [...messages, newMessage]);
     });
+
+    return () => {
+      console.log('offing join and message event');
+      socket.off('joinRoomSuccess');
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [socket]);
+
+  useEffect(() => {
+    if (!socket || socket === null || socket === undefined) {
+      return;
+    }
 
     socket.on('receiveMessage', async (content, senderId, senderName, sessionId, createdAt, id) => {
       const newMessage: Message = {
@@ -241,54 +295,23 @@ export default function Chat(props: { sessionId: string }) {
     });
 
     return () => {
-      console.log('offing join and message event');
-      // socket.off('joinRoomSuccess');
-      // socket.off('receiveMessage');
+      socket.off('receiveMessage');
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isConnected]);
-
-  useEffect(() => {
-    const clientSocket = io(URI_COMMUNICATION_SVC, {
-      transports: ['websocket'],
-      // autoConnect: false,
-    });
-
-    clientSocket.on('connect', async () => {
-      // reactStrictMode: true causes this to run twice
-      setIsConnected(true);
-      // ! user.id not implemented yet
-      // TODO: Store user.id to be used for authentication for joining room
-      // ! Or do authorization on something else
-      setSocket(clientSocket);
-      if (user) {
-        clientSocket.emit('joinRoom', sessionId, user.username, '1');
-      }
-    });
-
-    return () => {
-      console.log('unmounting socket connecting');
-      clientSocket.off('connect');
-      // clientSocket.close();
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [socket, isMessageSent]);
 
   const handleSendMessage = async () => {
     const message = messageInput;
     if (socket == null) {
       return;
     }
-    if (message.trim().length === 0) {
-      return;
-    }
     if (!user.username) {
       return;
     }
     setLoading(true);
-    const res = await handleCreateMessage(sessionId, user.username, '1', message);
+    const res = await handleCreateMessage(sessionId, user.username, uuidv4(), message);
     if (res && res.status === 201) {
       const { message, senderId, senderName, sessionId, createdAt, _id } = res.data.data;
+      setIsMessageSent(false);
       socket.emit('roomMessage', message, senderId, senderName, sessionId, createdAt, _id);
       setLoading(false);
       setIsMessageSent(true);
@@ -303,7 +326,7 @@ export default function Chat(props: { sessionId: string }) {
   if (!user.loginState) return <UnauthorizedDialog />;
   return (
     <Box display="flex" justifyContent="flex-start" flexDirection="column">
-      <Typography>Messages</Typography>
+      <Typography sx={{ fontSize: 'h4', alignSelf: 'center' }}>Chat</Typography>
       <ChatWindow messageList={messages} username={user.username} />
       <TextField
         label="Message"
