@@ -1,13 +1,13 @@
 import { useRouter } from 'next/router';
 import { EditRoad } from '@mui/icons-material';
-import { Card, Grid, CardContent, Stack } from '@mui/material';
+import { Box, Card, Grid, CardContent, Stack, Button, Drawer } from '@mui/material';
 import Editor from '@/components/collaboration-platform/editor';
 import Chat from '@/components/chat';
 import { URL_MATCHING_SESSION, URL_QUESTION_SVC } from '@/lib/configs';
 import useUserStore from '@/lib/store';
 import { QuestionType } from '@/lib/types';
 import axios from 'axios';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import QuestionDescription from '@/components/Question/QuestionDescription';
 import DefaultLayout from '@/layouts/DefaultLayout';
 
@@ -16,6 +16,14 @@ export default function CollaborationPlatform() {
   const { id: sessionId }: { id?: string } = router.query;
   const [questionTitle, setQuestionTitle] = useState<string>();
   const [question, setQuestion] = useState<QuestionType>();
+
+  const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(true);
+
+  const body = useRef(null);
+
+  const toggleDrawer = () => {
+    setIsDrawerOpen(!isDrawerOpen);
+  };
 
   const { user } = useUserStore((state) => ({
     user: state.user,
@@ -57,10 +65,22 @@ export default function CollaborationPlatform() {
   return (
     <DefaultLayout>
       <div style={{ padding: 40 }}>
-        <Grid container spacing={3}>
+        <Button onClick={toggleDrawer}>See Question</Button>
+
+        <Drawer anchor="left" open={isDrawerOpen} onClose={toggleDrawer}>
+          <Box
+            sx={{ width: '40vw', padding: '40px' }}
+            role="presentation"
+            onClick={toggleDrawer}
+            onKeyDown={toggleDrawer}
+          >
+            <QuestionDescription question={question} />
+          </Box>
+        </Drawer>
+
+        <Grid ref={body} container spacing={3}>
           <Grid item xs={12} md={8}>
             <Stack>
-              <QuestionDescription question={question} />
               <Card elevation={3} sx={{ p: 2 }}>
                 <CardContent>
                   <Editor sessionId={sessionId ?? ''} />
