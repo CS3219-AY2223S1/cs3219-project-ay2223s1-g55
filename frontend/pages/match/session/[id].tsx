@@ -10,6 +10,7 @@ import axios from 'axios';
 import { useState, useEffect, useRef } from 'react';
 import QuestionDescription from '@/components/Question/QuestionDescription';
 import DefaultLayout from '@/layouts/DefaultLayout';
+import Editor2 from '@/components/collaboration-platform/Editor2';
 
 export default function CollaborationPlatform() {
   const router = useRouter();
@@ -18,8 +19,6 @@ export default function CollaborationPlatform() {
   const [question, setQuestion] = useState<QuestionType>();
 
   const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(true);
-
-  const body = useRef(null);
 
   const toggleDrawer = () => {
     setIsDrawerOpen(!isDrawerOpen);
@@ -78,12 +77,13 @@ export default function CollaborationPlatform() {
           </Box>
         </Drawer>
 
-        <Grid ref={body} container spacing={3}>
+        <Grid container spacing={3}>
           <Grid item xs={12} md={8}>
             <Stack>
               <Card elevation={3} sx={{ p: 2 }}>
                 <CardContent>
-                  <Editor sessionId={sessionId ?? ''} />
+                  {/* <Editor sessionId={sessionId ?? ''} /> */}
+                  <Editor2 />
                 </CardContent>
               </Card>
             </Stack>
