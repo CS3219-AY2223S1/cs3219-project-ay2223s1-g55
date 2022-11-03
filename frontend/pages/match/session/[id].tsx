@@ -83,7 +83,7 @@ export default function CollaborationPlatform() {
               <Card elevation={3} sx={{ p: 2 }}>
                 <CardContent>
                   {/* <Editor sessionId={sessionId ?? ''} /> */}
-                  <Editor2 />
+                  <Editor2 sessionId={sessionId ?? ''} />
                 </CardContent>
               </Card>
             </Stack>
