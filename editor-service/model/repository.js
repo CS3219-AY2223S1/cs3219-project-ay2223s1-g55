@@ -5,7 +5,7 @@ import 'dotenv/config.js';
 import mongoose from 'mongoose';
 
 const mongoDB = process.env.ENV == 'PROD' ? process.env.DB_CLOUD_URI : process.env.DB_LOCAL_URI;
-const dbName = process.env.ENV === 'test' ? 'test' : 'editor-service';
+const dbName = process.env.ENV === 'testDB' ? 'test' : 'editorDB';
 
 mongoose.connect(mongoDB, {
   dbname: dbName,
