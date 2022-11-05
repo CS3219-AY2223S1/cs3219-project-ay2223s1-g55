@@ -14,6 +14,7 @@ import {
   ormFindSessionById as _findSessionById,
 } from '../model/match-session-orm.js';
 import { sleep } from '../utils/sleep.js';
+import axios from 'axios';
 
 export async function createMatchRequest(req, res) {
   try {
@@ -130,7 +131,13 @@ export async function findMatchRequest(req, res) {
         if (updatedMatchRequest) {
           console.log('Updated match request successfully');
           // TODO: Figure out algorithm for selecting question, and also according to difficulty.
-          question = 'Two Sum';
+          const axiosResp = await axios.get(
+            `http://localhost:8002/api/question?difficulty=${difficulty.toLowerCase()}`
+          );
+          const qns = axiosResp.data.questions;
+          const numQn = qns.length;
+          const randomIndex = Math.floor(Math.random() * numQn);
+          question = qns[randomIndex].title;
           const matchSession = await _createMatchSession(
             updatedMatchRequest.difficulty,
             updatedMatchRequest.username1,
