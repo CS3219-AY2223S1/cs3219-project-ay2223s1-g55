@@ -6,10 +6,6 @@ import { useEffect } from 'react';
 const QuestionDescription = ({ question }) => {
   const descriptionElement = parse(question?.description ?? '');
 
-  useEffect(() => {
-    console.log('difficulty', question?.difficulty);
-  }, [question]);
-
   return (
     <Box>
       <Typography variant='h4'>{question?.title}</Typography>

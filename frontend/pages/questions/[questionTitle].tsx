@@ -10,7 +10,7 @@ import QuestionDescription from '@/components/Question/QuestionDescription';
 const Question = () => {
   const router = useRouter();
   const { questionTitle } = router.query;
-  const [question, setQuestion] = useState<QuestionType[]>();
+  const [question, setQuestion] = useState<QuestionType>();
   const [commentsAdded, setCommentsAdded] = useState<boolean>(false);
 
   const getQuestionByTitle = async () => {
