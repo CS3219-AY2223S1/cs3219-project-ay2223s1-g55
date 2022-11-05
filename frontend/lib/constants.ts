@@ -32,3 +32,11 @@ export const ON_EVENT = {
   MATCH_FOUND: 'match-found',
   PRIVATE_MESSAGE: 'private-message',
 };
+
+// Max EXP level for learning pathway
+export const MAX_EXP = {
+  Beginner: 200,
+  Novice: 600,
+  Expert: 1200,
+  Elite: 6000,
+};

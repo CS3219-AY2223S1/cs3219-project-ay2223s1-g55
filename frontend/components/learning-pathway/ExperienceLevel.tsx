@@ -5,17 +5,21 @@ import { useEffect, useState } from 'react';
 import * as React from 'react';
 import { LinearProgressProps } from '@mui/material/LinearProgress';
 import Typography from '@mui/material/Typography';
+import { getNextExperienceLevelMessage } from '@/lib/helpers';
+import { MAX_EXP } from '@/lib/constants';
 
-const MAX_EXP = 200; // TODO: figure out max exp per experience level.
-
-function LinearProgressWithLabel({ value, ...props }: LinearProgressProps & { value: number }) {
+function LinearProgressWithLabel({
+  value,
+  maxExp,
+  ...props
+}: LinearProgressProps & { value: number; maxExp: number }) {
   return (
     <Box sx={{ display: 'flex', alignItems: 'center' }}>
       <Box sx={{ width: '100%', mr: 1 }}>
-        <LinearProgress variant='determinate' value={value} {...props} />
+        <LinearProgress variant='determinate' value={(value / maxExp) * 100} {...props} />
       </Box>
       <Box sx={{ minWidth: 100 }}>
-        <Typography variant='body2' color='text.secondary'>{`${value}/${MAX_EXP} XP`}</Typography>
+        <Typography variant='body2' color='text.secondary'>{`${value}/${maxExp} XP`}</Typography>
       </Box>
     </Box>
   );
@@ -30,10 +34,12 @@ const ExperienceLevel = () => {
     experiencePoints: 0,
   });
   const { experienceLevel, experiencePoints } = experience;
+  const maxExp = MAX_EXP[`${experience.experienceLevel}`];
 
   useEffect(() => {
     const fetchExperience = async () => {
       const _experience = await getExperience(user.username);
+      console.log(_experience);
       setExperience(_experience);
     };
     if (user?.loginState) fetchExperience();
@@ -42,10 +48,9 @@ const ExperienceLevel = () => {
   return (
     <Stack spacing='xs' sx={{ marginBottom: 5 }}>
       <h2>{experienceLevel}</h2>
-      {/* TODO: instead of hardcoding novice, find a way to determine the next experience level. */}
-      <LinearProgressWithLabel value={experiencePoints} />
+      <LinearProgressWithLabel value={experiencePoints} maxExp={maxExp} />
       <p style={{ fontSize: 14 }}>
-        Obtain {MAX_EXP - experiencePoints} more experience points to become a Novice
+        {getNextExperienceLevelMessage(experienceLevel, maxExp - experiencePoints)}
       </p>
     </Stack>
   );
