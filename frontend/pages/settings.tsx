@@ -34,19 +34,19 @@ const Settings = () => {
   if (!user.loginState) return <UnauthorizedDialog />;
   return (
     <DefaultLayout>
-      <Container className="main" maxWidth="lg" sx={{ height: '100vh' }}>
-        <Typography variant="h4">Settings</Typography>
+      <Container className='main' maxWidth='lg' sx={{ height: '100vh' }}>
+        <Typography variant='h4'>Settings</Typography>
         <Box sx={{ display: 'flex' }}>
           <Tabs
-            orientation="vertical"
-            variant="scrollable"
+            orientation='vertical'
+            variant='scrollable'
             value={currTabValue}
             onChange={setTabChange}
-            aria-label="settings-tabs"
+            aria-label='settings-tabs'
             sx={{ borderRight: 1, borderColor: 'divider' }}
           >
-            <Tab label="Delete Account" onClick={() => setCurrPage('delete account')} />
-            <Tab label="Change Password" onClick={() => setCurrPage('change password')} />
+            <Tab label='Delete Account' onClick={() => setCurrPage('delete account')} />
+            <Tab label='Change Password' onClick={() => setCurrPage('change password')} />
           </Tabs>
           {renderPage()}
         </Box>

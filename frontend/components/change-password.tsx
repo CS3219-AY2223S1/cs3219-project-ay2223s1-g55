@@ -92,30 +92,30 @@ const ChangePasswordPage = () => {
   };
   return (
     <Container sx={{ height: '100%' }}>
-      <div className="change-password-page">
+      <div className='change-password-page'>
         <h2>Change Password</h2>
         <form onSubmit={handlePasswordChange}>
           <TextField
             error={oldPasswordError}
             helperText={oldPasswordError ? 'Old Password does not match' : ''}
             style={{ width: '200px', margin: '5px' }}
-            type="password"
-            label="Old Password"
+            type='password'
+            label='Old Password'
             value={oldPassword}
-            name="oldPassword"
+            name='oldPassword'
             onChange={(e) => setOldPassword(e.target.value)}
             onKeyUp={handleValidation}
-            variant="filled"
+            variant='filled'
           />
           <br />
           <TextField
             error={passwordError.length > 0}
             helperText={passwordError ?? ''}
             style={{ width: '200px', margin: '5px', marginTop: '30px' }}
-            type="password"
-            label="New Password"
-            variant="outlined"
-            name="newPassword"
+            type='password'
+            label='New Password'
+            variant='outlined'
+            name='newPassword'
             value={newPassword}
             onChange={(e) => setNewPassword(e.target.value)}
             onKeyUp={handleValidation}
@@ -125,10 +125,10 @@ const ChangePasswordPage = () => {
             error={confirmPasswordError}
             helperText={confirmPasswordError ? 'Password does not match' : ''}
             style={{ width: '200px', margin: '5px', marginTop: '15px' }}
-            type="password"
-            label="Confirm New Password"
-            variant="outlined"
-            name="confirmNewPassword"
+            type='password'
+            label='Confirm New Password'
+            variant='outlined'
+            name='confirmNewPassword'
             value={confirmNewPassword}
             onChange={(e) => setConfirmNewPassword(e.target.value)}
             onKeyUp={handleValidation}
@@ -141,9 +141,9 @@ const ChangePasswordPage = () => {
               newPassword === '' ||
               confirmNewPassword === ''
             }
-            variant="contained"
-            color="primary"
-            type="submit"
+            variant='contained'
+            color='primary'
+            type='submit'
           >
             Change Password
           </Button>

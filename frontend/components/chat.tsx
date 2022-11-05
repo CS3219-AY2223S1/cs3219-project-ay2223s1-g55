@@ -325,12 +325,12 @@ export default function Chat(props: { sessionId: string }) {
 
   if (!user.loginState) return <UnauthorizedDialog />;
   return (
-    <Box display="flex" justifyContent="flex-start" flexDirection="column">
+    <Box display='flex' justifyContent='flex-start' flexDirection='column'>
       <Typography sx={{ fontSize: 'h4', alignSelf: 'center' }}>Chat</Typography>
       <ChatWindow messageList={messages} username={user.username} />
       <TextField
-        label="Message"
-        variant="standard"
+        label='Message'
+        variant='standard'
         value={messageInput}
         onChange={handleMessageInput}
         // (e) => setMessageInput(e.target.value)}
@@ -338,7 +338,7 @@ export default function Chat(props: { sessionId: string }) {
         autoFocus
       />
 
-      <Box display="flex" flexDirection="row">
+      <Box display='flex' flexDirection='row'>
         <Box sx={{ m: 1, position: 'relative' }}>
           <SendMessageButton disabled={!messageInput} onClick={handleSendMessage}>
             Send Message
@@ -357,7 +357,7 @@ export default function Chat(props: { sessionId: string }) {
             />
           )}
         </Box>
-        {isMessageSent ? null : <Alert severity="error">Message failed to send</Alert>}
+        {isMessageSent ? null : <Alert severity='error'>Message failed to send</Alert>}
       </Box>
     </Box>
   );

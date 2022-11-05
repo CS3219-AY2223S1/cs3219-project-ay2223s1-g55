@@ -181,11 +181,11 @@ function Matching() {
 
   return (
     <DefaultLayout>
-      <Container maxWidth="md" sx={{ padding: 10 }}>
-        <Box display="flex" justifyContent="center">
+      <Container maxWidth='md' sx={{ padding: 10 }}>
+        <Box display='flex' justifyContent='center'>
           <Card sx={{ width: '50%', padding: 10 }}>
-            <Grid container justifyContent="center" rowSpacing={5}>
-              <Grid container item xs={12} justifyContent="center" alignItems="center" spacing={2}>
+            <Grid container justifyContent='center' rowSpacing={5}>
+              <Grid container item xs={12} justifyContent='center' alignItems='center' spacing={2}>
                 {pendingMatchRequest && countdownSeconds < 0 && (
                   <Grid item>
                     <CircularProgress value={2} />
@@ -198,7 +198,7 @@ function Matching() {
                 </Grid>
               </Grid>
 
-              <Grid container justifyContent="center">
+              <Grid container justifyContent='center'>
                 {pendingMatchRequest ? (
                   <CancelButton onClick={handleCancelMatchRequest} disabled={countdownSeconds >= 0}>
                     {countdownSeconds >= 0 ? countdownSeconds : 'Cancel Search'}
@@ -208,24 +208,24 @@ function Matching() {
                 )}
               </Grid>
 
-              <Grid container item xs={4} justifyContent="center">
+              <Grid container item xs={4} justifyContent='center'>
                 <FormControl fullWidth>
                   <InputLabel>Difficulty</InputLabel>
                   <Select
                     disabled={pendingMatchRequest}
-                    labelId="demo-simple-select-label"
-                    id="demo-simple-select"
+                    labelId='demo-simple-select-label'
+                    id='demo-simple-select'
                     value={difficulty}
-                    label="Difficulty"
+                    label='Difficulty'
                     onChange={handleDifficultyChange}
                   >
-                    <MenuItem value="Easy">Easy</MenuItem>
-                    <MenuItem value="Medium">Medium</MenuItem>
-                    <MenuItem value="Hard">Hard</MenuItem>
+                    <MenuItem value='Easy'>Easy</MenuItem>
+                    <MenuItem value='Medium'>Medium</MenuItem>
+                    <MenuItem value='Hard'>Hard</MenuItem>
                   </Select>
                 </FormControl>
               </Grid>
-              <Grid container justifyContent="center">
+              <Grid container justifyContent='center'>
                 {pendingMatchRequest && (
                   <p style={{ textAlign: 'center' }}>Please do not refresh or leave the page...</p>
                 )}
@@ -235,11 +235,11 @@ function Matching() {
         </Box>
       </Container>
 
-      <Dialog open={isDialogOpen} onClose={closeDialog} maxWidth="xl">
-        <Box flexDirection="column" width="50%" justifyContent="center" alignSelf="center">
+      <Dialog open={isDialogOpen} onClose={closeDialog} maxWidth='xl'>
+        <Box flexDirection='column' width='50%' justifyContent='center' alignSelf='center'>
           <DialogTitle>{dialogTitle}</DialogTitle>
           <DialogContent>
-            <DialogContentText flexDirection="column">{dialogMsg}</DialogContentText>
+            <DialogContentText flexDirection='column'>{dialogMsg}</DialogContentText>
           </DialogContent>
           <Button onClick={closeDialog}>OK</Button>
         </Box>

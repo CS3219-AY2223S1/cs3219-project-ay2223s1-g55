@@ -17,7 +17,7 @@ const UnauthorizedDialog = () => {
         <DialogContentText>Log in to continue</DialogContentText>
       </DialogContent>
       <DialogActions>
-        <Link href="/login">
+        <Link href='/login'>
           <Button>Log in</Button>
         </Link>
       </DialogActions>

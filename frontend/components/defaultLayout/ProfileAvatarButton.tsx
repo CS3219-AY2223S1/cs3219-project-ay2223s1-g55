@@ -33,13 +33,13 @@ const ProfileAvatarButton = () => {
 
   return (
     <>
-      <Tooltip title="Account settings">
+      <Tooltip title='Account settings'>
         <IconButton
           onClick={handleAvatarClick}
-          size="small"
+          size='small'
           sx={{ ml: 2 }}
           aria-controls={open ? 'account-menu' : undefined}
-          aria-haspopup="true"
+          aria-haspopup='true'
           aria-expanded={open ? 'true' : undefined}
         >
           <Avatar sx={{ width: 32, height: 32 }}>
@@ -51,7 +51,7 @@ const ProfileAvatarButton = () => {
 
       <Menu
         anchorEl={anchorEl}
-        id="account-menu"
+        id='account-menu'
         open={open}
         onClose={handleAvatarMenuClose}
         onClick={handleAvatarMenuClose}
@@ -86,22 +86,22 @@ const ProfileAvatarButton = () => {
       >
         <MenuItem onClick={() => router.push('/settings')}>
           <ListItemIcon>
-            <Settings fontSize="small" />
+            <Settings fontSize='small' />
           </ListItemIcon>
           Settings
         </MenuItem>
 
         <MenuItem onClick={handleLogout}>
           <ListItemIcon>
-            <Logout fontSize="small" />
+            <Logout fontSize='small' />
           </ListItemIcon>
           Logout
         </MenuItem>
 
-        <Link href="/learning-pathway" passHref>
+        <Link href='/learning-pathway' passHref>
           <MenuItem>
             <ListItemIcon>
-              <Route fontSize="small" />
+              <Route fontSize='small' />
             </ListItemIcon>
             My Learning Pathway
           </MenuItem>

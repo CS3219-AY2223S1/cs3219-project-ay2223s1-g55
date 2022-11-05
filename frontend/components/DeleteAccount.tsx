@@ -54,7 +54,7 @@ const DeleteAccount = () => {
 
   return (
     <Container sx={{ height: '100%' }}>
-      <Typography variant="h5">Are you sure you want to delete your account?</Typography>
+      <Typography variant='h5'>Are you sure you want to delete your account?</Typography>
       <Button onClick={() => setIsDialogOpen(true)}>I&apos;m sure</Button>
       <Button onClick={router.reload}>No it was a mistake!</Button>
       <Dialog open={isDialogOpen} onClose={closeDialog}>
@@ -62,15 +62,15 @@ const DeleteAccount = () => {
         <DialogContent>
           <Collapse in={isAlertOpen}>
             <Alert
-              severity="error"
+              severity='error'
               action={
                 <IconButton
-                  aria-label="close"
-                  color="inherit"
-                  size="small"
+                  aria-label='close'
+                  color='inherit'
+                  size='small'
                   onClick={() => setIsAlertOpen(false)}
                 >
-                  <CloseIcon fontSize="inherit" />
+                  <CloseIcon fontSize='inherit' />
                 </IconButton>
               }
             >
@@ -83,9 +83,9 @@ const DeleteAccount = () => {
           </DialogContentText>
           <TextField
             autoFocus
-            margin="dense"
+            margin='dense'
             fullWidth
-            variant="standard"
+            variant='standard'
             onChange={(e) => checkValidInput(e.target.value)}
           />
         </DialogContent>
