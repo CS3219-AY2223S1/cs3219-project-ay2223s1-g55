@@ -1,6 +1,7 @@
 import {
   Box,
   Button,
+  Card,
   Container,
   Dialog,
   DialogActions,
@@ -16,6 +17,8 @@ import { URL_USER_SVC } from '@/lib/configs';
 import { STATUS_CODE_CONFLICT, STATUS_CODE_CREATED } from '@/lib/constants';
 import Link from 'next/link';
 import router from 'next/router';
+import AuthLayout from '@/layouts/AuthLayout';
+import { validatePassword } from '@/lib/helpers';
 
 function SignupPage() {
   const [username, setUsername] = useState('');
@@ -24,6 +27,7 @@ function SignupPage() {
   const [dialogTitle, setDialogTitle] = useState('');
   const [dialogMsg, setDialogMsg] = useState('');
   const [isSignupSuccess, setIsSignupSuccess] = useState(false);
+  const [passwordValidationError, setPasswordValidationError] = useState('');
 
   const handleSignup = async () => {
     setIsSignupSuccess(false);
@@ -54,10 +58,19 @@ function SignupPage() {
     setDialogMsg(msg);
   };
 
+  const handlePasswordChange = (e) => {
+    setPassword(e.target.value);
+    const err = validatePassword(e.target.value);
+    setPasswordValidationError(err);
+  };
+
   const handleLoginClick = () => router.push('/login');
   return (
-    <Container maxWidth='md'>
-      <Box display='flex' flexDirection='column' width='30%'>
+    <AuthLayout>
+      <Box display='flex' flexDirection='column'>
+        <Typography variant='h2' marginBottom='2rem'>
+          Leet Warriors
+        </Typography>
         <Typography variant='h3' marginBottom='2rem'>
           Sign Up
         </Typography>
@@ -73,12 +86,18 @@ function SignupPage() {
           label='Password'
           variant='standard'
           type='password'
+          error={passwordValidationError.length > 0}
+          helperText={passwordValidationError}
           value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          onChange={handlePasswordChange}
           sx={{ marginBottom: '2rem' }}
         />
         <Box display='flex' flexDirection='row' justifyContent='flex-end'>
-          <Button variant='outlined' onClick={handleSignup}>
+          <Button
+            variant='outlined'
+            onClick={handleSignup}
+            disabled={password.length === 0 || passwordValidationError.length > 0}
+          >
             Sign up
           </Button>
         </Box>
@@ -103,7 +122,7 @@ function SignupPage() {
       <Box display='flex' flexDirection='row' justifyContent='flex-start'>
         <Button onClick={handleLoginClick}>Have an account? Login here!</Button>
       </Box>
-    </Container>
+    </AuthLayout>
   );
 }
 
