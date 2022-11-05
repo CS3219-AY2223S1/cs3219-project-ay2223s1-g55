@@ -6,9 +6,10 @@ import { EXPERIENCE_LEVEL, EXPERIENCE_POINTS } from '../lib/constants.js';
 import mongoose from 'mongoose';
 
 const mongoDB = process.env.ENV == 'PROD' ? process.env.DB_CLOUD_URI : process.env.DB_LOCAL_URI;
+const dbName = process.env.ENV === 'test' ? 'historyServiceDB' : 'historyServiceDB';
 
 mongoose.connect(mongoDB, {
-  dbname: 'historyServiceDB',
+  dbname: dbName,
   useNewUrlParser: true,
   useUnifiedTopology: true
 });
