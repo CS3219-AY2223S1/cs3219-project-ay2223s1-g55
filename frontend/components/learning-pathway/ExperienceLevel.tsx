@@ -39,7 +39,6 @@ const ExperienceLevel = () => {
   useEffect(() => {
     const fetchExperience = async () => {
       const _experience = await getExperience(user.username);
-      console.log(_experience);
       setExperience(_experience);
     };
     if (user?.loginState) fetchExperience();
