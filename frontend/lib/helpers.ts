@@ -1,3 +1,5 @@
+import dayjs from 'dayjs';
+
 export const stringToUrlFormat = (string) => {
   return string.toLowerCase().replaceAll(' ', '-');
 };
@@ -15,4 +17,8 @@ export const getNextExperienceLevelMessage = (level, remainingPoints) => {
     nextLevel = 'Elite';
   }
   return `Obtain ${remainingPoints} more experience points to become a ${nextLevel}.`;
+};
+
+export const formatDate = (date) => {
+  return dayjs(date).format('DD MMM YYYY hh:mma');
 };

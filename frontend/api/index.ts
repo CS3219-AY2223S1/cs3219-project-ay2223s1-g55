@@ -19,9 +19,9 @@ export const getQuestions = async (difficulty: string) => {
 };
 
 // History Service
-export const getAllRecords = (username: string) => {
+export const getAllRecords = (username: string, limit = 0) => {
   return get<IHistoryRecord[]>(URL_HISTORY_RECORD, {
-    queryParams: { limit: 10 },
+    queryParams: { limit },
     urlParams: { username },
   });
 };

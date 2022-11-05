@@ -1,7 +1,15 @@
 import useUserStore from '@/lib/store';
 import { Card, List, ListSubheader, ListItem, ListItemText } from '@mui/material';
 import { getAllRecords } from 'api';
+import dayjs from 'dayjs';
 import React, { useState } from 'react';
+import utc from 'dayjs/plugin/utc';
+import timezone from 'dayjs/plugin/timezone';
+import { formatDate } from '@/lib/helpers';
+import Link from 'next/link';
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 const selectors = (state: any) => ({ user: state.user });
 
@@ -11,7 +19,7 @@ const LatestSessions = () => {
 
   React.useEffect(() => {
     const fetchHistory = async () => {
-      const sessions = await getAllRecords(user.username);
+      const sessions = await getAllRecords(user.username, 10);
       setHistory(sessions);
     };
 
@@ -32,12 +40,13 @@ const LatestSessions = () => {
           <ListItem key={record.startedAt}>
             <ListItemText
               primary={`${index + 1}. ${record.questionName}`}
-              secondary={record.startedAt && new Date(record.startedAt).toUTCString()}
+              secondary={formatDate(record.startedAt)}
             />
           </ListItem>
         ))}
-        {/* TODO: 'ViewMore' functionality */}
-        <p style={{ textAlign: 'center', color: '#b0b0b0', fontSize: 14 }}>End of list.</p>
+        <p style={{ textAlign: 'center', color: '#b0b0b0', fontSize: 14 }}>
+          <Link href={`/history/${user.username}`}>View More</Link>
+        </p>
       </List>
     </Card>
   );
