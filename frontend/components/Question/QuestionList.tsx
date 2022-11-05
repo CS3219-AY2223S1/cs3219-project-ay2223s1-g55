@@ -70,20 +70,20 @@ const QuestionList = () => {
     <div>Loading...</div>
   ) : (
     <Container>
-      <Box id="difficulty_selector" style={{ width: '30%' }}>
+      <Box id='difficulty_selector' style={{ width: '30%' }}>
         <FormControl fullWidth>
           <InputLabel>Difficulty</InputLabel>
           <Select
-            labelId="difficulty-select-label"
-            id="difficulty-select"
+            labelId='difficulty-select-label'
+            id='difficulty-select'
             value={currDifficulty}
-            label="Difficulty"
+            label='Difficulty'
             onChange={handleDifficultyChange}
           >
-            <MenuItem value="All">All</MenuItem>
-            <MenuItem value="Easy">Easy</MenuItem>
-            <MenuItem value="Medium">Medium</MenuItem>
-            <MenuItem value="Hard">Hard</MenuItem>
+            <MenuItem value='All'>All</MenuItem>
+            <MenuItem value='Easy'>Easy</MenuItem>
+            <MenuItem value='Medium'>Medium</MenuItem>
+            <MenuItem value='Hard'>Hard</MenuItem>
           </Select>
         </FormControl>
       </Box>
@@ -112,7 +112,7 @@ const QuestionList = () => {
                   </ListItem> */}
                 </List>
                 <Link href={`/questions/${convertTitle(qn.title)}`}>
-                  <Button variant="outlined">See More</Button>
+                  <Button variant='outlined'>See More</Button>
                 </Link>
               </AccordionDetails>
             </Accordion>

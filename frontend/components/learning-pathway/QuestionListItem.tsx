@@ -19,9 +19,9 @@ const QuestionListItem = ({ question, completed = false }: QuestionListItemProps
         <ListItem sx={{ display: 'flex', justifyContent: 'space-between', cursor: 'pointer' }}>
           <ListItemText primary={question.title} />
           {completed ? (
-            <CheckCircleTwoToneIcon color="success" />
+            <CheckCircleTwoToneIcon color='success' />
           ) : (
-            <CancelTwoToneIcon color="error" />
+            <CancelTwoToneIcon color='error' />
           )}
         </ListItem>
       </Link>

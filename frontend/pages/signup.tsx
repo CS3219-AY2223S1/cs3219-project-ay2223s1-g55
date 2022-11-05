@@ -56,29 +56,29 @@ function SignupPage() {
 
   const handleLoginClick = () => router.push('/login');
   return (
-    <Container maxWidth="md">
-      <Box display="flex" flexDirection="column" width="30%">
-        <Typography variant="h3" marginBottom="2rem">
+    <Container maxWidth='md'>
+      <Box display='flex' flexDirection='column' width='30%'>
+        <Typography variant='h3' marginBottom='2rem'>
           Sign Up
         </Typography>
         <TextField
-          label="Username"
-          variant="standard"
+          label='Username'
+          variant='standard'
           value={username}
           onChange={(e) => setUsername(e.target.value)}
           sx={{ marginBottom: '1rem' }}
           autoFocus
         />
         <TextField
-          label="Password"
-          variant="standard"
-          type="password"
+          label='Password'
+          variant='standard'
+          type='password'
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           sx={{ marginBottom: '2rem' }}
         />
-        <Box display="flex" flexDirection="row" justifyContent="flex-end">
-          <Button variant="outlined" onClick={handleSignup}>
+        <Box display='flex' flexDirection='row' justifyContent='flex-end'>
+          <Button variant='outlined' onClick={handleSignup}>
             Sign up
           </Button>
         </Box>
@@ -90,7 +90,7 @@ function SignupPage() {
           </DialogContent>
           <DialogActions>
             {isSignupSuccess ? (
-              <Link href="/login" passHref>
+              <Link href='/login' passHref>
                 <Button>Log in</Button>
               </Link>
             ) : (
@@ -100,7 +100,7 @@ function SignupPage() {
         </Dialog>
       </Box>
 
-      <Box display="flex" flexDirection="row" justifyContent="flex-start">
+      <Box display='flex' flexDirection='row' justifyContent='flex-start'>
         <Button onClick={handleLoginClick}>Have an account? Login here!</Button>
       </Box>
     </Container>

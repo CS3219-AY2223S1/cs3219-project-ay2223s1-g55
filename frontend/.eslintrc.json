@@ -5,9 +5,9 @@
   },
   "extends": [
     "next/core-web-vitals",
-    "plugin:@typescript-eslint/eslint-recommended",
-    "plugin:@typescript-eslint/recommended",
     "airbnb",
+    "eslint:recommended",
+    "plugin:@typescript-eslint/eslint-recommended",
     "plugin:prettier/recommended",
     "prettier"
   ],
@@ -20,20 +20,12 @@
       "jsx": true
     }
   },
-  "plugins": [
-    "react",
-    "@typescript-eslint"
-  ],
+  "plugins": ["react", "@typescript-eslint"],
   "rules": {
     "react/jsx-filename-extension": [
       1,
       {
-        "extensions": [
-          ".js",
-          ".jsx",
-          ".ts",
-          ".tsx"
-        ]
+        "extensions": [".js", ".jsx", ".ts", ".tsx"]
       }
     ],
     "react/react-in-jsx-scope": "off",
@@ -41,29 +33,16 @@
     "react/prop-types": "warn",
     "react/jsx-no-constructed-context-values": "warn",
     "react/jsx-curly-brace-presence": "error",
-    "react/function-component-definition": "off",
-    "import/prefer-default-export": "off",
-    "react/jsx-props-no-spreading": "off",
+    "import/prefer-default-export": "warn",
     "react/no-array-index-key": "warn",
-    "prettier/prettier": [
-      "error",
-      {
-        "endOfLine": "auto"
-      }
-    ],
+    "prettier/prettier": ["error"],
     "linebreak-style": 0,
-    "quotes": [
-      "error",
-      "single"
-    ],
+    "quotes": ["error", "single"],
     "no-unused-vars": "warn",
     "no-use-before-define": "warn",
     "no-underscore-dangle": "warn",
     "consistent-return": "warn",
-    "jsx-quotes": [
-      "error",
-      "prefer-double"
-    ],
+    // handled by prettier
     "import/extensions": "off",
     "react/jsx-props-no-spreading": "off",
     "react/function-component-definition": "off",

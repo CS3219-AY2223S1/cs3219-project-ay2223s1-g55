@@ -102,7 +102,7 @@ function Editor(props: { sessionId: string }) {
 
   return (
     <ReactQuill
-      theme="snow"
+      theme='snow'
       modules={modules}
       onChange={(content: any, delta: any, source: any, editor: any) =>
         handleVal(content, delta, source, editor)

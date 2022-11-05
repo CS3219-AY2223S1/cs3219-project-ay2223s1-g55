@@ -12,10 +12,10 @@ function LinearProgressWithLabel({ value, ...props }: LinearProgressProps & { va
   return (
     <Box sx={{ display: 'flex', alignItems: 'center' }}>
       <Box sx={{ width: '100%', mr: 1 }}>
-        <LinearProgress variant="determinate" value={value} {...props} />
+        <LinearProgress variant='determinate' value={value} {...props} />
       </Box>
       <Box sx={{ minWidth: 100 }}>
-        <Typography variant="body2" color="text.secondary">{`${value}/${MAX_EXP} XP`}</Typography>
+        <Typography variant='body2' color='text.secondary'>{`${value}/${MAX_EXP} XP`}</Typography>
       </Box>
     </Box>
   );
@@ -40,7 +40,7 @@ const ExperienceLevel = () => {
   }, [user?.loginState]);
 
   return (
-    <Stack spacing="xs" sx={{ marginBottom: 5 }}>
+    <Stack spacing='xs' sx={{ marginBottom: 5 }}>
       <h2>{experienceLevel}</h2>
       {/* TODO: instead of hardcoding novice, find a way to determine the next experience level. */}
       <LinearProgressWithLabel value={experiencePoints} />

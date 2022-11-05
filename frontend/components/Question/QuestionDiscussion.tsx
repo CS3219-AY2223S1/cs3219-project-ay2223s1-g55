@@ -38,11 +38,11 @@ const QuestionDiscussion = ({ isReady, title }: { isReady: boolean; title: strin
 
   return (
     <Container
-      className="outer-container"
+      className='outer-container'
       sx={{ display: 'flex', justifyContent: 'space-between' }}
     >
-      <Container className="inner-container" sx={{ height: '210px', overflowY: 'auto' }}>
-        <Typography gutterBottom variant="h6">
+      <Container className='inner-container' sx={{ height: '210px', overflowY: 'auto' }}>
+        <Typography gutterBottom variant='h6'>
           Comments
         </Typography>
         {currComments.map((c, i) => {
@@ -55,12 +55,12 @@ const QuestionDiscussion = ({ isReady, title }: { isReady: boolean; title: strin
                   <Grid item xs={6} rowSpacing={1}>
                     <Typography sx={{ fontSize: 'large', fontWeight: '700' }}>{c.user}</Typography>
                   </Grid>
-                  <Grid item xs={6} justifyContent="flex-end">
+                  <Grid item xs={6} justifyContent='flex-end'>
                     <Typography sx={{ textAlign: 'right', color: 'gray' }}>{dateTime}</Typography>
                   </Grid>
-                  <Grid item xs={12} justifyContent="center" sx={{ height: '100%' }}>
+                  <Grid item xs={12} justifyContent='center' sx={{ height: '100%' }}>
                     <Container>
-                      <Typography noWrap gutterBottom variant="body1">
+                      <Typography noWrap gutterBottom variant='body1'>
                         {c.comment}
                       </Typography>
                     </Container>
@@ -73,14 +73,14 @@ const QuestionDiscussion = ({ isReady, title }: { isReady: boolean; title: strin
         })}
       </Container>
       <Container style={{ width: '70%' }}>
-        <Typography gutterBottom variant="h6">
+        <Typography gutterBottom variant='h6'>
           Write a Comment
         </Typography>
         <TextField
           fullWidth
           rows={4}
-          variant="outlined"
-          label="Comment"
+          variant='outlined'
+          label='Comment'
           multiline
           value={comment}
           onChange={(e) => setComment(e.target.value)}
@@ -89,7 +89,7 @@ const QuestionDiscussion = ({ isReady, title }: { isReady: boolean; title: strin
           style={{ marginTop: '10px' }}
           fullWidth
           disabled={!comment}
-          variant="contained"
+          variant='contained'
           onClick={handleClick}
         >
           Comment
