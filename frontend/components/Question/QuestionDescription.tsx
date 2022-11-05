@@ -1,7 +1,6 @@
 import { QuestionDifficultyToColorMap } from '@/lib/types';
 import { Box, Typography, Divider } from '@mui/material';
 import parse from 'html-react-parser';
-import { useEffect } from 'react';
 
 const QuestionDescription = ({ question }) => {
   const descriptionElement = parse(question?.description ?? '');
