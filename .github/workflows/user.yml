@@ -25,10 +25,12 @@ jobs:
           with:
             node-version: '14.x'
 
-        - run: npm ci
+        - name: Build
           working-directory: ${{ env.SERVICE }}
-        - run: npm run test
+          run: npm ci
+        - name: Run tests
           working-directory: ${{ env.SERVICE }}
+          run: npm run test
 
         - name: Google Auth
           id: auth
