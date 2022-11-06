@@ -12,7 +12,7 @@ const Editor2 = (props) => {
   const { sessionId } = props;
   const [isConnected, setIsConnected] = useState(false);
   const [value, setValue] = useState('');
-  // const [isDisabled, setIsDisabled] = useState<boolean>(true);
+  const [isDisabled, setIsDisabled] = useState<boolean>(true);
   const [language, setLanguage] = useState<string>('JavaScript');
 
   const handleChange = (value, event) => {
