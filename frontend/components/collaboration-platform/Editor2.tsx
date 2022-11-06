@@ -102,7 +102,7 @@ const Editor2 = (props) => {
       <Editor
         height='90vh'
         defaultLanguage='javascript'
-        defaultValue='// some comment'
+        defaultValue={value}
         value={value}
         language={language.toLowerCase()}
         onChange={handleChange}
