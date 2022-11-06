@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useMemo, useState } from 'react';
 import {
   Box,
   Button,
@@ -46,30 +46,17 @@ const QuestionList = ({ allQuestions }: QuestionListProps) => {
     setCurrDifficulty(selectedDifficulty);
   };
 
-  useEffect(() => {
-    if (searchInput.length === 0) {
-      const reset = allQuestions.filter((qn) => qn.difficulty === currDifficulty);
-      setQuestions(reset);
-      return;
-    }
-    const searched = allQuestions.filter(
-      (qn) =>
-        qn.title.toLowerCase().includes(searchInput.toLowerCase()) &&
-        (qn.difficulty === currDifficulty || currDifficulty === 'All')
-    );
-
-    setQuestions(searched);
-  }, [searchInput]);
-
-  useEffect(() => {
+  const filtered = useMemo(() => {
     if (currDifficulty === 'All') {
-      setQuestions(allQuestions);
-      return;
+      return allQuestions;
     }
 
-    const filtered = allQuestions.filter((qn) => qn.difficulty === currDifficulty);
-    setQuestions(filtered);
+    return allQuestions.filter((qn) => qn.difficulty === currDifficulty);
   }, [currDifficulty]);
+
+  const filteredAndSearched = useMemo(() => {
+    return filtered.filter((qn) => qn.title.toLowerCase().includes(searchInput.toLowerCase()));
+  }, [searchInput]);
 
   // Table Related States and Handlers
   const [page, setPage] = useState<number>(0);
@@ -138,8 +125,8 @@ const QuestionList = ({ allQuestions }: QuestionListProps) => {
           </TableHead>
           <TableBody>
             {(rowsPerPage > 0
-              ? questions.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              : questions
+              ? filteredAndSearched.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+              : filteredAndSearched
             ).map((qn) => (
               <TableRow key={qn.title}>
                 <TableCell component='th' scope='row'>
