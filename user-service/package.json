@@ -35,5 +35,8 @@
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^6.4.5",
     "redis": "^4.3.0"
+  },
+  "optionalDependencies": {
+    "fsevents": "^2.3.2"
   }
 }
