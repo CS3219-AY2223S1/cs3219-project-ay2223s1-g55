@@ -16,20 +16,6 @@ const QuestionModelSchema = new Schema({
     required: true,
     enum: ['Easy', 'Medium', 'Hard'],
   },
-  examples: {
-    type: [
-      {
-        input: { type: String, required: true },
-        output: { type: String, required: true },
-        explanation: { type: String, required: false },
-      },
-    ],
-    required: true,
-  },
-  constraints: {
-    type: [String],
-    required: true,
-  },
   comments: [
     {
       user: {
