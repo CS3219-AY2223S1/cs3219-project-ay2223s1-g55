@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { URI_EDITOR_SVC } from '@/lib/configs';
 import { io } from 'socket.io-client';
 import { FormControl, InputLabel, Select, MenuItem, SelectChangeEvent } from '@mui/material';
@@ -12,7 +12,7 @@ const Editor2 = (props) => {
   const { sessionId } = props;
   const [isConnected, setIsConnected] = useState(false);
   const [value, setValue] = useState('');
-  const [isDisabled, setIsDisabled] = useState<boolean>(true);
+  // const [isDisabled, setIsDisabled] = useState<boolean>(true);
   const [language, setLanguage] = useState<string>('JavaScript');
 
   const handleChange = (value, event) => {
