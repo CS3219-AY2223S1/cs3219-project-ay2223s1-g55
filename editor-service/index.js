@@ -11,7 +11,7 @@ app.options('*', cors());
 
 const router = express.Router();
 router.get('/', (_, res) => {
-  res.send('Hello World from collaboration-service');
+  res.send('Hello World from editor-service');
 });
 
 app.use('/api/collaboration', router).all((_, res) => {
@@ -26,3 +26,5 @@ const httpServer = createServer(app);
 socketInitializer(httpServer);
 
 httpServer.listen(PORT, () => console.log(`collaboration-service listening on port ${PORT}`));
+
+export default app;

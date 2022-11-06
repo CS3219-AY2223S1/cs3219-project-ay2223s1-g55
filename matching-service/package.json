@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "nodemon index.js",
     "start": "node index.js",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "ENV=test mocha --no-timeout --exit",
     "lint": "npx eslint .",
     "lint:fix": "eslint . --fix"
   },
@@ -21,7 +21,10 @@
     "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-prettier": "^4.2.1",
     "nodemon": "^2.0.19",
-    "prettier": "^2.7.1"
+    "prettier": "^2.7.1",
+    "chai": "^4.3.6",
+    "chai-http": "^4.3.0",
+    "mocha": "^10.1.0"
   },
   "dependencies": {
     "@socket.io/admin-ui": "^0.4.0",

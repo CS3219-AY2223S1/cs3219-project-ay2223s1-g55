@@ -50,7 +50,7 @@ const LearningPathway: NextPage = () => {
 
   return (
     <DefaultLayout>
-      <Container maxWidth="xl">
+      <Container maxWidth='xl'>
         <h1>Learning Pathway</h1>
 
         <Grid container gap={5}>
@@ -59,17 +59,17 @@ const LearningPathway: NextPage = () => {
 
             <Stack spacing={2}>
               <QuestionsList
-                difficulty="Easy"
+                difficulty='Easy'
                 questions={easyQuestions}
                 completedQuestions={completedQuestions}
               />
               <QuestionsList
-                difficulty="Medium"
+                difficulty='Medium'
                 questions={mediumQuestions}
                 completedQuestions={completedQuestions}
               />
               <QuestionsList
-                difficulty="Hard"
+                difficulty='Hard'
                 questions={hardQuestions}
                 completedQuestions={completedQuestions}
               />

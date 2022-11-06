@@ -9,20 +9,20 @@ const QuestionDescription = ({ question }) => {
 
   return (
     <Box>
-      <Typography variant="h4">{question?.title}</Typography>
-      <Typography variant="subtitle2" color={QuestionDifficultyToColorMap[question?.difficulty]}>
+      <Typography variant='h4'>{question?.title}</Typography>
+      <Typography variant='subtitle2' color={QuestionDifficultyToColorMap[question?.difficulty]}>
         {question?.difficulty}
       </Typography>
       <Divider />
       <Box sx={{ padding: '20px 0px 20px 0px' }}>
-        <Typography variant="body1">{question?.description}</Typography>
+        <Typography variant='body1'>{question?.description}</Typography>
       </Box>
-      <Typography variant="h6">Examples</Typography>
+      <Typography variant='h6'>Examples</Typography>
       <Box>
         {question?.examples.map((e, i) => (
           <List key={i}>
             <ListItem>
-              <Typography variant="subtitle1">{`Example ${i + 1}.`}</Typography>
+              <Typography variant='subtitle1'>{`Example ${i + 1}.`}</Typography>
             </ListItem>
             <Container
               sx={{
@@ -36,20 +36,20 @@ const QuestionDescription = ({ question }) => {
                 maxWidth: '700px',
               }}
             >
-              <Typography variant="caption">{`Input: ${e.input}`}</Typography>
-              <Typography variant="caption">{`Output: ${e.output}`}</Typography>
-              <Typography variant="caption">
+              <Typography variant='caption'>{`Input: ${e.input}`}</Typography>
+              <Typography variant='caption'>{`Output: ${e.output}`}</Typography>
+              <Typography variant='caption'>
                 {e.explanation ? `Explanation: ${e.explanation}` : ''}
               </Typography>
             </Container>
           </List>
         ))}
       </Box>
-      <Typography variant="h6">Constraints</Typography>
+      <Typography variant='h6'>Constraints</Typography>
       <List>
         {question?.constraints.map((c, i) => (
           <ListItem key={i}>
-            <Typography variant="caption">{`${i + 1}. ${c}`}</Typography>
+            <Typography variant='caption'>{`${i + 1}. ${c}`}</Typography>
           </ListItem>
         ))}
       </List>

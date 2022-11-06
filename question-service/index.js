@@ -29,3 +29,5 @@ app.use('/api/question', router).all((_, res) => {
 app.listen(process.env.PORT || 8002, () =>
   console.log(`question-service listening on port ${process.env.PORT || 8002}`)
 );
+
+export default app;

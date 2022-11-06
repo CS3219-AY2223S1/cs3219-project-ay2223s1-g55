@@ -15,6 +15,7 @@ import router from 'next/router';
 import useUserStore from '@/lib/store';
 import DefaultLayout from '@/layouts/DefaultLayout';
 import { getJwtCookie, saveJwtCookie } from '@/lib/cookies';
+import AuthLayout from '@/layouts/AuthLayout';
 
 function LoginPage() {
   const [username, setUsername] = useState('');
@@ -60,29 +61,32 @@ function LoginPage() {
   const handleSignupClick = () => router.push('/signup');
 
   return (
-    <>
-      <Box display="flex" flexDirection="column" width="30%">
-        <Typography variant="h3" marginBottom="2rem">
+    <AuthLayout>
+      <Box display='flex' flexDirection='column'>
+        <Typography variant='h2' marginBottom='2rem'>
+          Leet Warriors
+        </Typography>
+        <Typography variant='h3' marginBottom='2rem'>
           Log In
         </Typography>
         <TextField
-          label="Username"
-          variant="standard"
+          label='Username'
+          variant='standard'
           value={username}
           onChange={(e) => setUsername(e.target.value)}
           sx={{ marginBottom: '1rem' }}
           autoFocus
         />
         <TextField
-          label="Password"
-          variant="standard"
-          type="password"
+          label='Password'
+          variant='standard'
+          type='password'
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           sx={{ marginBottom: '2rem' }}
         />
-        <Box display="flex" flexDirection="row" justifyContent="flex-end">
-          <Button variant="outlined" onClick={handleLogin}>
+        <Box display='flex' flexDirection='row' justifyContent='flex-end'>
+          <Button variant='outlined' onClick={handleLogin}>
             Log in
           </Button>
         </Box>
@@ -98,10 +102,10 @@ function LoginPage() {
         </Dialog>
       </Box>
 
-      <Box display="flex" flexDirection="row" justifyContent="flex-start">
+      <Box display='flex' flexDirection='row' justifyContent='flex-start'>
         <Button onClick={handleSignupClick}>No account? Create one here!</Button>
       </Box>
-    </>
+    </AuthLayout>
   );
 }
 

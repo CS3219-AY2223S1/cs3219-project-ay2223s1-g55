@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
-import Editor from '@monaco-editor/react';
 import { URI_EDITOR_SVC } from '@/lib/configs';
 import { io } from 'socket.io-client';
 import { FormControl, InputLabel, Select, MenuItem, SelectChangeEvent } from '@mui/material';
+import Editor from '@monaco-editor/react';
 
 const SAVE_INTERVAL_MS = 2000;
 
@@ -94,15 +94,15 @@ const Editor2 = (props) => {
       <FormControl sx={{ width: '150px' }}>
         <InputLabel>Language</InputLabel>
         <Select value={language} label={language} onChange={handleLanguageChange}>
-          <MenuItem value="javascript">JavaScript</MenuItem>
-          <MenuItem value="typescript">TypeScript</MenuItem>
-          <MenuItem value="python">Python</MenuItem>
+          <MenuItem value='javascript'>JavaScript</MenuItem>
+          <MenuItem value='typescript'>TypeScript</MenuItem>
+          <MenuItem value='python'>Python</MenuItem>
         </Select>
       </FormControl>
       <Editor
-        height="90vh"
-        defaultLanguage="javascript"
-        defaultValue="// some comment"
+        height='90vh'
+        defaultLanguage='javascript'
+        defaultValue='// some comment'
         value={value}
         language={language.toLowerCase()}
         onChange={handleChange}

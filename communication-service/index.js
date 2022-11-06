@@ -34,3 +34,5 @@ createSocketIOServer(httpServer);
 httpServer.listen(PORT, () =>
   console.log(`communication-service listening on port ${PORT}`)
 );
+
+export default app;

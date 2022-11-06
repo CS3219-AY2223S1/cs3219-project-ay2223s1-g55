@@ -66,10 +66,10 @@ export default function CollaborationPlatform() {
       <div style={{ padding: 40 }}>
         <Button onClick={toggleDrawer}>See Question</Button>
 
-        <Drawer anchor="left" open={isDrawerOpen} onClose={toggleDrawer}>
+        <Drawer anchor='left' open={isDrawerOpen} onClose={toggleDrawer}>
           <Box
             sx={{ width: '40vw', padding: '40px' }}
-            role="presentation"
+            role='presentation'
             onClick={toggleDrawer}
             onKeyDown={toggleDrawer}
           >
