@@ -9,7 +9,8 @@
     "start": "node index.js",
     "test": "ENV=test mocha --timeout 10000 --exit",
     "lint": "npx eslint .",
-    "lint:fix": "eslint . --fix"
+    "lint:fix": "eslint . --fix",
+    "test:deploy": "npm ci && npm run test"
   },
   "keywords": [],
   "author": "",
