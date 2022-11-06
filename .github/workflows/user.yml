@@ -30,6 +30,13 @@ jobs:
         - name: Run CI tests
           working-directory: ${{ env.SERVICE }}
           run: npm run test
+          env:
+            ENV: test
+            DB_CLOUD_URI: ${{ secrets.DB_CLOUD_URI }}
+            REDIS_CLOUD_URI: ${{ secrets.REDIS_CLOUD_URI }}
+            REDIS_CLOUD_PORT: ${{ secrets.REDIS_CLOUD_PORT }}
+            REDIS_CLOUD_PASSWORD: ${{ secrets.REDIS_CLOUD_PASSWORD }}
+            JWT_SECRET: ${{ secrets.JWT_SECRET }}
 
         - name: Google Auth
           id: auth
