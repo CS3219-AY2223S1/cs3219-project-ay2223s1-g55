@@ -32,16 +32,15 @@ export async function getUserExperienceLevel(username) {
   }, 0);
 
   let experienceLevel;
-  if (experienceLevel >= 150) {
-    experienceLevel = EXPERIENCE_LEVEL.elite;
-  } else if (experiencePoints >= 100) {
-    experienceLevel = EXPERIENCE_LEVEL.expert;
-  } else if (experiencePoints >= 50) {
-    experienceLevel = EXPERIENCE_LEVEL.novice;
+  if (experiencePoints > 1200) {
+    experienceLevel = EXPERIENCE_LEVEL.elite
+  } else if (experiencePoints > 600) {
+    experienceLevel = EXPERIENCE_LEVEL.expert
+  } else if (experiencePoints > 200) {
+    experienceLevel = EXPERIENCE_LEVEL.novice
   } else {
-    experienceLevel = EXPERIENCE_LEVEL.beginner;
+    experienceLevel = EXPERIENCE_LEVEL.beginner
   }
-
   return { experienceLevel, experiencePoints }
 }
 
