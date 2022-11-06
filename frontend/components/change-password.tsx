@@ -7,6 +7,7 @@ import { URL_USER_SVC } from '@/lib/configs';
 import { STATUS_CODE_CONFLICT, STATUS_CODE_SUCCESS } from '@/lib/constants';
 import { getJwtCookie } from '@/lib/cookies';
 import useUserStore from '@/lib/store';
+import { validatePassword } from '@/lib/helpers';
 
 const ChangePasswordPage = () => {
   const [oldPassword, setOldPassword] = useState('');
@@ -43,53 +44,20 @@ const ChangePasswordPage = () => {
   const handleValidation = (e: any) => {
     const passwordInputValue = e.target.value.trim();
     const passwordInputFieldName = e.target.name;
-    // for password
-    if (passwordInputFieldName === 'newPassword') {
-      const uppercaseRegExp = /(?=.*?[A-Z])/;
-      const lowercaseRegExp = /(?=.*?[a-z])/;
-      const digitsRegExp = /(?=.*?[0-9])/;
-      const specialCharRegExp = /(?=.*?[#?!@$%^&*-])/;
-      const minLengthRegExp = /.{8,}/;
-      const passwordLength = passwordInputValue.length;
-      const uppercasePassword = uppercaseRegExp.test(passwordInputValue);
-      const lowercasePassword = lowercaseRegExp.test(passwordInputValue);
-      const digitsPassword = digitsRegExp.test(passwordInputValue);
-      const specialCharPassword = specialCharRegExp.test(passwordInputValue);
-      const minLengthPassword = minLengthRegExp.test(passwordInputValue);
-      const isDifferentPassword = newPassword !== oldPassword;
 
-      let errMsg = '';
-      if (passwordLength === 0) {
-        errMsg = 'Password is empty';
-      } else if (!uppercasePassword) {
-        errMsg = 'At least one Uppercase';
-      } else if (!lowercasePassword) {
-        errMsg = 'At least one Lowercase';
-      } else if (!digitsPassword) {
-        errMsg = 'At least one digit';
-      } else if (!specialCharPassword) {
-        errMsg = 'At least one Special Character';
-      } else if (!minLengthPassword) {
-        errMsg = 'A minimum of 8 characters is required';
-      } else if (!isDifferentPassword) {
-        errMsg = 'New password cannot be same as the old password';
-      } else {
-        errMsg = '';
-      }
+    // Only bother validating the newPassword field
+    if (passwordInputFieldName === 'newPassword') {
+      const errMsg = validatePassword(passwordInputValue);
       setPasswordError(errMsg);
     }
-    // for confirm password
-    if (
-      passwordInputFieldName === 'confirmNewPassword' ||
-      (passwordInputFieldName === 'newPassword' && confirmNewPassword.length > 0)
-    ) {
-      if (confirmNewPassword !== newPassword) {
-        setConfirmPasswordError(true);
-      } else {
-        setConfirmPasswordError(false);
-      }
+
+    // When handling either new or confirmNew password validation,
+    // we check if both matches whenever confirmNewPassword.length > 0
+    if (confirmNewPassword.length > 0) {
+      setConfirmPasswordError(confirmNewPassword !== newPassword);
     }
   };
+
   return (
     <Container sx={{ height: '100%' }}>
       <div className='change-password-page'>

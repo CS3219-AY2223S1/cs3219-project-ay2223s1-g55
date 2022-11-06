@@ -15,6 +15,7 @@ import router from 'next/router';
 import useUserStore from '@/lib/store';
 import DefaultLayout from '@/layouts/DefaultLayout';
 import { getJwtCookie, saveJwtCookie } from '@/lib/cookies';
+import AuthLayout from '@/layouts/AuthLayout';
 
 function LoginPage() {
   const [username, setUsername] = useState('');
@@ -60,8 +61,11 @@ function LoginPage() {
   const handleSignupClick = () => router.push('/signup');
 
   return (
-    <>
-      <Box display='flex' flexDirection='column' width='30%'>
+    <AuthLayout>
+      <Box display='flex' flexDirection='column'>
+        <Typography variant='h2' marginBottom='2rem'>
+          Leet Warriors
+        </Typography>
         <Typography variant='h3' marginBottom='2rem'>
           Log In
         </Typography>
@@ -101,7 +105,7 @@ function LoginPage() {
       <Box display='flex' flexDirection='row' justifyContent='flex-start'>
         <Button onClick={handleSignupClick}>No account? Create one here!</Button>
       </Box>
-    </>
+    </AuthLayout>
   );
 }
 
