@@ -35,3 +35,12 @@ code {
   border: none;
   box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.5);
 }
+
+.doughnutChart {
+  max-height: 80vh;
+  margin: 2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
