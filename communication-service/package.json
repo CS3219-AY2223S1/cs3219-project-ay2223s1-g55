@@ -1,5 +1,5 @@
 {
-  "name": "user-service",
+  "name": "communication-service",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "nodemon index.js",
     "start": "node index.js",
-    "test": "ENV=test mocha --no-timeout --exit",
+    "test": "ENV=test mocha --timeout 10000 --exit",
     "lint": "npx eslint .",
     "lint:fix": "eslint . --fix"
   },
@@ -34,5 +34,8 @@
     "mongoose": "^6.4.5",
     "socket.io": "^4.5.1",
     "@socket.io/admin-ui": "^0.4.0"
+  },
+  "optionalDependencies": {
+    "fsevents": "^2.3.2"
   }
 }
