@@ -10,7 +10,8 @@ import {
   listUserRecords,
   createRecord,
   listUserCompletedQuestions,
-  getUserExperienceLevel
+  getUserExperienceLevel,
+  getUserCompletedDifficultiesCount
 } from './controller/record-controller.js';
 
 const router = express.Router();
@@ -20,6 +21,7 @@ router.get('/', (_, res) => res.send('History-service is up and running!'));
 router.get('/records/:username', listUserRecords);
 router.post('/records/:username', createRecord);
 router.get('/completed/:username', listUserCompletedQuestions);
+router.get('/completed/difficultyCount/:username', getUserCompletedDifficultiesCount);
 router.get('/experience/:username', getUserExperienceLevel);
 
 app.use('/api/history', router).all((_, res) => {

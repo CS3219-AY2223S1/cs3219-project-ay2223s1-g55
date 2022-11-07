@@ -2,7 +2,8 @@ import {
   ormListUserRecords as _listUserRecords,
   ormCreateRecord as _createRecord,
   ormListUserCompletedQuestions as _listUserCompletedQuestions,
-  ormGetUserExperienceLevel as _getUserExperienceLevel
+  ormGetUserExperienceLevel as _getUserExperienceLevel,
+  ormCountUserCompletedQuestions as _countUserCompletedQuestions
 } from '../model/record-orm.js';
 import { validateRecord } from './validations.js';
 
@@ -28,6 +29,17 @@ export async function listUserCompletedQuestions(req, res) {
   }
 }
 
+export async function getUserCompletedDifficultiesCount(req, res) {
+  try {
+    const { username } = req.params;
+
+    const count = await _countUserCompletedQuestions(username, 'questionDifficulty');
+    return res.status(200).json(count);
+  } catch (err) {
+    return res.status(500).json({ message: 'Database failure when retrieving user completed questions.' });
+  }
+}
+
 export async function listUserRecords(req, res) {
   try {
     const { username } = req.params;
@@ -35,6 +47,18 @@ export async function listUserRecords(req, res) {
 
     const records = await _listUserRecords(username, { limit, offset });
     return res.status(200).json(records);
+  } catch (err) {
+    return res.status(500).json({ message: 'Database failure when retrieving records.' });
+  }
+}
+
+export async function getUserCompletedQuestionsCount(req, res) {
+  try {
+    const { username } = req.params;
+    const { group } = req.query;
+
+    const count = await _getUserCompletedQuestionsCount(username, { group });
+    return res.status(200).json(count);
   } catch (err) {
     return res.status(500).json({ message: 'Database failure when retrieving records.' });
   }

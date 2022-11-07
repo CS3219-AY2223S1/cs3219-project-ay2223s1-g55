@@ -2,7 +2,8 @@ import {
   listUserRecords,
   createRecord,
   listUserCompletedQuestions,
-  getUserExperienceLevel
+  getUserExperienceLevel,
+  countUserCompletedQuestions
 } from './repository.js';
 
 export async function ormGetUserExperienceLevel(username) {
@@ -19,6 +20,16 @@ export async function ormListUserCompletedQuestions(username) {
   try {
     const questions = await listUserCompletedQuestions(username);
     return questions;
+  } catch (err) {
+    console.error("Failed to get questions");
+    return { err }
+  }
+}
+
+export async function ormCountUserCompletedQuestions(username, groupBy) {
+  try {
+    const count = await countUserCompletedQuestions(username, groupBy);
+    return count;
   } catch (err) {
     console.error("Failed to get questions");
     return { err }

@@ -58,3 +58,25 @@ export async function listUserCompletedQuestions(username) {
   return await RecordModel
     .distinct('questionName', { $or: [{ firstUsername: username }, { secondUsername: username }] })
 }
+
+export async function countUserCompletedQuestions(username, groupBy) {
+  return await RecordModel.aggregate([
+    {
+      $match: {
+        $or: [{ firstUsername: username }, { secondUsername: username }]
+      }
+    },
+    {
+      $group: {
+        _id: `$${groupBy}`,
+        count: { $sum: 1 }
+      }
+    },
+    {
+      $project: {
+        difficulty: '$_id',
+        count: '$count'
+      }
+    }
+  ])
+}
