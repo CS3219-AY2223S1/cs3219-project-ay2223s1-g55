@@ -11,7 +11,8 @@ import {
   createRecord,
   listUserCompletedQuestions,
   getUserExperienceLevel,
-  getUserCompletedDifficultiesCount
+  getUserCompletedDifficultiesCount,
+  getUserCompletedMonthlyCount
 } from './controller/record-controller.js';
 
 const router = express.Router();
@@ -22,6 +23,7 @@ router.get('/records/:username', listUserRecords);
 router.post('/records/:username', createRecord);
 router.get('/completed/:username', listUserCompletedQuestions);
 router.get('/completed/difficultyCount/:username', getUserCompletedDifficultiesCount);
+router.get('/completed/monthCount/:username', getUserCompletedMonthlyCount);
 router.get('/experience/:username', getUserExperienceLevel);
 
 app.use('/api/history', router).all((_, res) => {
