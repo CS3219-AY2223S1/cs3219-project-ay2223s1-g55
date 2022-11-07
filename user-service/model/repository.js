@@ -10,7 +10,7 @@ const isTest = process.env.ENV === 'test';
 const isProdOrTest = isProd || isTest;
 
 const mongoDB = isProdOrTest ? process.env.DB_CLOUD_URI : process.env.DB_LOCAL_URI;
-const dbName = isProdOrTest ? 'testUserDB' : 'userDB';
+const dbName = isTest ? 'testUserDB' : 'userDB';
 
 mongoose.connect(mongoDB, {
   dbname: dbName,

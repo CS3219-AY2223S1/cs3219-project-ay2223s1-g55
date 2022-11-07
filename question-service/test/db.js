@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 
 export const testDbConnect = async () => {
   mongoose.connect(process.env.DB_LOCAL_URI, {
-    dbname: 'test',
+    dbname: 'testQuestionsDb',
     useNewUrlParser: true,
     useUnifiedTopology: true,
   });
