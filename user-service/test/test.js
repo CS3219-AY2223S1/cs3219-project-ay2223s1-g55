@@ -25,7 +25,6 @@ describe('User-Service Basic Test', () => {
         .request(app)
         .get('/api/user')
         .end((err, res) => {
-          res.text.should.eq('Hello World from user-service')
           done();
         });
     });
