@@ -83,7 +83,7 @@ export async function countUserCompletedQuestionsByMonth(username, limit = 12) {
 }
 
 export async function countUserCompletedQuestionsByDifficulty(username) {
-  return await RecordModel.aggregate([
+  const counts = await RecordModel.aggregate([
     {
       $match: {
         $or: [{ firstUsername: username }, { secondUsername: username }]
@@ -94,12 +94,12 @@ export async function countUserCompletedQuestionsByDifficulty(username) {
         _id: `$questionDifficulty`,
         count: { $sum: 1 }
       }
-    },
-    {
-      $project: {
-        difficulty: '$_id',
-        count: '$count'
-      }
     }
   ])
+  return counts.reduce((result, difficultyCount) => {
+    return {
+      ...result,
+      [`${difficultyCount._id}`]: difficultyCount.count
+    }
+  }, {})
 }
