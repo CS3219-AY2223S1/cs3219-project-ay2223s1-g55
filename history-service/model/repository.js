@@ -78,7 +78,7 @@ export async function countUserCompletedQuestionsByMonth(username, limit = 12) {
       }
     },
     { $sort: { _id: -1 } }, // Descending order, we want the latest counts
-    { $limit: limit } // Limit number of months to retrieve
+    { $limit: +limit } // Limit number of months to retrieve
   ])
 }
 

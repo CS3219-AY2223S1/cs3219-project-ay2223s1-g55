@@ -65,18 +65,6 @@ export async function listUserRecords(req, res) {
   }
 }
 
-export async function getUserCompletedQuestionsCount(req, res) {
-  try {
-    const { username } = req.params;
-    const { group } = req.query;
-
-    const count = await _getUserCompletedQuestionsCount(username, { group });
-    return res.status(200).json(count);
-  } catch (err) {
-    return res.status(500).json({ message: 'Database failure when retrieving records.' });
-  }
-}
-
 export async function createRecord(req, res) {
   try {
     const body = req.body;
