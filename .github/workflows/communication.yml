@@ -2,7 +2,7 @@ name: Cloud Run Deploy Communication-Service
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main, deploy-tests ]
     paths: 
       - 'communication-service/**'
       - '.github/workflows/editor.yml'
