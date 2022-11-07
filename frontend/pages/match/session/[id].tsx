@@ -2,7 +2,7 @@ import { useRouter } from 'next/router';
 import { EditRoad } from '@mui/icons-material';
 import { Card, Grid, CardContent, Stack } from '@mui/material';
 import Editor from '@/components/collaboration-platform/editor';
-import Chat from '@/components/chat';
+import Chat from '@/components/Chat';
 import { URL_MATCHING_SESSION, URL_QUESTION_SVC } from '@/lib/configs';
 import useUserStore from '@/lib/store';
 import { QuestionType } from '@/lib/types';
@@ -68,7 +68,7 @@ export default function CollaborationPlatform() {
               </Card>
             </Stack>
           </Grid>
-          <Grid xs={12} md={4}>
+          <Grid item xs={12} md={4}>
             <Card sx={{ m: 3 }}>
               <Chat sessionId={sessionId ?? ''} />
             </Card>

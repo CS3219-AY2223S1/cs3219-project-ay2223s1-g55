@@ -13,6 +13,8 @@ import {
   TextField,
   Typography,
   Paper,
+  Input,
+  IconButton,
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import axios from 'axios';
@@ -23,6 +25,7 @@ import useUserStore from '@/lib/store';
 import UnauthorizedDialog from '@/components/UnauthorizedDialog';
 import { blue } from '@mui/material/colors';
 import { v4 as uuidv4 } from 'uuid';
+import SendIcon from '@mui/icons-material/Send';
 
 function ChatMessage(props: { message: Message; username: string }) {
   const { message, username } = props;
@@ -73,25 +76,47 @@ function ChatWindow(props: { messageList: Array<Message>; username: string }) {
   return (
     <Box
       sx={{
-        mr: '10%',
-        ml: '10%',
+        // border: 'none',
+        // mr: '5%',
+        // ml: '5%',
         pr: '1%',
         pl: '1%',
       }}
     >
-      <Grid>
-        <Paper style={{ height: '100vh', overflow: 'auto' }}>
-          <List>
-            {messageList.map((message) => (
-              <ChatMessage key={message.id} message={message} username={username} />
-            ))}
-            <div ref={bottomRef} />
-          </List>
-        </Paper>
-      </Grid>
+      <Box style={{ height: '70vh', overflow: 'auto' }}>
+        <List>
+          {messageList.map((message) => (
+            <ChatMessage key={message.id} message={message} username={username} />
+          ))}
+          <div ref={bottomRef} />
+        </List>
+      </Box>
     </Box>
   );
 }
+
+const ChatWindowTitle = styled(Typography)(({ theme }) => ({
+  fontSize: 'h4',
+  fontWeight: 'bold',
+  color: 'white',
+  textAlign: 'center',
+  backgroundColor: theme.palette.primary.light,
+  padding: 10,
+  // marginBottom: '1vw',
+}));
+
+const ChatMessageInput = styled(Input)(({ theme }) => ({
+  // width: '100%',
+  // height: '5vh',
+
+  // backgroundColor: 'rgba(242, 242, 247, 0.8)',
+  // borderRadius: 35,
+  // margin: '1vw 0 0 0',
+  padding: '0 1vw 0 1vw',
+  fontSize: 'h6',
+  color: 'black',
+  // border: '2px solid grey',
+}));
 
 const SendMessageButton = styled(Button)({
   backgroundColor: blue[600],
@@ -162,7 +187,6 @@ export default function Chat(props: { sessionId: string }) {
         return;
       }
       const res = await fetchAllMessages(sessionId);
-      // const res = await fetchAllMessages(props.sessionId);
       if (res === null) {
         setMessages([]);
       } else if (res.status === 200 || res.status === 201) {
@@ -233,7 +257,6 @@ export default function Chat(props: { sessionId: string }) {
     return () => {
       console.log('unmounting socket connecting');
       socket.off('connect');
-      socket.off('disconnect');
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -325,39 +348,60 @@ export default function Chat(props: { sessionId: string }) {
 
   if (!user.loginState) return <UnauthorizedDialog />;
   return (
-    <Box display='flex' justifyContent='flex-start' flexDirection='column'>
-      <Typography sx={{ fontSize: 'h4', alignSelf: 'center' }}>Chat</Typography>
+    <Box
+      display='flex'
+      justifyContent='flex-start'
+      flexDirection='column'
+      sx={
+        {
+          // padding: '0 0.4vw 0 0.4vw',
+        }
+      }
+    >
+      {/* <Typography sx={{ fontSize: 'h4', alignSelf: 'center', fontWeight: 900 }}>Chat</Typography> */}
+      <ChatWindowTitle>Chat</ChatWindowTitle>
       <ChatWindow messageList={messages} username={user.username} />
-      <TextField
-        label='Message'
-        variant='standard'
-        value={messageInput}
-        onChange={handleMessageInput}
-        // (e) => setMessageInput(e.target.value)}
-        sx={{ marginBottom: '1rem' }}
-        autoFocus
-      />
-
-      <Box display='flex' flexDirection='row'>
+      <Box
+        sx={{
+          backgroundColor: 'rgba(242, 242, 247, 0.8)',
+          borderRadius: 35,
+          padding: '0 0.1vw 0 0.1vw',
+          margin: '1vw 1vw 0vw 1vw',
+        }}
+        display='flex'
+        flexDirection='row'
+        alignItems='center'
+      >
+        {/* <Box> */}
+        <ChatMessageInput
+          fullWidth
+          // label='Message'
+          placeholder='Message...'
+          // variant='standard'
+          value={messageInput}
+          onChange={handleMessageInput}
+          disableUnderline
+        />
         <Box sx={{ m: 1, position: 'relative' }}>
-          <SendMessageButton disabled={!messageInput} onClick={handleSendMessage}>
-            Send Message
-          </SendMessageButton>
-          {loading && (
-            <CircularProgress
-              size={24}
-              sx={{
-                color: blue[500],
-                position: 'absolute',
-                top: '50%',
-                left: '50%',
-                marginTop: '-12px',
-                marginLeft: '-12px',
-              }}
-            />
-          )}
+          <IconButton
+            disabled={!messageInput}
+            onClick={handleSendMessage}
+            size='small'
+            color='primary'
+          >
+            <SendIcon />
+          </IconButton>
         </Box>
-        {isMessageSent ? null : <Alert severity='error'>Message failed to send</Alert>}
+      </Box>
+
+      <Box display='block' height='40px' width='100%' flexDirection='row' alignSelf='center'>
+        {isMessageSent ? (
+          <Box />
+        ) : (
+          <Alert severity='error' sx={{ padding: '0 1vw 0 1vw' }}>
+            Message failed to send
+          </Alert>
+        )}
       </Box>
     </Box>
   );
