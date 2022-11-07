@@ -58,3 +58,48 @@ export async function listUserCompletedQuestions(username) {
   return await RecordModel
     .distinct('questionName', { $or: [{ firstUsername: username }, { secondUsername: username }] })
 }
+
+export async function countUserCompletedQuestionsByMonth(username, limit = 12) {
+  return await RecordModel.aggregate([
+    {
+      $match: { $or: [{ firstUsername: username }, { secondUsername: username }] }
+    },
+    {
+      $group: {
+        _id: { month: { $month: '$startedAt' }, year: { $year: '$startedAt' } }, // Group by month, year
+        count: { $sum: 1 }
+      },
+    },
+    {
+      $project: {
+        month: '$_id.month',
+        year: '$_id.year',
+        count: '$count'
+      }
+    },
+    { $sort: { _id: -1 } }, // Descending order, we want the latest counts
+    { $limit: +limit } // Limit number of months to retrieve
+  ])
+}
+
+export async function countUserCompletedQuestionsByDifficulty(username) {
+  const counts = await RecordModel.aggregate([
+    {
+      $match: {
+        $or: [{ firstUsername: username }, { secondUsername: username }]
+      }
+    },
+    {
+      $group: {
+        _id: `$questionDifficulty`,
+        count: { $sum: 1 }
+      }
+    }
+  ])
+  return counts.reduce((result, difficultyCount) => {
+    return {
+      ...result,
+      [`${difficultyCount._id}`]: difficultyCount.count
+    }
+  }, {})
+}
