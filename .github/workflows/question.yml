@@ -2,7 +2,7 @@ name: Cloud Run Deploy Question-Service
 
 on:
   push:
-    branches: [ main, deploy-tests ]
+    branches: [ main ]
     paths: 
       - 'question-service/**'
       - '.github/workflows/question.yml'

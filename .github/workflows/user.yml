@@ -2,7 +2,7 @@ name: Cloud Run Deploy User-Service
 
 on:
   push:
-    branches: [ main, deploy-tests ]
+    branches: [ main ]
     path: 
       - 'user-service/**'
       - '.github/workflows/user.yml'

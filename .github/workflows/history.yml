@@ -2,7 +2,7 @@ name: Cloud Run Deploy History-Service
 
 on:
   push:
-    branches: [ main, deploy-tests ]
+    branches: [ main ]
     paths: 
       - 'history-service/**'
       - '.github/workflows/history.yml'

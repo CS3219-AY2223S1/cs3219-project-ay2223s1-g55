@@ -2,7 +2,7 @@ name: Cloud Run Deploy Editor-Service
 
 on:
   push:
-    branches: [ main, deploy-tests ]
+    branches: [ main ]
     paths: 
       - 'editor-service/**'
       - '.github/workflows/editor.yml'
