@@ -93,7 +93,7 @@ const Editor2 = (props) => {
     <div>
       <FormControl sx={{ width: '150px' }}>
         <InputLabel>Language</InputLabel>
-        <Select value={language} label={language} onChange={handleLanguageChange}>
+        <Select value={language.toLowerCase()} label={language} onChange={handleLanguageChange}>
           <MenuItem value='javascript'>JavaScript</MenuItem>
           <MenuItem value='typescript'>TypeScript</MenuItem>
           <MenuItem value='python'>Python</MenuItem>
