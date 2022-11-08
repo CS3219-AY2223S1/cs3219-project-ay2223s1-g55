@@ -1,4 +1,4 @@
-import { URL_QUESTION_SVC } from '@/lib/configs';
+import { URL_QUESTION_QUESTIONS } from '@/lib/configs';
 import useUserStore from '@/lib/store';
 import { QuestionCommentType } from '@/lib/types';
 import { Box, Button, Container, Divider, Grid, TextField, Typography } from '@mui/material';
@@ -15,12 +15,12 @@ const QuestionDiscussion = ({ isReady, title }: { isReady: boolean; title: strin
   const username = user?.username;
 
   const addComment = async (createdComment: QuestionCommentType) => {
-    const res = await axios.post(`${URL_QUESTION_SVC}/${title}`, createdComment);
+    const res = await axios.post(`${URL_QUESTION_QUESTIONS}/${title}`, createdComment);
     return res.data;
   };
 
   const fetchComments = async () => {
-    const res = await axios.get(`${URL_QUESTION_SVC}/${title}`);
+    const res = await axios.get(`${URL_QUESTION_QUESTIONS}/${title}`);
     return res.data?.question[0].comments;
   };
 

@@ -2,7 +2,7 @@ import { useRouter } from 'next/router';
 import { Box, Card, Grid, CardContent, Stack, Button, Drawer } from '@mui/material';
 import Editor from '@/components/collaboration-platform/editor';
 import Chat from '@/components/collaboration-platform/Chat';
-import { URL_MATCHING_SESSION, URL_QUESTION_SVC } from '@/lib/configs';
+import { URL_MATCHING_SESSION, URL_QUESTION_QUESTIONS } from '@/lib/configs';
 import useUserStore from '@/lib/store';
 import { QuestionType } from '@/lib/types';
 import axios from 'axios';
@@ -33,7 +33,7 @@ export default function CollaborationPlatform() {
 
   const getQuestion = async () => {
     const convertedTitle = questionTitle?.replaceAll(' ', '-').toLocaleLowerCase();
-    const res = await axios.get(`${URL_QUESTION_SVC}/${convertedTitle}`);
+    const res = await axios.get(`${URL_QUESTION_QUESTIONS}/${convertedTitle}`);
     return res.data.question;
   };
 
