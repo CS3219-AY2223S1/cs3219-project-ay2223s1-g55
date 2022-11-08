@@ -1,4 +1,4 @@
-name: Cloud Run Deploy User-Service
+name: User-Service
 
 on:
   pull_request:
@@ -21,7 +21,6 @@ jobs:
     test:
         if: ${{ github.event_name == 'pull_request' }}
         runs-on: ubuntu-latest
-        steps:
         steps:
         - name: Checkout repository
           uses: actions/checkout@v2

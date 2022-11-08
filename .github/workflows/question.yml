@@ -1,4 +1,4 @@
-name: Cloud Run Deploy Question-Service
+name: Question-Service
 
 on:
   pull_request:
@@ -39,7 +39,6 @@ jobs:
             DB_CLOUD_URI: ${{ secrets.DB_CLOUD_URI }}
     deploy:
         if: ${{ github.event_name == 'push' }}
-        name: Question-Service
         runs-on: ubuntu-latest
         steps:
         - name: Checkout repository

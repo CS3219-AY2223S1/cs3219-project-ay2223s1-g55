@@ -1,4 +1,4 @@
-name: Cloud Run Deploy Editor-Service
+name: Editor-Service
 
 on:
   pull_request:

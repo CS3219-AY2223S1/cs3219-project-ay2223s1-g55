@@ -1,4 +1,4 @@
-name: Cloud Run Deploy Matching-Service
+name: Matching-Service
 
 on:
   pull_request:
@@ -40,7 +40,6 @@ jobs:
             DB_CLOUD_URI: ${{ secrets.DB_CLOUD_URI }}
     deploy:
         if: ${{ github.event_name == 'push' }}
-        name: Matching-Service
         runs-on: ubuntu-latest
         steps:
         - name: Checkout repository
