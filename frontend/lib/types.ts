@@ -37,6 +37,7 @@ export interface ServerToClientEvents {
     id: string
   ) => void;
   joinRoomSuccess: (sessionId: string, username: string, userId: string) => void;
+  leaveRoom: (room: string, socketId: string) => void;
 }
 
 export interface ClientToServerEvents {
@@ -50,6 +51,7 @@ export interface ClientToServerEvents {
     id: string
   ) => void;
   joinRoom: (sessionId: string, username: string, userId: string) => void;
+  leaveRoom: (sessionId: string, username: string, userId: string) => void;
 }
 
 export interface InterServerEvents {
@@ -75,22 +77,17 @@ export interface QuestionType {
   title: string;
   description: string;
   difficulty: Difficulty;
-  examples: QuestionExampleType[];
-  constraints: string[];
-  comments: QuestionCommentType[];
 }
-
-export interface QuestionExampleType {
-  input: string;
-  output: string;
-  explanation?: string;
-}
-
 export interface QuestionCommentType {
   user: string;
   comment: string;
   created_at?: string;
 }
+export const QuestionDifficultyToColorMap = {
+  Easy: 'green',
+  Medium: 'orange',
+  Hard: 'red',
+};
 
 // History Service types
 export interface IHistoryRecord {

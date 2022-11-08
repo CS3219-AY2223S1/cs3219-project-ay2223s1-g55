@@ -84,20 +84,6 @@ const ProfileAvatarButton = () => {
         transformOrigin={{ horizontal: 'right', vertical: 'top' }}
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
       >
-        <MenuItem onClick={() => router.push('/settings')}>
-          <ListItemIcon>
-            <Settings fontSize='small' />
-          </ListItemIcon>
-          Settings
-        </MenuItem>
-
-        <MenuItem onClick={handleLogout}>
-          <ListItemIcon>
-            <Logout fontSize='small' />
-          </ListItemIcon>
-          Logout
-        </MenuItem>
-
         <Link href='/learning-pathway' passHref>
           <MenuItem>
             <ListItemIcon>
@@ -106,6 +92,22 @@ const ProfileAvatarButton = () => {
             My Learning Pathway
           </MenuItem>
         </Link>
+
+        <Link href='/settings' passHref>
+          <MenuItem>
+            <ListItemIcon>
+              <Settings fontSize='small' />
+            </ListItemIcon>
+            Settings
+          </MenuItem>
+        </Link>
+
+        <MenuItem onClick={handleLogout}>
+          <ListItemIcon>
+            <Logout fontSize='small' />
+          </ListItemIcon>
+          Logout
+        </MenuItem>
       </Menu>
     </>
   );

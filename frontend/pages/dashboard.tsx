@@ -1,17 +1,15 @@
-import { MouseEvent as ReactMouseEvent, useState } from 'react';
-import { Box, Button, Select, SelectChangeEvent } from '@mui/material';
-import Settings from '@mui/icons-material/Settings';
-import Logout from '@mui/icons-material/Logout';
+import { Box, Button, Stack } from '@mui/material';
 import DefaultLayout from '@/layouts/DefaultLayout';
-import { STATUS_CODE_LOGGED_OUT } from '@/lib/constants';
 import router from 'next/router';
 import useUserStore from '@/lib/store';
-import { clearJwt, getJwtCookie } from '@/lib/cookies';
 import UnauthorizedDialog from '@/components/UnauthorizedDialog';
-import ProfileAvatarButton from '@/components/defaultLayout/ProfileAvatarButton';
 import QuestionList from '@/components/Question/QuestionList';
+import DoughnutChart from '@/components/charts/doughnutChart';
+import LineChart from '@/components/charts/lineChart';
+import axios from 'axios';
+import { URL_QUESTION_SVC } from '@/lib/configs';
 
-function Dashboard() {
+function Dashboard({ questions }) {
   const { user } = useUserStore((state) => ({
     user: state.user,
   }));
@@ -34,13 +32,31 @@ function Dashboard() {
           onClick={handleMatching}
           sx={{ height: '100%' }}
         >
-          Match
+          Find a Match
         </Button>
       </Box>
-
-      <QuestionList />
+      <Stack direction='row' justifyContent='center' alignItems='center' spacing={2}>
+        <DoughnutChart username={user.username ?? ''} />
+        <LineChart username={user.username ?? ''} />
+      </Stack>
+      <QuestionList allQuestions={questions} />
     </DefaultLayout>
   );
 }
 
 export default Dashboard;
+
+export async function getStaticProps() {
+  const { data } = await axios.get(`${URL_QUESTION_SVC}`);
+  const { questions } = data;
+  const titleAndDifficulty = questions.map((qn) => {
+    const { title, difficulty } = qn;
+    return { title, difficulty };
+  });
+  return {
+    props: {
+      questions: titleAndDifficulty,
+    },
+    // revalidate: 604800,
+  };
+}

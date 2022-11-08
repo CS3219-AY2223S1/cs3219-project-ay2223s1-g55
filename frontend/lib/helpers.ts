@@ -1,5 +1,25 @@
+import dayjs from 'dayjs';
+
 export const stringToUrlFormat = (string) => {
   return string.toLowerCase().replaceAll(' ', '-');
+};
+
+export const getNextExperienceLevelMessage = (level, remainingPoints) => {
+  if (level === 'Elite') {
+    return 'You are officially a l33t coder. Congratulations!';
+  }
+  const nextLevelMap = {
+    Beginner: 'Novice',
+    Novice: 'Expert',
+    Expert: 'Elite',
+  };
+  return `Obtain ${remainingPoints} more experience points to become a ${
+    nextLevelMap[`${level}`]
+  }.`;
+};
+
+export const formatDate = (date) => {
+  return dayjs(date).format('DD MMM YYYY hh:mma');
 };
 
 export const validatePassword = (password) => {

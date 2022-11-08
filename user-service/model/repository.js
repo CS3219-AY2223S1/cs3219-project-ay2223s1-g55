@@ -5,8 +5,12 @@ import redis from 'redis';
 // Set up mongoose connection
 import mongoose from 'mongoose';
 
-const mongoDB = process.env.ENV == 'PROD' ? process.env.DB_CLOUD_URI : process.env.DB_LOCAL_URI;
-const dbName = process.env.ENV === 'test' ? 'testUserDB' : 'userDB';
+const isProd = process.env.ENV === 'PROD';
+const isTest = process.env.ENV === 'test';
+const isProdOrTest = isProd || isTest;
+
+const mongoDB = isProdOrTest ? process.env.DB_CLOUD_URI : process.env.DB_LOCAL_URI;
+const dbName = isTest ? 'testUserDB' : 'userDB';
 
 mongoose.connect(mongoDB, {
   dbname: dbName,
@@ -18,11 +22,11 @@ const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
 const redisUri =
-  process.env.ENV == 'PROD' ? process.env.REDIS_CLOUD_URI : process.env.REDIS_LOCAL_URI;
+  isProdOrTest ? process.env.REDIS_CLOUD_URI : process.env.REDIS_LOCAL_URI;
 const redisPort =
-  process.env.ENV == 'PROD' ? process.env.REDIS_CLOUD_PORT : process.env.REDIS_LOCAL_PORT;
+  isProdOrTest ? process.env.REDIS_CLOUD_PORT : process.env.REDIS_LOCAL_PORT;
 const redisPassword =
-  process.env.ENV == 'PROD' ? process.env.REDIS_CLOUD_PASSWORD : process.env.REDIS_LOCAL_PASSWORD;
+  isProdOrTest ? process.env.REDIS_CLOUD_PASSWORD : process.env.REDIS_LOCAL_PASSWORD;
 
 const redisClient = redis.createClient({
   socket: { host: redisUri, port: redisPort },
