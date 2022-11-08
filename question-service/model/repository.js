@@ -10,8 +10,10 @@ const isProdOrTest = isProd || isTest;
 
 const mongoDB = isProdOrTest ? process.env.DB_CLOUD_URI : process.env.DB_LOCAL_URI;
 
+const dbName = isTest ? 'testQuestionServiceDb' : 'questionServiceDb';
+
 mongoose.connect(mongoDB, {
-  dbname: 'QuestionsDb',
+  dbname: dbName,
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });

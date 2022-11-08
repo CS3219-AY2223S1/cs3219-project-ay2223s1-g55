@@ -8,7 +8,7 @@
     "dev": "nodemon index.js",
     "start": "node index.js",
     "test": "ENV=test mocha --timeout 10000 --exit",
-    "testdev": "nodemon --exec \"mocha tests/*.js --exit\"",
+    "testdev": "nodemon --exec \"mocha test/*.js --exit\"",
     "lint": "npx eslint .",
     "lint:fix": "eslint . --fix"
   },
