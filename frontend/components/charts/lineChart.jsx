@@ -48,10 +48,42 @@
 
 // export default LineChart;
 
-import React, { useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Chart from 'chart.js/auto';
+import axios from 'axios';
+import { URL_HISTORY_COMPLETED_MONTHS_COUNT } from '@/lib/configs';
+import { get } from '../../api/base';
 
-export default function LineChart() {
+export default function LineChart(props) {
+  const [graphData, setGraphData] = useState(null);
+  const [isLoading, setLoading] = useState(false);
+  const { username } = props;
+  console.log(username);
+  const fetchQnsCompletedByMonths = async () => {
+    const res = await get(URL_HISTORY_COMPLETED_MONTHS_COUNT, { urlParams: { username } });
+    console.log(res);
+  };
+  useEffect(() => {
+    setLoading(true);
+    fetchQnsCompletedByMonths().then((res) => setGraphData(res));
+    setLoading(false);
+  }, []);
+  const weight = [60.0, 60.2, 59.1, 61.4, 59.9, 60.2, 59.8, 58.6, 59.6, 59.2, 59.6, 59.2];
+
+  const labels = [
+    'Jan',
+    'Feb',
+    'Mar',
+    'Apr',
+    'May',
+    'Jun',
+    'Jul',
+    'Aug',
+    'Sep',
+    'Oct',
+    'Nov',
+    'Dec',
+  ];
   const canvasEl = useRef(null);
 
   const colors = {
@@ -76,22 +108,6 @@ export default function LineChart() {
     gradient.addColorStop(0.65, colors.purple.quarter);
     gradient.addColorStop(1, colors.purple.zero);
 
-    const weight = [60.0, 60.2, 59.1, 61.4, 59.9, 60.2, 59.8, 58.6, 59.6, 59.2, 59.6, 59.2];
-
-    const labels = [
-      'Jan',
-      'Feb',
-      'Mar',
-      'Apr',
-      'May',
-      'Jun',
-      'Jul',
-      'Aug',
-      'Sep',
-      'Oct',
-      'Nov',
-      'Dec',
-    ];
     const data = {
       labels,
       datasets: [

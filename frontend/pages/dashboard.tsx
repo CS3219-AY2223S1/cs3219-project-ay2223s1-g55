@@ -36,8 +36,8 @@ function Dashboard({ questions }) {
         </Button>
       </Box>
       <Stack direction='row' justifyContent='center' alignItems='center' spacing={2}>
-        <DoughnutChart />
-        <LineChart />
+        <DoughnutChart username={user.username ?? ''} />
+        <LineChart username={user.username ?? ''} />
       </Stack>
       <QuestionList allQuestions={questions} />
     </DefaultLayout>
