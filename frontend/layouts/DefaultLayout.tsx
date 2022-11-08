@@ -5,7 +5,7 @@ import { useRouter } from 'next/router';
 import { getJwtCookie } from '@/lib/cookies';
 import { Box, Grid } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import GithubIcon from '@mui/icons-material/Github';
+import GitHubIcon from '@mui/icons-material/GitHub';
 
 interface DefaultLayoutProps {
   children: React.ReactNode;
@@ -56,7 +56,7 @@ function DefaultLayout({ children }: DefaultLayoutProps) {
             </ul>
           </Grid>
           <Grid container item xs={4} alignItems='center' gap={2}>
-            <GithubIcon />
+            <GitHubIcon />
             <a href='https://github.com/CS3219-AY2223S1/cs3219-project-ay2223s1-g55'>Github Repository</a>
           </Grid>
 
