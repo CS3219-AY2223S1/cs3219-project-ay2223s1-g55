@@ -11,6 +11,7 @@ const DoughnutChart = (props) => {
   const [graphData, setGraphData] = useState(null);
   const [labels, setLabels] = useState(null);
   const [isLoading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
   const { username } = props;
   console.log(username);
   const fetchQnsCompletedByDifficulty = async () => {
@@ -19,12 +20,18 @@ const DoughnutChart = (props) => {
   };
   useEffect(() => {
     setLoading(true);
-    fetchQnsCompletedByDifficulty().then((res) => {
-      setLabels(Object.keys(res));
-      setGraphData(Object.values(res));
-    });
-    setLoading(false);
+    fetchQnsCompletedByDifficulty()
+      .then((res) => {
+        setLabels(Object.keys(res));
+        setGraphData(Object.values(res));
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.log(error);
+        setError(error);
+      });
   }, []);
+  if (error) return <p>ERROR OCCURED</p>;
   if (isLoading) return <p>Loading...</p>;
 
   const data = {

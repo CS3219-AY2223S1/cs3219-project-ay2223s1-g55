@@ -1,53 +1,3 @@
-// import React from 'react';
-// import { Line } from 'react-chartjs-2';
-// import {
-//   Chart,
-//   LineController,
-//   LineElement,
-//   PointElement,
-//   CategoryScale,
-//   LinearScale,
-// } from 'chart.js';
-
-// Chart.register(LineController, LineElement, PointElement, CategoryScale, LinearScale);
-
-// const data = {
-//   labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-//   datasets: [
-//     {
-//       label: 'My First dataset',
-//       fill: false,
-//       lineTension: 0.1,
-//       backgroundColor: 'rgba(75,192,192,0.4)',
-//       borderColor: 'rgba(75,192,192,1)',
-//       borderCapStyle: 'butt',
-//       borderDash: [],
-//       borderDashOffset: 0.0,
-//       borderJoinStyle: 'miter',
-//       pointBorderColor: 'rgba(75,192,192,1)',
-//       pointBackgroundColor: '#fff',
-//       pointBorderWidth: 1,
-//       pointHoverRadius: 5,
-//       pointHoverBackgroundColor: 'rgba(75,192,192,1)',
-//       pointHoverBorderColor: 'rgba(220,220,220,1)',
-//       pointHoverBorderWidth: 2,
-//       pointRadius: 1,
-//       pointHitRadius: 10,
-//       data: [65, 59, 80, 81, 56, 55, 40],
-//     },
-//   ],
-// };
-// const LineChart = () => {
-//   return (
-//     <div>
-//       <h2>Questions Completed by Month</h2>
-//       <Line data={data} width={400} height={400} />
-//     </div>
-//   );
-// };
-
-// export default LineChart;
-
 import React, { useState, useEffect, useRef } from 'react';
 import Chart from 'chart.js/auto';
 import axios from 'axios';
@@ -58,6 +8,7 @@ export default function LineChart(props) {
   const [graphData, setGraphData] = useState(null);
   const [labels, setLabels] = useState(null);
   const [isLoading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
   const { username } = props;
   const monthMapping = [
     'Jan',
@@ -80,14 +31,19 @@ export default function LineChart(props) {
   useEffect(() => {
     let unsubscribed = false;
     setLoading(true);
-    fetchQnsCompletedByMonths().then((res) => {
-      console.log(res);
-      if (!unsubscribed) {
-        setLabels(res.map((item) => monthMapping[item.month - 1]));
-        setGraphData(res.map((item) => item.count));
-        setLoading(false);
-      }
-    });
+    fetchQnsCompletedByMonths()
+      .then((res) => {
+        console.log(res);
+        if (!unsubscribed) {
+          setLabels(res.map((item) => monthMapping[item.month - 1]));
+          setGraphData(res.map((item) => item.count));
+          setLoading(false);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+        setError(error);
+      });
     return () => {
       unsubscribed = true;
       console.log('cancelled useEffect');
@@ -110,8 +66,6 @@ export default function LineChart(props) {
   };
 
   useEffect(() => {
-    console.log('running inside');
-    console.log(labels);
     const ctx = canvasEl.current.getContext('2d');
     // const ctx = document.getElementById("myChart");
 
@@ -151,6 +105,7 @@ export default function LineChart(props) {
     };
   }, [graphData, labels]);
 
+  if (error) return <p>ERROR OCCURED</p>;
   if (isLoading) return <p>Loading...</p>;
   return (
     <div>

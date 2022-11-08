@@ -1,4 +1,5 @@
 import 'dotenv/config.js';
+// eslint-disable-next-line import/no-extraneous-dependencies
 import RecordModel from './record-model.js';
 import { EXPERIENCE_LEVEL, EXPERIENCE_POINTS } from '../lib/constants.js';
 
@@ -11,7 +12,7 @@ const dbName = process.env.ENV === 'test' ? 'testHistoryServiceDB' : 'historySer
 mongoose.connect(mongoDB, {
   dbname: dbName,
   useNewUrlParser: true,
-  useUnifiedTopology: true
+  useUnifiedTopology: true,
 });
 
 const db = mongoose.connection;
@@ -23,29 +24,31 @@ export async function getUserExperienceLevel(username) {
     {
       $group: {
         _id: '$questionDifficulty',
-        count: { $sum: 1 }
-      }
-    }
-  ])
+        count: { $sum: 1 },
+      },
+    },
+  ]);
   const experiencePoints = difficultiesCount.reduce((prevExperience, difficultyCount) => {
-    return prevExperience + EXPERIENCE_POINTS[`${difficultyCount._id}`] * difficultyCount.count
+    return prevExperience + EXPERIENCE_POINTS[`${difficultyCount._id}`] * difficultyCount.count;
   }, 0);
 
   let experienceLevel;
   if (experiencePoints > 1200) {
-    experienceLevel = EXPERIENCE_LEVEL.elite
+    experienceLevel = EXPERIENCE_LEVEL.elite;
   } else if (experiencePoints > 600) {
-    experienceLevel = EXPERIENCE_LEVEL.expert
+    experienceLevel = EXPERIENCE_LEVEL.expert;
   } else if (experiencePoints > 200) {
-    experienceLevel = EXPERIENCE_LEVEL.novice
+    experienceLevel = EXPERIENCE_LEVEL.novice;
   } else {
-    experienceLevel = EXPERIENCE_LEVEL.beginner
+    experienceLevel = EXPERIENCE_LEVEL.beginner;
   }
-  return { experienceLevel, experiencePoints }
+  return { experienceLevel, experiencePoints };
 }
 
 export async function listUserRecords(username, options) {
-  return await RecordModel.find({ $or: [{ firstUsername: username }, { secondUsername: username }] })
+  return await RecordModel.find({
+    $or: [{ firstUsername: username }, { secondUsername: username }],
+  })
     .skip(options.offset)
     .limit(options.limit);
 }
@@ -55,51 +58,53 @@ export async function createRecord(params) {
 }
 
 export async function listUserCompletedQuestions(username) {
-  return await RecordModel
-    .distinct('questionName', { $or: [{ firstUsername: username }, { secondUsername: username }] })
+  return await RecordModel.distinct('questionName', {
+    $or: [{ firstUsername: username }, { secondUsername: username }],
+  });
 }
 
 export async function countUserCompletedQuestionsByMonth(username, limit = 12) {
-  return await RecordModel.aggregate([
+  const data = await RecordModel.aggregate([
     {
-      $match: { $or: [{ firstUsername: username }, { secondUsername: username }] }
+      $match: { $or: [{ firstUsername: username }, { secondUsername: username }] },
     },
     {
       $group: {
         _id: { month: { $month: '$startedAt' }, year: { $year: '$startedAt' } }, // Group by month, year
-        count: { $sum: 1 }
+        count: { $sum: 1 },
       },
     },
     {
       $project: {
         month: '$_id.month',
         year: '$_id.year',
-        count: '$count'
-      }
+        count: '$count',
+      },
     },
-    { $sort: { _id: -1 } }, // Descending order, we want the latest counts
-    { $limit: +limit } // Limit number of months to retrieve
-  ])
+    { $sort: { year: -1, month: -1 } }, // Descending order, we want the latest counts
+    { $limit: +limit }, // Limit number of months to retrieve
+  ]);
+  return data.reverse();
 }
 
 export async function countUserCompletedQuestionsByDifficulty(username) {
   const counts = await RecordModel.aggregate([
     {
       $match: {
-        $or: [{ firstUsername: username }, { secondUsername: username }]
-      }
+        $or: [{ firstUsername: username }, { secondUsername: username }],
+      },
     },
     {
       $group: {
         _id: `$questionDifficulty`,
-        count: { $sum: 1 }
-      }
-    }
-  ])
+        count: { $sum: 1 },
+      },
+    },
+  ]);
   return counts.reduce((result, difficultyCount) => {
     return {
       ...result,
-      [`${difficultyCount._id}`]: difficultyCount.count
-    }
-  }, {})
+      [`${difficultyCount._id}`]: difficultyCount.count,
+    };
+  }, {});
 }
