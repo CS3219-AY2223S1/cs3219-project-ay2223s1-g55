@@ -1,6 +1,11 @@
 name: Cloud Run Deploy Matching-Service
 
 on:
+  pull_request:
+    branches: [ main ]
+    path: 
+      - 'matching-service/**'
+      - '.github/workflows/matching.yml'
   push:
     branches: [ main ]
     path: 
@@ -13,7 +18,28 @@ env:
   SERVICE: matching-service
 
 jobs:
-    deploy_2:
+    test:
+        if: ${{ github.event_name == 'pull_request' }}
+        runs-on: ubuntu-latest
+        steps:
+        - name: Checkout repository
+          uses: actions/checkout@v2
+        - name: Use Node.js
+          uses: actions/setup-node@v3
+          with:
+            node-version: '14.x'
+
+        - name: Install dependencies
+          working-directory: ${{ env.SERVICE }}
+          run: npm install
+        - name: Run CI tests
+          working-directory: ${{ env.SERVICE }}
+          run: npm run test
+          env:
+            ENV: test
+            DB_CLOUD_URI: ${{ secrets.DB_CLOUD_URI }}
+    deploy:
+        if: ${{ github.event_name == 'push' }}
         name: Matching-Service
         runs-on: ubuntu-latest
         steps:

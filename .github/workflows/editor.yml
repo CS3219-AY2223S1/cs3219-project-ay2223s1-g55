@@ -3,6 +3,9 @@ name: Cloud Run Deploy Editor-Service
 on:
   pull_request:
     branches: [ main ]
+    paths: 
+      - 'editor-service/**'
+      - '.github/workflows/editor.yml'
   push:
     branches: [ main ]
     paths: 
@@ -34,9 +37,8 @@ jobs:
           env:
             ENV: test
             DB_CLOUD_URI: ${{ secrets.DB_CLOUD_URI }}
-    deploy_2:
+    deploy:
         if: ${{ github.event_name == 'push' }}
-        name: Editor-Service
         runs-on: ubuntu-latest
         steps:
         - name: Checkout repository
