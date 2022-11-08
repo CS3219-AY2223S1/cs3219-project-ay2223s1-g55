@@ -24,8 +24,8 @@ const modules = {
 };
 let socket: any;
 
-function Editor(props: { sessionId: string }) {
-  const { sessionId } = props;
+function Editor(props: { sessionId: string; isReady: boolean }) {
+  const { sessionId, isReady } = props;
   const [isConnected, setIsConnected] = useState(false);
   const [value, setValue] = useState('');
   const [isDisabled, setIsDisabled] = useState<boolean>(true);
@@ -61,7 +61,7 @@ function Editor(props: { sessionId: string }) {
   }, []);
 
   useEffect(() => {
-    if (!isConnected || socket == null) return;
+    if (!isConnected || socket == null || !isReady) return;
     console.log(sessionId);
 
     socket.once('load-editor', (editor: any) => {
@@ -70,7 +70,7 @@ function Editor(props: { sessionId: string }) {
     });
 
     socket.emit('get-editor', sessionId);
-  }, [isConnected]);
+  }, [isConnected, isReady]);
 
   useEffect(() => {
     // backend port used for socket.io

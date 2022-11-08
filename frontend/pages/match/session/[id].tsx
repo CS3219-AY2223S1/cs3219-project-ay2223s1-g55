@@ -63,7 +63,7 @@ export default function CollaborationPlatform() {
               <QuestionDescription question={question} />
               <Card elevation={3} sx={{ p: 2 }}>
                 <CardContent>
-                  <Editor sessionId={sessionId ?? ''} />
+                  <Editor sessionId={sessionId ?? ''} isReady={router.isReady} />
                 </CardContent>
               </Card>
             </Stack>

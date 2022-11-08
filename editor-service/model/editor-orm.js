@@ -1,7 +1,7 @@
 import { createEditor, findEditor, findEditorAndUpdate } from './repository.js';
 
 export async function ormFindOrCreateEditor(sessionId) {
-  if (sessionId == null) return {};
+  if (!sessionId) return {};
   const editor = await findEditor(sessionId);
   if (editor) {
     return editor;
