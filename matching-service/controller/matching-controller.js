@@ -275,7 +275,7 @@ export const getMatchSession = async (req, res) => {
   if (!sessionId) return res.status(400).send({ message: 'Session id not found' });
 
   const resp = await _findSessionById(sessionId);
-  if (!resp) return res.status(400).send({ message: 'Failed to retrieve question' });
+  if (!resp) return res.status(400).send({ message: 'Failed to retrieve session' });
 
   return res.status(200).json({ data: resp });
 };
