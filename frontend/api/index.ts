@@ -14,6 +14,7 @@ import {
   URL_USER_LOGOUT,
   URL_USER_SESSION,
   URL_USER_SVC,
+  URL_QUESTION_QUESTIONS,
 } from '@/lib/configs';
 import {
   QuestionType,
@@ -73,12 +74,14 @@ export const cancelMatchRequest = async (username: string, difficulty: string) =
 
 // Question Service
 export const getAllQuestions = async () => {
-  return (await get<{ questions: QuestionType[] }>(URL_QUESTION_SVC)).questions;
+  return (await get<{ questions: QuestionType[] }>(URL_QUESTION_QUESTIONS)).questions;
 };
 
 export const getQuestions = async (difficulty: string) => {
   return (
-    await get<{ questions: QuestionType[] }>(URL_QUESTION_SVC, { queryParams: { difficulty } })
+    await get<{ questions: QuestionType[] }>(URL_QUESTION_QUESTIONS, {
+      queryParams: { difficulty },
+    })
   ).questions;
 };
 

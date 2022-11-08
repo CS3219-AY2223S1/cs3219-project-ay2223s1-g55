@@ -4,7 +4,7 @@ import { User } from './types';
 
 interface UserStore {
   user: User;
-  updateUser: (token: string) => void;
+  updateUser: (token: string) => any;
   loginUser: (username: string, password: string, token: string) => any;
   logoutUser: () => any;
   deleteUser: () => any;
@@ -32,6 +32,7 @@ const useUserStore = create<UserStore>((set, get) => ({
           user: { ...state.user, username: user.username, loginState: true },
         }));
       }
+      return get().user;
     } catch (err) {
       console.error(err);
       return { error: 'An error occured while updating user' };
