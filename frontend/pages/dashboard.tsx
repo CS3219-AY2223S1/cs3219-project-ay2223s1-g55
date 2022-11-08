@@ -2,12 +2,11 @@ import { Box, Button, Stack } from '@mui/material';
 import DefaultLayout from '@/layouts/DefaultLayout';
 import router from 'next/router';
 import useUserStore from '@/lib/store';
-import UnauthorizedDialog from '@/components/UnauthorizedDialog';
 import QuestionList from '@/components/Question/QuestionList';
 import DoughnutChart from '@/components/charts/doughnutChart';
 import LineChart from '@/components/charts/lineChart';
 import axios from 'axios';
-import { URL_QUESTION_SVC } from '@/lib/configs';
+import { URL_QUESTION_QUESTIONS } from '@/lib/configs';
 
 function Dashboard({ questions }) {
   const { user } = useUserStore((state) => ({
@@ -17,8 +16,6 @@ function Dashboard({ questions }) {
   const handleMatching = async () => {
     router.push('/match');
   };
-
-  if (!user.loginState) return <UnauthorizedDialog />;
 
   return (
     <DefaultLayout>
@@ -47,12 +44,19 @@ function Dashboard({ questions }) {
 export default Dashboard;
 
 export async function getStaticProps() {
-  const { data } = await axios.get(`${URL_QUESTION_SVC}`);
+  const { data } = await axios.get(`${URL_QUESTION_QUESTIONS}`);
   const { questions } = data;
-  const titleAndDifficulty = questions.map((qn) => {
+  if (!questions) {
+    return {
+      props: { questions: [] },
+    };
+  }
+
+  const titleAndDifficulty = questions?.map((qn) => {
     const { title, difficulty } = qn;
     return { title, difficulty };
   });
+
   return {
     props: {
       questions: titleAndDifficulty,
