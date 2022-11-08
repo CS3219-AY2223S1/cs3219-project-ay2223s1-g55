@@ -11,19 +11,21 @@ const QuestionDiscussion = ({ isReady, title }: { isReady: boolean; title: strin
   const { user } = useUserStore((state) => ({ user: state.user }));
   const username = user?.username;
 
+  const fetchComments = async () => {
+    const comments = await getComments(title);
+    setCurrComments(comments);
+  };
+
   const handleClick = async () => {
     await addComment(title, { user: username, comment });
     console.log('Created comment', comment);
     setComment('');
+    await fetchComments();
   };
 
   useEffect(() => {
-    const fetchData = async () => {
-      const comments = await getComments(title);
-      setCurrComments(comments);
-    };
     if (!isReady) return;
-    fetchData();
+    fetchComments();
   }, [isReady, title]);
 
   return (

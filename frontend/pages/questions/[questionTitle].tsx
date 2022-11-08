@@ -5,6 +5,7 @@ import { QuestionType } from '@/lib/types';
 import QuestionDiscussion from '@/components/Question/QuestionDiscussion';
 import QuestionDescription from '@/components/Question/QuestionDescription';
 import { getQuestionByTitle } from 'api';
+import DefaultLayout from '@/layouts/DefaultLayout';
 
 const Question = () => {
   const router = useRouter();
@@ -28,11 +29,13 @@ const Question = () => {
   return !router.isReady ? (
     <div />
   ) : (
-    <Container>
-      <QuestionDescription question={question} />
-      <Divider />
-      <QuestionDiscussion isReady={router.isReady} title={(questionTitle ?? '') as string} />
-    </Container>
+    <DefaultLayout>
+      <Container>
+        <QuestionDescription question={question} />
+        <Divider />
+        <QuestionDiscussion isReady={router.isReady} title={(questionTitle ?? '') as string} />
+      </Container>
+    </DefaultLayout>
   );
 };
 

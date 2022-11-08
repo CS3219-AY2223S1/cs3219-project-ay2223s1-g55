@@ -86,19 +86,19 @@ export const getQuestions = async (difficulty: string) => {
 };
 
 export const getQuestionByTitle = async (questionTitle: string) => {
-  return (await get<{ question: QuestionType }>(`${URL_QUESTION_SVC}/${questionTitle}`))
+  return (await get<{ question: QuestionType }>(`${URL_QUESTION_QUESTIONS}/${questionTitle}`))
     .question?.[0];
 };
 
 export const getComments = async (questionTitle: string) => {
   return (
-    (await get<{ question: QuestionType[] }>(`${URL_QUESTION_SVC}/${questionTitle}`)).question?.[0]
+    (await get<{ question: QuestionType[] }>(`${URL_QUESTION_QUESTIONS}/${questionTitle}`)).question?.[0]
       ?.comments ?? []
   );
 };
 
 export const addComment = async (questionTitle: string, comment: QuestionCommentType) => {
-  return await post(`${URL_QUESTION_SVC}/${questionTitle}`, comment);
+  return await post(`${URL_QUESTION_QUESTIONS}/${questionTitle}`, comment);
 };
 
 // History Service

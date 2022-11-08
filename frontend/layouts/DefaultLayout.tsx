@@ -3,6 +3,7 @@ import useUserStore from '@/lib/store';
 import React, { useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { getJwtCookie } from '@/lib/cookies';
+import { Box } from '@mui/material';
 
 interface DefaultLayoutProps {
   children: React.ReactNode;
@@ -30,7 +31,19 @@ function DefaultLayout({ children }: DefaultLayoutProps) {
     <>
       <AppBar />
 
-      {children}
+      <Box sx={{ padding: '40px 0px' }}>
+        {children}
+      </Box>
+
+      <Box sx={{ backgroundColor: 'primary.main', color: 'white', margin: 0, padding: 2 }}>
+        An app built by
+        <ul>
+          <li>Asher</li>
+          <li>Ezekiel</li>
+          <li>Glenn</li>
+          <li>Zhikai</li>
+        </ul>
+      </Box>
     </>
   );
 }
