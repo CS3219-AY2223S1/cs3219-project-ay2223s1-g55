@@ -1,6 +1,5 @@
 import ChangePasswordPage from '@/components/change-password';
 import DeleteAccount from '@/components/DeleteAccount';
-import UnauthorizedDialog from '@/components/UnauthorizedDialog';
 import DefaultLayout from '@/layouts/DefaultLayout';
 import useUserStore from '@/lib/store';
 import { Box, Container, Tab, Tabs, Typography } from '@mui/material';
