@@ -1,44 +1,35 @@
-import axios from 'axios';
+import { deleteUser, getUserSession, loginUser, logoutUser } from 'api';
 import create from 'zustand';
-import { URL_USER_LOGIN, URL_USER_LOGOUT, URL_USER_SESSION, URL_USER_SVC } from './configs';
-import { STATUS_CODE_LOGGED_OUT, STATUS_CODE_LOGIN_FAILED } from './constants';
 import { User } from './types';
 
 interface UserStore {
   user: User;
   updateUser: (token: string) => void;
   loginUser: (username: string, password: string, token: string) => any;
-  logoutUser: (token: string) => any;
-  deleteUser: (token: string) => any;
+  logoutUser: () => any;
+  deleteUser: () => any;
 }
 
 const useUserStore = create<UserStore>((set, get) => ({
   user: { username: '', loginState: false },
   loginUser: async (username: string, password: string, token: string) => {
     try {
-      const res = await axios.post(URL_USER_LOGIN, { username, password, token });
-      if (res.data.token) {
+      const res = await loginUser(username, password, token);
+      if (res.token) {
         set((state) => ({ user: { ...state.user, username, loginState: true } }));
       }
       return res;
     } catch (err: any) {
-      if (err.response.status === STATUS_CODE_LOGIN_FAILED) {
-        return { error: 'Failed to login user' };
-      }
-      return { error: 'Please try again later' };
+      return { error: 'Failed to login user' };
     }
   },
-  updateUser: async (token: string) => {
+  updateUser: async () => {
     try {
-      const res = await axios.get(URL_USER_SESSION, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const user = await getUserSession();
 
-      if (res.data.username) {
+      if (user.username) {
         set((state) => ({
-          user: { ...state.user, username: res.data.username, loginState: true },
+          user: { ...state.user, username: user.username, loginState: true },
         }));
       }
     } catch (err) {
@@ -46,11 +37,11 @@ const useUserStore = create<UserStore>((set, get) => ({
       return { error: 'An error occured while updating user' };
     }
   },
-  logoutUser: async (token: string) => {
+  logoutUser: async () => {
     try {
-      const res = await axios.post(URL_USER_LOGOUT, { token });
+      const res = await logoutUser();
 
-      if (res.status === STATUS_CODE_LOGGED_OUT) {
+      if (res) {
         set((state) => ({ user: { ...state.user, username: '', loginState: false } }));
       }
       return res;
@@ -59,12 +50,10 @@ const useUserStore = create<UserStore>((set, get) => ({
       return { error: 'An error occured while logging out' };
     }
   },
-  deleteUser: async (token: string) => {
+  deleteUser: async () => {
     try {
-      const res = await axios.delete(URL_USER_SVC, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      if (res.status === 200) {
+      const res = await deleteUser()
+      if (res) {
         set((state) => ({ user: { ...state.user, username: '', loginState: false } }));
       }
 

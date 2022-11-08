@@ -17,7 +17,6 @@ function MyApp({ Component, pageProps }: AppProps) {
       return;
     }
     const cookie = getJwtCookie();
-
     updateUser(cookie);
   }, [documentIsReady]);
 

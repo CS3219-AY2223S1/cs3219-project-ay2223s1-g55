@@ -1,9 +1,7 @@
 import { Doughnut } from 'react-chartjs-2';
-import { Chart, ArcElement, DoughnutController } from 'chart.js';
+import { Chart, ArcElement } from 'chart.js';
 import { useState, useEffect } from 'react';
-import axios from 'axios';
-import { URL_HISTORY_COMPLETED_DIFFICULTY_COUNT } from '@/lib/configs';
-import { get } from '../../api/base';
+import { getQuestionsCompletedByDifficultyCount } from '../../api/index';
 
 Chart.register(ArcElement);
 
@@ -14,13 +12,9 @@ const DoughnutChart = (props) => {
   const [error, setError] = useState(null);
   const { username } = props;
   console.log(username);
-  const fetchQnsCompletedByDifficulty = async () => {
-    const res = await get(URL_HISTORY_COMPLETED_DIFFICULTY_COUNT, { urlParams: { username } });
-    return res;
-  };
   useEffect(() => {
     setLoading(true);
-    fetchQnsCompletedByDifficulty()
+    getQuestionsCompletedByDifficultyCount(username)
       .then((res) => {
         setLabels(Object.keys(res));
         setGraphData(Object.values(res));

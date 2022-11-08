@@ -24,6 +24,7 @@ import useUserStore from '@/lib/store';
 import DefaultLayout from '@/layouts/DefaultLayout';
 import { v4 as uuidv4 } from 'uuid';
 import ProgressIndicator from '@/components/match/ProgressIndicator';
+import { cancelMatchRequest, sendMatchRequest } from 'api';
 
 const MatchButton = styled(Button)(({ theme }) => ({
   position: 'relative',
@@ -74,23 +75,6 @@ const FoundButtonDisplay = styled(ButtonBase)(({ theme }) => ({
   fontWeight: '900',
   fontSize: 40,
 }));
-
-const sendMatchRequest = async (username: string, difficulty: string, requestId: string) => {
-  const res = await axios.post(URL_MATCHING_REQUEST, {
-    username,
-    difficulty,
-    requestId,
-  });
-  return res;
-};
-
-const cancelMatchRequest = async (username: string, difficulty: string) => {
-  const res = await axios.post(URL_MATCHING_CANCEL, {
-    username,
-    difficulty,
-  });
-  return res;
-};
 
 function Matching() {
   const router = useRouter();
@@ -167,9 +151,8 @@ function Matching() {
     try {
       setPendingMatchRequest(true);
       const res = await sendMatchRequest(username, difficulty, requestId);
-      if (res.status === 201 || res.status === 200) {
-        await handleMatchFound(res.data);
-        return;
+      if (res) {
+        await handleMatchFound(res);
       }
     } catch (err: any) {
       setPendingMatchRequest(false);

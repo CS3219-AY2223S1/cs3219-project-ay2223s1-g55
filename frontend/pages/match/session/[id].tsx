@@ -10,6 +10,7 @@ import axios from 'axios';
 import { useState, useEffect } from 'react';
 import QuestionDescription from '@/components/Question/QuestionDescription';
 import DefaultLayout from '@/layouts/DefaultLayout';
+import { getQuestionByTitle, getQuestionTitle } from 'api';
 
 export default function CollaborationPlatform() {
   const router = useRouter();
@@ -17,42 +18,20 @@ export default function CollaborationPlatform() {
   const [questionTitle, setQuestionTitle] = useState<string>();
   const [question, setQuestion] = useState<QuestionType>();
 
-  const { user } = useUserStore((state) => ({
-    user: state.user,
-  }));
-
-  const getQuestionTitle = async () => {
-    const res = await axios.get(`${URL_MATCHING_SESSION}/${sessionId}`);
-    return res.data.data.question;
-  };
-
-  const getQuestion = async () => {
-    const convertedTitle = questionTitle?.replaceAll(' ', '-').toLocaleLowerCase();
-    const res = await axios.get(`${URL_QUESTION_SVC}/${convertedTitle}`);
-    return res.data.question;
-  };
-
   useEffect(() => {
+    const fetchData = async () => {
+      const _questionTitle = await getQuestionTitle(sessionId ?? '');
+      setQuestionTitle(_questionTitle);
+
+      const convertedTitle = _questionTitle?.replaceAll(' ', '-').toLocaleLowerCase();
+      const _question = await getQuestionByTitle(convertedTitle);
+      setQuestion(_question);
+      console.log(_questionTitle);
+    };
+
     if (!router.isReady) return;
-    getQuestionTitle()
-      .then((res) => {
-        setQuestionTitle(res);
-      })
-      .then(() => {
-        getQuestion().then((res) => {
-          setQuestion(res[0]);
-        });
-      })
-      .finally(() => {
-        console.log(questionTitle);
-      });
+    fetchData();
   }, [router.isReady]);
-
-  useEffect(() => {
-    getQuestion().then((res) => {
-      setQuestion(res[0]);
-    });
-  }, [questionTitle]);
 
   return (
     <DefaultLayout>

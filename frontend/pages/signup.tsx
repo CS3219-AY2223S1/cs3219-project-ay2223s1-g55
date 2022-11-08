@@ -1,8 +1,6 @@
 import {
   Box,
   Button,
-  Card,
-  Container,
   Dialog,
   DialogActions,
   DialogContent,
@@ -12,13 +10,11 @@ import {
   Typography,
 } from '@mui/material';
 import { useState } from 'react';
-import axios from 'axios';
-import { URL_USER_SVC } from '@/lib/configs';
-import { STATUS_CODE_CONFLICT, STATUS_CODE_CREATED } from '@/lib/constants';
 import Link from 'next/link';
 import router from 'next/router';
 import AuthLayout from '@/layouts/AuthLayout';
 import { validatePassword } from '@/lib/helpers';
+import { signUpUser } from 'api';
 
 function SignupPage() {
   const [username, setUsername] = useState('');
@@ -31,16 +27,15 @@ function SignupPage() {
 
   const handleSignup = async () => {
     setIsSignupSuccess(false);
-    const res = await axios.post(URL_USER_SVC, { username, password }).catch((err) => {
-      if (err.response.status === STATUS_CODE_CONFLICT) {
-        setErrorDialog('This username already exists');
-      } else {
-        setErrorDialog('Please try again later');
+    try {
+      const res = await signUpUser(username, password);
+      if (!res) {
+        throw new Error('Failed to signup');
       }
-    });
-    if (res && res.status === STATUS_CODE_CREATED) {
       setSuccessDialog('Account successfully created');
       setIsSignupSuccess(true);
+    } catch (err) {
+      setErrorDialog('This username already exists');
     }
   };
 
