@@ -50,9 +50,14 @@ export async function getStaticProps() {
     const { title, difficulty } = qn;
     return { title, difficulty };
   });
+  if (!questions) {
+    return {
+      props: { questions: [] },
+    };
+  }
   return {
     props: {
-      questions: titleAndDifficulty ?? [],
+      questions: titleAndDifficulty,
     },
     // revalidate: 604800,
   };
