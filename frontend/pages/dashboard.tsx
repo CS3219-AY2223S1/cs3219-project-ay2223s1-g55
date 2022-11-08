@@ -46,15 +46,17 @@ export default Dashboard;
 export async function getStaticProps() {
   const { data } = await axios.get(`${URL_QUESTION_QUESTIONS}`);
   const { questions } = data;
-  const titleAndDifficulty = questions?.map((qn) => {
-    const { title, difficulty } = qn;
-    return { title, difficulty };
-  });
   if (!questions) {
     return {
       props: { questions: [] },
     };
   }
+
+  const titleAndDifficulty = questions?.map((qn) => {
+    const { title, difficulty } = qn;
+    return { title, difficulty };
+  });
+
   return {
     props: {
       questions: titleAndDifficulty,
