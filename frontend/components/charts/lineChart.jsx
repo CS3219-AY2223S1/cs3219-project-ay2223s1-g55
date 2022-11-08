@@ -97,8 +97,6 @@ export default function LineChart(props) {
     const myLineChart = new Chart(ctx, config);
 
     return function cleanup() {
-      console.log('cleaning up');
-      console.log(myLineChart);
       if (myLineChart) {
         myLineChart.destroy();
       }

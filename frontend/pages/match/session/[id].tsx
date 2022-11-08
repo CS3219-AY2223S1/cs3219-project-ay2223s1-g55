@@ -9,6 +9,7 @@ import axios from 'axios';
 import { useState, useEffect } from 'react';
 import QuestionDescription from '@/components/Question/QuestionDescription';
 import DefaultLayout from '@/layouts/DefaultLayout';
+import NameCard from '@/components/collaboration-platform/NameCard';
 
 export default function CollaborationPlatform() {
   const router = useRouter();
@@ -79,13 +80,12 @@ export default function CollaborationPlatform() {
           <Grid item xs={9} md={8}>
             <Stack>
               <Card elevation={3} sx={{ p: 2 }}>
-                <CardContent>
-                  <Editor sessionId={sessionId ?? ''} />
-                </CardContent>
+                <Editor sessionId={sessionId ?? ''} isReady={router.isReady} />
               </Card>
             </Stack>
           </Grid>
           <Grid item xs={3} md={4}>
+            <NameCard sessionId={sessionId ?? ''} isReady={router.isReady} />
             <Card sx={{ m: 3, overscrollBehavior: 'contain' }}>
               <Chat sessionId={sessionId ?? ''} />
             </Card>
