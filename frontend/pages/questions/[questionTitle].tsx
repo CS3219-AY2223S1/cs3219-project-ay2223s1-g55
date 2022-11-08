@@ -1,6 +1,6 @@
 import { useRouter } from 'next/router';
 import axios from 'axios';
-import { URL_QUESTION_SVC } from '@/lib/configs';
+import { URL_QUESTION_QUESTIONS } from '@/lib/configs';
 import { useEffect, useState } from 'react';
 import { Container, Divider } from '@mui/material';
 import { QuestionType } from '@/lib/types';
@@ -14,7 +14,7 @@ const Question = () => {
   const [commentsAdded, setCommentsAdded] = useState<boolean>(false);
 
   const getQuestionByTitle = async () => {
-    const res = await axios.get(`${URL_QUESTION_SVC}/${questionTitle}`);
+    const res = await axios.get(`${URL_QUESTION_QUESTIONS}/${questionTitle}`);
     return res.data;
   };
 
