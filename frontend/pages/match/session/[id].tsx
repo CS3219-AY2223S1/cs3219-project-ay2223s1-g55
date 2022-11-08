@@ -1,5 +1,4 @@
 import { useRouter } from 'next/router';
-import { EditRoad } from '@mui/icons-material';
 import { Box, Card, Grid, CardContent, Stack, Button, Drawer } from '@mui/material';
 import Editor from '@/components/collaboration-platform/editor';
 import Chat from '@/components/collaboration-platform/Chat';
@@ -27,9 +26,9 @@ export default function CollaborationPlatform() {
     user: state.user,
   }));
 
-  const getQuestionTitle = async () => {
+  const getSessionDetails = async () => {
     const res = await axios.get(`${URL_MATCHING_SESSION}/${sessionId}`);
-    return res.data.data.question;
+    return res.data.data;
   };
 
   const getQuestion = async () => {
@@ -40,9 +39,9 @@ export default function CollaborationPlatform() {
 
   useEffect(() => {
     if (!router.isReady) return;
-    getQuestionTitle()
+    getSessionDetails()
       .then((res) => {
-        setQuestionTitle(res);
+        setQuestionTitle(res.question);
       })
       .then(() => {
         getQuestion().then((res) => {

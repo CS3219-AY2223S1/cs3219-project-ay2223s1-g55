@@ -2,21 +2,29 @@ import AppBar from '@/components/defaultLayout/AppBar';
 import useUserStore from '@/lib/store';
 import React, { useEffect } from 'react';
 import { useRouter } from 'next/router';
+import { getJwtCookie } from '@/lib/cookies';
 
 interface DefaultLayoutProps {
   children: React.ReactNode;
 }
 
 function DefaultLayout({ children }: DefaultLayoutProps) {
-  const user = useUserStore((state) => state.user);
+  const { user, updateUser } = useUserStore((state) => ({
+    user: state.user,
+    updateUser: state.updateUser,
+  }));
   const router = useRouter();
+
   useEffect(() => {
-    if (!user.loginState) {
-      router.push('/login');
-    }
+    updateUser(getJwtCookie()).then((res) => {
+      if (!res.loginState) {
+        console.log('pushing from default layout');
+        router.push('/login');
+      }
+    });
   }, []);
 
-  if (!user.loginState) return <></>;
+  if (!user.loginState) return <div />;
 
   return (
     <>
