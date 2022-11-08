@@ -1,4 +1,4 @@
-/* eslint-disable */
+/* eslint no-return-await */
 import {
   URL_COMMUNICATION_MESSAGE,
   URL_HISTORY_COMPLETED,
