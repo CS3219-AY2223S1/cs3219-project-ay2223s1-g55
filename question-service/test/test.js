@@ -2,19 +2,15 @@
 import chai, { assert, expect } from 'chai';
 import chaiHttp from 'chai-http';
 import QuestionModel from '../model/question-model.js';
-import testDbConnect from './db.js';
 import app from '../index.js';
 // Configure chai
 chai.should();
 chai.use(chaiHttp);
 
 describe('Test DB', async () => {
-  before('connect to db', async () => {
-    await testDbConnect();
-  });
-
   beforeEach(async () => {
     await QuestionModel.deleteMany({});
+    console.log('done before each');
   });
 
   it('should create a new Question', async () => {
