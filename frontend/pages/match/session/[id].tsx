@@ -1,9 +1,8 @@
 import { useRouter } from 'next/router';
-import { EditRoad } from '@mui/icons-material';
-import { Card, Grid, CardContent, Stack, Container } from '@mui/material';
+import { Box, Card, Grid, CardContent, Stack, Button, Drawer } from '@mui/material';
 import Editor from '@/components/collaboration-platform/editor';
 import Chat from '@/components/collaboration-platform/Chat';
-import { URL_MATCHING_SESSION, URL_QUESTION_SVC } from '@/lib/configs';
+import { URL_MATCHING_SESSION, URL_QUESTION_QUESTIONS } from '@/lib/configs';
 import useUserStore from '@/lib/store';
 import { QuestionType } from '@/lib/types';
 import axios from 'axios';
@@ -18,26 +17,32 @@ export default function CollaborationPlatform() {
   const [questionTitle, setQuestionTitle] = useState<string>();
   const [question, setQuestion] = useState<QuestionType>();
 
+  const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(true);
+
+  const toggleDrawer = () => {
+    setIsDrawerOpen(!isDrawerOpen);
+  };
+
   const { user } = useUserStore((state) => ({
     user: state.user,
   }));
 
-  const getQuestionTitle = async () => {
+  const getSessionDetails = async () => {
     const res = await axios.get(`${URL_MATCHING_SESSION}/${sessionId}`);
-    return res.data.data.question;
+    return res.data.data;
   };
 
   const getQuestion = async () => {
     const convertedTitle = questionTitle?.replaceAll(' ', '-').toLocaleLowerCase();
-    const res = await axios.get(`${URL_QUESTION_SVC}/${convertedTitle}`);
+    const res = await axios.get(`${URL_QUESTION_QUESTIONS}/${convertedTitle}`);
     return res.data.question;
   };
 
   useEffect(() => {
     if (!router.isReady) return;
-    getQuestionTitle()
+    getSessionDetails()
       .then((res) => {
-        setQuestionTitle(res);
+        setQuestionTitle(res.question);
       })
       .then(() => {
         getQuestion().then((res) => {
@@ -57,11 +62,23 @@ export default function CollaborationPlatform() {
 
   return (
     <DefaultLayout>
-      <Container style={{ padding: 40 }}>
+      <div style={{ padding: 40 }}>
+        <Button onClick={toggleDrawer}>See Question</Button>
+
+        <Drawer anchor='left' open={isDrawerOpen} onClose={toggleDrawer}>
+          <Box
+            sx={{ width: '40vw', padding: '40px' }}
+            role='presentation'
+            onClick={toggleDrawer}
+            onKeyDown={toggleDrawer}
+          >
+            <QuestionDescription question={question} />
+          </Box>
+        </Drawer>
+
         <Grid container spacing={3}>
           <Grid item xs={9} md={8}>
             <Stack>
-              <QuestionDescription question={question} />
               <Card elevation={3} sx={{ p: 2 }}>
                 <Editor sessionId={sessionId ?? ''} isReady={router.isReady} />
               </Card>
@@ -74,7 +91,7 @@ export default function CollaborationPlatform() {
             </Card>
           </Grid>
         </Grid>
-      </Container>
+      </div>
     </DefaultLayout>
   );
 }
