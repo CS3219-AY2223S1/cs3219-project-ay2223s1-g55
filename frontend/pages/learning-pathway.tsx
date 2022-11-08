@@ -1,5 +1,5 @@
 import DefaultLayout from '@/layouts/DefaultLayout';
-import { Grid, Stack, Container } from '@mui/material';
+import { Grid, Stack, Container, TextField } from '@mui/material';
 import * as React from 'react';
 import LatestSessions from '@/components/learning-pathway/LatestSessions';
 import { difficulties as _difficulties, QuestionType } from '@/lib/types';
@@ -9,26 +9,17 @@ import QuestionsList from '@/components/learning-pathway/QuestionsList';
 import useUserStore from '@/lib/store';
 import ExperienceLevel from '@/components/learning-pathway/ExperienceLevel';
 
-// interface IProps {
-//   // easyQuestions: QuestionType[];
-//   // mediumQuestions: QuestionType[];
-//   // hardQuestions: QuestionType[];
-// }
-
 const selector = (state: any) => ({ user: state.user });
 
 const LearningPathway: NextPage = () => {
   const { user } = useUserStore(selector);
   const [completedQuestions, setCompletedQuestions] = React.useState<string[]>([]);
 
-  // TODO: add this into getStaticProps once we deploy history-service and remove these useStates
   const [easyQuestions, setEasyQuestions] = React.useState<QuestionType[]>([]);
   const [mediumQuestions, setMediumQuestions] = React.useState<QuestionType[]>([]);
   const [hardQuestions, setHardQuestions] = React.useState<QuestionType[]>([]);
 
   React.useEffect(() => {
-    // TODO: add this into getStaticProps once we deploy history-service
-    // and remove this useEffect
     const fetchAllQuestions = async () => {
       const _easyQuestions = await getQuestions('Easy');
       const _mediumQuestions = await getQuestions('Medium');
@@ -84,13 +75,5 @@ const LearningPathway: NextPage = () => {
     </DefaultLayout>
   );
 };
-
-// export const getStaticProps = async () => {
-//   const easyQuestions = await getQuestions('Easy');
-//   const mediumQuestions = await getQuestions('Medium');
-//   const hardQuestions = await getQuestions('Hard');
-
-//   return { props: { easyQuestions, mediumQuestions, hardQuestions } };
-// };
 
 export default LearningPathway;

@@ -1,7 +1,7 @@
 import { QuestionType } from '@/lib/types';
 import { Accordion, AccordionSummary, Typography, AccordionDetails, List } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import React from 'react';
+import React, { memo } from 'react';
 import QuestionListItem from './QuestionListItem';
 
 interface QuestionsListProps {
@@ -10,15 +10,15 @@ interface QuestionsListProps {
   completedQuestions?: string[];
 }
 
-const QuestionsList = ({ questions, difficulty, completedQuestions }: QuestionsListProps) => {
+const QuestionsList = memo(({ questions, difficulty, completedQuestions }: QuestionsListProps) => {
   return (
-    <Accordion defaultExpanded>
+    <Accordion>
       <AccordionSummary expandIcon={<ExpandMoreIcon />}>
         <Typography>{difficulty}</Typography>
       </AccordionSummary>
-      <AccordionDetails>
+      <AccordionDetails sx={{ maxHeight: 400, overflowY: 'scroll' }}>
         {!questions?.length && 'No questions to show.'}
-        <List>
+        <List sx={{ maxHeight: 'inherit' }}>
           {questions?.map((question) => (
             <QuestionListItem
               question={question}
@@ -30,6 +30,6 @@ const QuestionsList = ({ questions, difficulty, completedQuestions }: QuestionsL
       </AccordionDetails>
     </Accordion>
   );
-};
+});
 
 export default QuestionsList;
