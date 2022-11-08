@@ -1,18 +1,13 @@
-import DefaultLayout from '@/layouts/DefaultLayout';
 import { URL_COMMUNICATION_MESSAGE, URI_COMMUNICATION_SVC } from '@/lib/configs';
 import {
   Alert,
   Box,
   Button,
-  CircularProgress,
   Container,
-  Grid,
   List,
   ListItem,
   ListItemText,
-  TextField,
   Typography,
-  Paper,
   Input,
   IconButton,
 } from '@mui/material';
@@ -71,19 +66,17 @@ function ChatWindow(props: { messageList: Array<Message>; username: string }) {
   const bottomRef = useRef<null | HTMLDivElement>(null);
   const { messageList, username } = props;
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+    bottomRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
   }, [messageList]);
   return (
     <Box
       sx={{
-        // border: 'none',
-        // mr: '5%',
-        // ml: '5%',
-        pr: '1%',
-        pl: '1%',
+        pr: '0.5%',
+        pl: '0.5%',
+        width: '100%',
       }}
     >
-      <Box style={{ height: '70vh', overflow: 'auto' }}>
+      <Box style={{ height: '50vh', overflow: 'auto', overscrollBehavior: 'contain' }}>
         <List>
           {messageList.map((message) => (
             <ChatMessage key={message.id} message={message} username={username} />
@@ -102,6 +95,7 @@ const ChatWindowTitle = styled(Typography)(({ theme }) => ({
   textAlign: 'center',
   backgroundColor: theme.palette.primary.light,
   padding: 10,
+  borderRadius: '10px 10px 0 0',
   // marginBottom: '1vw',
 }));
 
@@ -204,6 +198,9 @@ export default function Chat(props: { sessionId: string }) {
             id: item._id,
           });
         });
+        if (messages.length !== 0) {
+          messageResults.push(...messages);
+        }
         setMessages(messageResults);
       } else {
         throw new Error('Something went wrong');
@@ -213,7 +210,7 @@ export default function Chat(props: { sessionId: string }) {
     }
   };
 
-  const randomiseJoinRoomId = async () => {
+  const randomiseId = async () => {
     const uid = uuidv4();
     return uid;
   };
@@ -257,6 +254,7 @@ export default function Chat(props: { sessionId: string }) {
     return () => {
       console.log('unmounting socket connecting');
       socket.off('connect');
+      socket.close();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -281,17 +279,30 @@ export default function Chat(props: { sessionId: string }) {
     socket.on('joinRoomSuccess', async (sessionId, username, userId) => {
       console.log('joinRoomSuccess on socket:', username, sessionId);
       setIsRoomJoined(true);
-      const newMessage: Message = {
-        content: `${username} joined the room`,
+      const joinMessage: Message = {
+        content: username === user.username ? 'You joined the room' : `${username} joined the room`,
         senderId: userId,
         senderName: username,
         sessionId,
         createdAt: new Date(Date.now()),
-        id: await randomiseJoinRoomId(),
+        id: await randomiseId(),
       };
-      console.log('joinRoomSuccessMessage: ', newMessage);
-      setMessages((messages) => [...messages, newMessage]);
+      console.log('joinRoomSuccessMessage: ', joinMessage);
+      setMessages((messages) => [...messages, joinMessage]);
     });
+
+    // socket.on('leaveRoom', async (room, socketId) => {
+    //   console.log('leaveRoom on socket:', socketId);
+    //   const leaveMessage: Message = {
+    //     content: 'The user has left the room',
+    //     senderId: socketId,
+    //     senderName: '',
+    //     sessionId,
+    //     createdAt: new Date(Date.now()),
+    //     id: await randomiseId(),
+    //   };
+    //   setMessages((messages) => [...messages, leaveMessage]);
+    // });
 
     return () => {
       console.log('offing join and message event');
@@ -352,11 +363,13 @@ export default function Chat(props: { sessionId: string }) {
       display='flex'
       justifyContent='flex-start'
       flexDirection='column'
-      sx={
-        {
-          // padding: '0 0.4vw 0 0.4vw',
-        }
-      }
+      sx={{
+        position: 'fixed',
+        bottom: '4vh',
+        boxShadow: 4,
+        borderRadius: '10px',
+        width: 'inherit',
+      }}
     >
       {/* <Typography sx={{ fontSize: 'h4', alignSelf: 'center', fontWeight: 900 }}>Chat</Typography> */}
       <ChatWindowTitle>Chat</ChatWindowTitle>
@@ -381,6 +394,7 @@ export default function Chat(props: { sessionId: string }) {
           value={messageInput}
           onChange={handleMessageInput}
           disableUnderline
+          multiline
         />
         <Box sx={{ m: 1, position: 'relative' }}>
           <IconButton

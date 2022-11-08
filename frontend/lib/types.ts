@@ -37,6 +37,7 @@ export interface ServerToClientEvents {
     id: string
   ) => void;
   joinRoomSuccess: (sessionId: string, username: string, userId: string) => void;
+  leaveRoom: (room: string, socketId: string) => void;
 }
 
 export interface ClientToServerEvents {
@@ -50,6 +51,7 @@ export interface ClientToServerEvents {
     id: string
   ) => void;
   joinRoom: (sessionId: string, username: string, userId: string) => void;
+  leaveRoom: (sessionId: string, username: string, userId: string) => void;
 }
 
 export interface InterServerEvents {

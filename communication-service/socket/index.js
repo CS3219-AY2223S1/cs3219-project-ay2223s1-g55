@@ -26,7 +26,6 @@ export const createSocketIOServer = (httpServer) => {
       console.log("Client disconnected: ", socket.id);
     });
 
-    // TODO: FetchAllRoomMessages to after the person just join, if no messages yet(sessionId dont exists in collection) send empty array
     // Assuming no private messaging only messaging through a room now
     // TODO: on need (arg) but emit is arg1, arg2 instead
     socket.on(
@@ -60,6 +59,27 @@ export const createSocketIOServer = (httpServer) => {
       socket.join(sessionId);
       io.in(sessionId).emit("joinRoomSuccess", sessionId, username, userId);
     });
+
+    // socket.on("leaveRoom", (sessionId, username, userId) => {
+    //   console.log(
+    //     "leaveRoom event from payload content is ",
+    //     sessionId,
+    //     username,
+    //     userId
+    //   );
+    //   socket.leave(sessionId);
+    //   io.in(sessionId).emit("leaveRoomSuccess", sessionId, username, userId);
+    // });
+
+    // socket.on("disconnecting", () => {
+    //   console.log(socket.rooms);
+    //   for (const room of socket.rooms) {
+    //     if (room !== socket.id) {
+    //       io.to(room).emit("leaveRoom", room, socket.id);
+    //     }
+    //   }
+    //   // the Set contains at least the socket ID
+    // });
   });
 
   // Admin Dashboard for socket connections, use https://admin.socket.io to access
