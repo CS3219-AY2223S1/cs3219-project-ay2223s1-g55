@@ -25,17 +25,16 @@ const Settings = () => {
       default:
         return (
           <Container>
-            Access your account settings by selecting one of the buttons on the left
+            <h2>Adjust your settings here</h2>
           </Container>
         );
     }
   };
 
-  if (!user.loginState) return <UnauthorizedDialog />;
   return (
     <DefaultLayout>
-      <Container className='main' maxWidth='lg' sx={{ height: '100vh' }}>
-        <Typography variant='h4'>Settings</Typography>
+      <Container className='main' maxWidth='xl' sx={{ height: '100vh' }}>
+        <h1>Settings</h1>
         <Box sx={{ display: 'flex' }}>
           <Tabs
             orientation='vertical'

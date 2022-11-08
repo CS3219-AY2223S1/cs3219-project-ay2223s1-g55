@@ -10,7 +10,6 @@ import axios from 'axios';
 import { useState, useEffect, useRef } from 'react';
 import QuestionDescription from '@/components/Question/QuestionDescription';
 import DefaultLayout from '@/layouts/DefaultLayout';
-import Editor2 from '@/components/collaboration-platform/Editor2';
 
 export default function CollaborationPlatform() {
   const router = useRouter();
@@ -82,8 +81,7 @@ export default function CollaborationPlatform() {
             <Stack>
               <Card elevation={3} sx={{ p: 2 }}>
                 <CardContent>
-                  {/* <Editor sessionId={sessionId ?? ''} /> */}
-                  <Editor2 sessionId={sessionId ?? ''} />
+                  <Editor sessionId={sessionId ?? ''} />
                 </CardContent>
               </Card>
             </Stack>
