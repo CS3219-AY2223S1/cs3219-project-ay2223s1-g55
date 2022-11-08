@@ -9,25 +9,29 @@ Chart.register(ArcElement);
 
 const DoughnutChart = (props) => {
   const [graphData, setGraphData] = useState(null);
+  const [labels, setLabels] = useState(null);
   const [isLoading, setLoading] = useState(false);
   const { username } = props;
   console.log(username);
   const fetchQnsCompletedByDifficulty = async () => {
     const res = await get(URL_HISTORY_COMPLETED_DIFFICULTY_COUNT, { urlParams: { username } });
-    console.log(res);
+    return res;
   };
   useEffect(() => {
     setLoading(true);
-    fetchQnsCompletedByDifficulty().then((res) => setGraphData(res));
+    fetchQnsCompletedByDifficulty().then((res) => {
+      setLabels(Object.keys(res));
+      setGraphData(Object.values(res));
+    });
     setLoading(false);
   }, []);
-  const labels = ['Easy', 'Medium', 'Hard'];
-  const datas = [1, 1, 1];
+  if (isLoading) return <p>Loading...</p>;
+
   const data = {
     labels,
     datasets: [
       {
-        data: datas,
+        data: graphData,
         backgroundColor: [
           'rgba(255, 99, 132, 0.2)',
           'rgba(54, 162, 235, 0.2)',
@@ -40,8 +44,6 @@ const DoughnutChart = (props) => {
       },
     ],
   };
-  if (isLoading) return <p>Loading...</p>;
-
   return (
     <div>
       <h2>Difficulty distribution of completed questions</h2>

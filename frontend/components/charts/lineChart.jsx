@@ -56,21 +56,10 @@ import { get } from '../../api/base';
 
 export default function LineChart(props) {
   const [graphData, setGraphData] = useState(null);
+  const [labels, setLabels] = useState(null);
   const [isLoading, setLoading] = useState(false);
   const { username } = props;
-  console.log(username);
-  const fetchQnsCompletedByMonths = async () => {
-    const res = await get(URL_HISTORY_COMPLETED_MONTHS_COUNT, { urlParams: { username } });
-    console.log(res);
-  };
-  useEffect(() => {
-    setLoading(true);
-    fetchQnsCompletedByMonths().then((res) => setGraphData(res));
-    setLoading(false);
-  }, []);
-  const weight = [60.0, 60.2, 59.1, 61.4, 59.9, 60.2, 59.8, 58.6, 59.6, 59.2, 59.6, 59.2];
-
-  const labels = [
+  const monthMapping = [
     'Jan',
     'Feb',
     'Mar',
@@ -84,6 +73,27 @@ export default function LineChart(props) {
     'Nov',
     'Dec',
   ];
+  const fetchQnsCompletedByMonths = async () => {
+    const res = await get(URL_HISTORY_COMPLETED_MONTHS_COUNT, { urlParams: { username } });
+    return res;
+  };
+  useEffect(() => {
+    let unsubscribed = false;
+    setLoading(true);
+    fetchQnsCompletedByMonths().then((res) => {
+      console.log(res);
+      if (!unsubscribed) {
+        setLabels(res.map((item) => monthMapping[item.month - 1]));
+        setGraphData(res.map((item) => item.count));
+        setLoading(false);
+      }
+    });
+    return () => {
+      unsubscribed = true;
+      console.log('cancelled useEffect');
+    };
+  }, []);
+
   const canvasEl = useRef(null);
 
   const colors = {
@@ -100,6 +110,8 @@ export default function LineChart(props) {
   };
 
   useEffect(() => {
+    console.log('running inside');
+    console.log(labels);
     const ctx = canvasEl.current.getContext('2d');
     // const ctx = document.getElementById("myChart");
 
@@ -114,7 +126,7 @@ export default function LineChart(props) {
         {
           backgroundColor: gradient,
           label: 'Questions completed',
-          data: weight,
+          data: graphData,
           fill: true,
           borderWidth: 2,
           borderColor: colors.purple.default,
@@ -131,10 +143,15 @@ export default function LineChart(props) {
     const myLineChart = new Chart(ctx, config);
 
     return function cleanup() {
-      myLineChart.destroy();
+      console.log('cleaning up');
+      console.log(myLineChart);
+      if (myLineChart) {
+        myLineChart.destroy();
+      }
     };
-  });
+  }, [graphData, labels]);
 
+  if (isLoading) return <p>Loading...</p>;
   return (
     <div>
       <h2>Question Done over the months</h2>
