@@ -3,11 +3,20 @@ import useUserStore from '@/lib/store';
 import React, { useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { getJwtCookie } from '@/lib/cookies';
-import { Box } from '@mui/material';
+import { Box, Grid } from '@mui/material';
+import { styled } from '@mui/material/styles';
+import GithubIcon from '@mui/icons-material/Github';
 
 interface DefaultLayoutProps {
   children: React.ReactNode;
 }
+
+const Footer = styled(Box)(({ theme }) => ({
+  backgroundColor: theme.palette.primary.main,
+  color: 'white',
+  margin: 0,
+  padding: 10
+}));
 
 function DefaultLayout({ children }: DefaultLayoutProps) {
   const { user, updateUser } = useUserStore((state) => ({
@@ -35,15 +44,24 @@ function DefaultLayout({ children }: DefaultLayoutProps) {
         {children}
       </Box>
 
-      <Box sx={{ backgroundColor: 'primary.main', color: 'white', margin: 0, padding: 2 }}>
-        An app built by
-        <ul>
-          <li>Asher</li>
-          <li>Ezekiel</li>
-          <li>Glenn</li>
-          <li>Zhikai</li>
-        </ul>
-      </Box>
+      <Footer>
+        <Grid container>
+          <Grid item xs={2}>
+            An app built by
+            <ul>
+              <li>Asher</li>
+              <li>Ezekiel</li>
+              <li>Glenn</li>
+              <li>Zhikai</li>
+            </ul>
+          </Grid>
+          <Grid container item xs={4} alignItems='center' gap={2}>
+            <GithubIcon />
+            <a href='https://github.com/CS3219-AY2223S1/cs3219-project-ay2223s1-g55'>Github Repository</a>
+          </Grid>
+
+        </Grid>
+      </Footer>
     </>
   );
 }
