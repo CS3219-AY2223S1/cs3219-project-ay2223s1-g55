@@ -39,11 +39,10 @@ function Editor(props: { sessionId: string; isReady: boolean }) {
     socket.emit('send-changes', editor.getContents());
   };
 
-  const handleClose = (event, reason) => {
+  const handleClose = (event?: React.SyntheticEvent | Event, reason?: string) => {
     if (reason === 'clickaway') {
       return;
     }
-
     setIsAlert(false);
   };
 
