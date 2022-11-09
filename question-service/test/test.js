@@ -63,7 +63,8 @@ describe('Test DB', async () => {
       const sampleQuestion = randQuestion;
       const question = await new QuestionModel(sampleQuestion);
       await question.save();
-      const slugifiedTitle = randQuestion.title.replaceAll(' ', '-').toLowerCase();
+      const slugifiedTitle = randQuestion.title.replace(/ /g, '-').toLowerCase();
+      console.log('slugified title', slugifiedTitle);
       const res = await chai.request(app).get(`${BASE_URL}/question/${slugifiedTitle}`).send();
       expect(res.status).to.equal(200);
       expect(res.body).to.have.property('question');
@@ -83,7 +84,7 @@ describe('Test DB', async () => {
     it('add a comment to a question given a title', async () => {
       const comment = randComment;
       const sampleQuestion = randQuestion;
-      const slugifiedTitle = randQuestion.title.replaceAll(' ', '-').toLowerCase();
+      const slugifiedTitle = randQuestion.title.replace(/ /g, '-').toLowerCase();
 
       const question = await new QuestionModel(sampleQuestion);
       await question.save();
