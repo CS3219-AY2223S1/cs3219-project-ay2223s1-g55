@@ -1,4 +1,4 @@
-/* eslint no-return-await */
+/* eslint no-return-await: 0 */
 import {
   URL_COMMUNICATION_MESSAGE,
   URL_HISTORY_COMPLETED,
@@ -92,8 +92,8 @@ export const getQuestionByTitle = async (questionTitle: string) => {
 
 export const getComments = async (questionTitle: string) => {
   return (
-    (await get<{ question: QuestionType[] }>(`${URL_QUESTION_QUESTIONS}/${questionTitle}`)).question?.[0]
-      ?.comments ?? []
+    (await get<{ question: QuestionType[] }>(`${URL_QUESTION_QUESTIONS}/${questionTitle}`))
+      .question?.[0]?.comments ?? []
   );
 };
 
