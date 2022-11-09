@@ -72,12 +72,19 @@ function ChatWindow(props: { messageList: Array<Message>; username: string }) {
   return (
     <Box
       sx={{
+        backgroundColor: 'white',
         pr: '0.5%',
         pl: '0.5%',
-        width: '100%',
+        // width: '100%',
       }}
     >
-      <Box style={{ height: '50vh', overflow: 'auto', overscrollBehavior: 'contain' }}>
+      <Box
+        sx={{
+          height: '50vh',
+          overflow: 'auto',
+          overscrollBehavior: 'contain',
+        }}
+      >
         <List>
           {messageList.map((message) => (
             <ChatMessage key={message.id} message={message} username={username} />
@@ -303,6 +310,7 @@ export default function Chat(props: { sessionId: string }) {
         boxShadow: 4,
         borderRadius: '10px',
         width: 'inherit',
+        backgroundColor: 'white',
       }}
     >
       {/* <Typography sx={{ fontSize: 'h4', alignSelf: 'center', fontWeight: 900 }}>Chat</Typography> */}
