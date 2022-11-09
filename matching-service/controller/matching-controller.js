@@ -196,6 +196,9 @@ export async function findMatchRequest(req, res) {
 export async function deleteMatchRequest(req, res) {
   try {
     const { username, difficulty } = req.body;
+    if (!username || !difficulty) {
+      return res.status(400).json({ message: 'Username and/or Difficulty are missing!' });
+    }
     const requestExists = await _checkMatchRequestExists(username);
     if (username) {
       if (!requestExists) {
@@ -221,6 +224,9 @@ export async function deleteMatchRequest(req, res) {
 export async function cancelMatchRequest(req, res) {
   try {
     const { username, difficulty } = req.body;
+    if (!username || !difficulty) {
+      return res.status(400).json({ message: 'Username and/or Difficulty are missing!' });
+    }
     const requestExists = await _checkMatchRequestExists(username);
     if (username) {
       if (!requestExists) {
