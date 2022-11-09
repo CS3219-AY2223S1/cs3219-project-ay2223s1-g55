@@ -1,0 +1,79 @@
+name: Editor-Service
+
+on:
+  pull_request:
+    branches: [ main ]
+    paths: 
+      - 'editor-service/**'
+      - '.github/workflows/editor.yml'
+  push:
+    branches: [ main ]
+    paths: 
+      - 'editor-service/**'
+      - '.github/workflows/editor.yml'
+
+env:
+  REGION: asia-southeast1
+  SERVICE: editor-service
+
+jobs:
+    test:
+        if: ${{ github.event_name == 'pull_request' }}
+        runs-on: ubuntu-latest
+        steps:
+        - name: Checkout repository
+          uses: actions/checkout@v2
+        - name: Use Node.js
+          uses: actions/setup-node@v3
+          with:
+            node-version: '14.x'
+
+        - name: Install dependencies
+          working-directory: ${{ env.SERVICE }}
+          run: npm install
+        - name: Run CI tests
+          working-directory: ${{ env.SERVICE }}
+          run: npm run test
+          env:
+            ENV: test
+            DB_CLOUD_URI: ${{ secrets.DB_CLOUD_URI }}
+    deploy:
+        if: ${{ github.event_name == 'push' }}
+        runs-on: ubuntu-latest
+        steps:
+        - name: Checkout repository
+          uses: actions/checkout@v2
+        - name: Use Node.js
+          uses: actions/setup-node@v3
+          with:
+            node-version: '14.x'
+
+        - name: Install dependencies
+          working-directory: ${{ env.SERVICE }}
+          run: npm install
+        - name: Run CI tests
+          working-directory: ${{ env.SERVICE }}
+          run: npm run test
+          env:
+            ENV: test
+            DB_CLOUD_URI: ${{ secrets.DB_CLOUD_URI }}
+
+        - name: Google Auth
+          id: auth
+          uses: 'google-github-actions/auth@v0'
+          with:
+            credentials_json: ${{ secrets.GCP_CREDENTIALS }}
+
+        - name: Deploy to Cloud Run
+          id: deploy
+          uses: google-github-actions/deploy-cloudrun@v0
+          with:
+            service: ${{ env.SERVICE }}
+            region: ${{ env.REGION }}
+            source: ./${{ env.SERVICE }}
+            env_vars: |
+              ENV=PROD
+              DB_CLOUD_URI=${{ secrets.DB_CLOUD_URI }}
+        
+        - name: Show Output
+          run: echo ${{ steps.deploy.outputs.url }}

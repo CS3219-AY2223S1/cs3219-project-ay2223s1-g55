@@ -1,70 +1,55 @@
-# Getting Started with Create React App
+This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# Getting Started
 
-## Available Scripts
+## Navigate to the `frontend` directory
 
-In the project directory, you can run:
+Run `cd frontend` from the root of the project.
 
-### `npm start`
+## Installing dependencies
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+Run `npm install` to install dependencies.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## Running locally
 
-### `npm test`
+First, run the development server:
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+```bash
+npm run dev
+# or
+yarn dev
+```
 
-### `npm run build`
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+You will automatically be directed to the login page at [http://localhost:3000/login](http://localhost:3000/login)
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+Register for an account at [http://localhost:3000/signup](http://localhost:3000/signup), and login at [http://localhost:3000/login](http://localhost:3000/login).
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+After successful login, it should show a graph of the questions completed thus far.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+Questions will be listed at the bottom of the page, with the ability to filter based on difficulty and search for questions based on title.
 
-### `npm run eject`
+## Pages
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+The following pages are available, protected pages require frontend authorization:
+* /dashboard **(Protected)**  
+    A dashboard page where users can view their progress and a list of questions available throughout the application.
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+* /settings **(Protected)**  
+    A settings page where users can change their passwords or delete their account.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+* /match **(Protected)**  
+    A match page where users can request for a match with other users based on the difficulty chosen.
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+* /learning-pathway **(Protected)**  
+    A page where users can see their past sessions, as well as completed questions and their progress. An experience bar is provided which will be filled as questions are completed.
 
-## Learn More
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+* /questions/:title, where title is a [slug](https://itnext.io/whats-a-slug-f7e74b6c23e0).  
+A dynamically routed page which displays the entire question, including a comment section used for discussion.  
+e.g. Two Sum -> /questions/two-sum
 
-To learn React, check out the [React documentation](https://reactjs.org/).
 
-### Code Splitting
+# Deployed on Vercel
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+Our frontend has been [deployed](https://frontend-git-main-cs-3219-g55.vercel.app/) on [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.

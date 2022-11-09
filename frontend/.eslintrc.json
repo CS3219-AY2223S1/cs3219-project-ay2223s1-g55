@@ -1,0 +1,52 @@
+{
+  "env": {
+    "browser": true,
+    "es2021": true
+  },
+  "extends": [
+    "next/core-web-vitals",
+    "airbnb",
+    "eslint:recommended",
+    "plugin:@typescript-eslint/eslint-recommended",
+    "plugin:prettier/recommended",
+    "prettier"
+  ],
+  "parser": "@typescript-eslint/parser",
+  "overrides": [],
+  "parserOptions": {
+    // "ecmaVersion": "",
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "jsx": true
+    }
+  },
+  "plugins": ["react", "@typescript-eslint"],
+  "rules": {
+    "react/jsx-filename-extension": [
+      1,
+      {
+        "extensions": [".js", ".jsx", ".ts", ".tsx"]
+      }
+    ],
+    "react/react-in-jsx-scope": "off",
+    "react/no-children-prop": "warn",
+    "react/prop-types": "warn",
+    "react/jsx-no-constructed-context-values": "warn",
+    "react/jsx-curly-brace-presence": "error",
+    "import/prefer-default-export": "warn",
+    "react/no-array-index-key": "warn",
+    "prettier/prettier": ["error"],
+    "linebreak-style": 0,
+    "quotes": ["error", "single"],
+    "no-unused-vars": "warn",
+    "no-use-before-define": "warn",
+    "no-underscore-dangle": "warn",
+    "consistent-return": "warn",
+    // handled by prettier
+    "import/extensions": "off",
+    "react/jsx-props-no-spreading": "off",
+    "react/function-component-definition": "off",
+    "react/require-default-props": "off",
+    "no-shadow": "warn"
+  }
+}
