@@ -1,6 +1,16 @@
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
-## Getting Started
+# Getting Started
+
+## Navigate to the `frontend` directory
+
+Run `cd frontend` from the root of the project.
+
+## Installing dependencies
+
+Run `npm install` to install dependencies.
+
+## Running locally
 
 First, run the development server:
 
@@ -11,24 +21,35 @@ yarn dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+You will automatically be directed to the login page at [http://localhost:3000/login](http://localhost:3000/login)
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+Register for an account at [http://localhost:3000/signup](http://localhost:3000/signup), and login at [http://localhost:3000/login](http://localhost:3000/login).
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+After successful login, it should show a graph of the questions completed thus far.
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+Questions will be listed at the bottom of the page, with the ability to filter based on difficulty and search for questions based on title.
 
-## Learn More
+## Pages
 
-To learn more about Next.js, take a look at the following resources:
+The following pages are available, protected pages require frontend authorization:
+* /dashboard **(Protected)**  
+    A dashboard page where users can view their progress and a list of questions available throughout the application.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+* /settings **(Protected)**  
+    A settings page where users can change their passwords or delete their account.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+* /match **(Protected)**  
+    A match page where users can request for a match with other users based on the difficulty chosen.
 
-## Deploy on Vercel
+* /learning-pathway **(Protected)**  
+    A page where users can see their past sessions, as well as completed questions and their progress. An experience bar is provided which will be filled as questions are completed.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+* /questions/:title, where title is a [slug](https://itnext.io/whats-a-slug-f7e74b6c23e0).  
+A dynamically routed page which displays the entire question, including a comment section used for discussion.  
+e.g. Two Sum -> /questions/two-sum
+
+
+# Deployed on Vercel
+
+Our frontend has been [deployed](https://frontend-git-main-cs-3219-g55.vercel.app/) on [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
