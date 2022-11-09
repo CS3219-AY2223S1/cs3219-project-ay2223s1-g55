@@ -16,8 +16,6 @@ import {
   Grid,
   DialogActions,
 } from '@mui/material';
-import { URL_MATCHING_CANCEL, URL_MATCHING_REQUEST } from '@/lib/configs';
-import axios from 'axios';
 import { useRouter } from 'next/router';
 import { styled } from '@mui/material/styles';
 import useUserStore from '@/lib/store';
@@ -34,7 +32,6 @@ const MatchButton = styled(Button)(({ theme }) => ({
   width: 150,
   boxShadow: '0 1px 3px rgba(0,0,0,0.5)',
   textShadow: '0 1px 3px rgba(0,0,0,0.5)',
-  // backgroundColor: '#2196f3',
   backgroundColor: theme.palette.primary.light,
   '&:hover': {
     backgroundColor: theme.palette.primary.light,
