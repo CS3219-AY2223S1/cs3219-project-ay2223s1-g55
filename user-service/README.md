@@ -14,29 +14,52 @@ Run `cd user-services` from the root of the project.
 
 Run `npm install` to install dependencies
 
+## Environment variables
+
+Ensure that environment variables are set.
+
 ## Running Locally
 
 1. After installing dependencies, run `npm run dev` to start the application.
 2. The service should be started on http://localhost:8000.
 
-
 ## Running Tests
 
-Run `npm run test` to execute tests.
+Run `npm run test` to execute tests. Tests depend on the deployment URL in the environment variables.
 
 ## Endpoints
 
-### Getting all existing Connections
+### Creating a new user
 
-GET request to "some link here"
-
-### Creating a new Connection
-
-POST request to
+POST request to `/api/user`
 
 Example request body:
 ```
-{
-    "session_id": String
-}
+{ "username": String, "password": String  }
 ```
+
+### Updating a user's credentials
+
+PUT request to `/api/user`
+
+Example request body:
+```
+{ "oldPassword": String, "newPassword": String, }
+```
+
+### Deleting a user
+
+DELETE request to `/api/user`
+
+### Logging in a user
+
+POST request to `/api/user/login`
+
+Example request body:
+```
+{ "username": String, "password": String, "currToken": String }
+```
+
+### Authorizing a user
+
+GET request to `/api/user/session`
