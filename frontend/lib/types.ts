@@ -12,6 +12,10 @@ export interface Message {
   sessionId: string;
   createdAt: Date;
   id: string;
+
+  // Types from backend
+  _id?: string;
+  message?: string;
 }
 
 // Interface for socket typescript
@@ -37,6 +41,7 @@ export interface ServerToClientEvents {
     id: string
   ) => void;
   joinRoomSuccess: (sessionId: string, username: string, userId: string) => void;
+  leaveRoom: (room: string, socketId: string) => void;
 }
 
 export interface ClientToServerEvents {
@@ -50,6 +55,7 @@ export interface ClientToServerEvents {
     id: string
   ) => void;
   joinRoom: (sessionId: string, username: string, userId: string) => void;
+  leaveRoom: (sessionId: string, username: string, userId: string) => void;
 }
 
 export interface InterServerEvents {
@@ -75,6 +81,7 @@ export interface QuestionType {
   title: string;
   description: string;
   difficulty: Difficulty;
+  comments?: QuestionCommentType[];
 }
 export interface QuestionCommentType {
   user: string;

@@ -1,6 +1,11 @@
-name: Cloud Run Deploy Communication-Service
+name: Communication-Service
 
 on:
+  pull_request:
+    branches: [ main ]
+    paths: 
+      - 'communication-service/**'
+      - '.github/workflows/editor.yml'
   push:
     branches: [ main ]
     paths: 
@@ -12,12 +17,46 @@ env:
   SERVICE: communication-service
 
 jobs:
-    deploy_2:
-        name: Communication-Service
+    test:
+        if: ${{ github.event_name == 'pull_request' }}
         runs-on: ubuntu-latest
         steps:
         - name: Checkout repository
           uses: actions/checkout@v2
+        - name: Use Node.js
+          uses: actions/setup-node@v3
+          with:
+            node-version: '14.x'
+
+        - name: Install dependencies
+          working-directory: ${{ env.SERVICE }}
+          run: npm install
+        - name: Run CI tests
+          working-directory: ${{ env.SERVICE }}
+          run: npm run test
+          env:
+            ENV: test
+            DB_CLOUD_URI: ${{ secrets.DB_CLOUD_URI }}
+    deploy:
+        if: ${{ github.event_name == 'push' }}
+        runs-on: ubuntu-latest
+        steps:
+        - name: Checkout repository
+          uses: actions/checkout@v2
+        - name: Use Node.js
+          uses: actions/setup-node@v3
+          with:
+            node-version: '14.x'
+
+        - name: Install dependencies
+          working-directory: ${{ env.SERVICE }}
+          run: npm install
+        - name: Run CI tests
+          working-directory: ${{ env.SERVICE }}
+          run: npm run test
+          env:
+            ENV: test
+            DB_CLOUD_URI: ${{ secrets.DB_CLOUD_URI }}
 
         - name: Google Auth
           id: auth
@@ -35,10 +74,6 @@ jobs:
             env_vars: |
               ENV=PROD
               DB_CLOUD_URI=${{ secrets.DB_CLOUD_URI }}
-              REDIS_CLOUD_URI=${{ secrets.REDIS_CLOUD_URI }}
-              REDIS_CLOUD_PORT=${{ secrets.REDIS_CLOUD_PORT }}
-              REDIS_CLOUD_PASSWORD=${{ secrets.REDIS_CLOUD_PASSWORD }}
-              JWT_SECRET=${{ secrets.JWT_SECRET }}
         
         - name: Show Output
           run: echo ${{ steps.deploy.outputs.url }}

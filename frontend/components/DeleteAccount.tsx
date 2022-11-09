@@ -1,4 +1,3 @@
-import { STATUS_CODE_DELETED } from '@/lib/constants';
 import { getJwtCookie, clearJwt } from '@/lib/cookies';
 import useUserStore from '@/lib/store';
 import {
@@ -14,7 +13,6 @@ import {
   DialogTitle,
   IconButton,
   TextField,
-  Typography,
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import { useRouter } from 'next/router';
@@ -35,9 +33,8 @@ const DeleteAccount = () => {
 
   const handleDeleteUser = async () => {
     if (isValidInput) {
-      const currToken = getJwtCookie();
-      const res = await deleteUser(currToken);
-      if (res?.status === STATUS_CODE_DELETED) {
+      const res = await deleteUser();
+      if (res) {
         router.push('/signup');
         clearJwt();
         return;
@@ -54,9 +51,9 @@ const DeleteAccount = () => {
 
   return (
     <Container sx={{ height: '100%' }}>
-      <Typography variant='h5'>Are you sure you want to delete your account?</Typography>
+      <h2>Are you sure you want to delete your account?</h2>
       <Button onClick={() => setIsDialogOpen(true)}>I&apos;m sure</Button>
-      <Button onClick={router.reload}>No it was a mistake!</Button>
+      <Button onClick={router.reload}>Go Back</Button>
       <Dialog open={isDialogOpen} onClose={closeDialog}>
         <DialogTitle>Are you very sure?</DialogTitle>
         <DialogContent>

@@ -56,7 +56,7 @@ const QuestionList = ({ allQuestions }: QuestionListProps) => {
 
   const filteredAndSearched = useMemo(() => {
     return filtered.filter((qn) => qn.title.toLowerCase().includes(searchInput.toLowerCase()));
-  }, [searchInput]);
+  }, [searchInput, currDifficulty]);
 
   // Table Related States and Handlers
   const [page, setPage] = useState<number>(0);

@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import 'react-quill/dist/quill.snow.css';
 import io from 'socket.io-client';
 import { URI_EDITOR_SVC } from '@/lib/configs';
+import { CardContent, Snackbar, Alert } from '@mui/material';
 
 const SAVE_INTERVAL_MS = 2000;
 const ReactQuill = dynamic(() => import('react-quill'), {
@@ -24,16 +25,25 @@ const modules = {
 };
 let socket: any;
 
-function Editor(props: { sessionId: string }) {
-  const { sessionId } = props;
+function Editor(props: { sessionId: string; isReady: boolean }) {
+  const { sessionId, isReady } = props;
   const [isConnected, setIsConnected] = useState(false);
   const [value, setValue] = useState('');
   const [isDisabled, setIsDisabled] = useState<boolean>(true);
+  const [alertValue, setAlertValue] = useState<string>('');
+  const [isAlert, setIsAlert] = useState<boolean>(false);
 
   const handleVal = (content: any, delta: any, source: any, editor: any) => {
     if (source !== 'user') return;
     setValue(editor.getContents());
     socket.emit('send-changes', editor.getContents());
+  };
+
+  const handleClose = (event?: React.SyntheticEvent | Event, reason?: string) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setIsAlert(false);
   };
 
   useEffect(() => {
@@ -51,17 +61,20 @@ function Editor(props: { sessionId: string }) {
       if (reason === 'io server disconnect') {
         // the disconnection was initiated by the server, you need to reconnect manually
         // socket.connect();
+        console.log('how can he disconnect');
       }
       setIsConnected(false);
     });
     return () => {
+      const discMsg = 'The other user has left';
+      socket.emit('alert-disconnected', discMsg);
       socket.off('connect');
       socket.off('disconnect');
     };
   }, []);
 
   useEffect(() => {
-    if (!isConnected || socket == null) return;
+    if (!isConnected || socket == null || !isReady) return;
     console.log(sessionId);
 
     socket.once('load-editor', (editor: any) => {
@@ -70,7 +83,7 @@ function Editor(props: { sessionId: string }) {
     });
 
     socket.emit('get-editor', sessionId);
-  }, [isConnected]);
+  }, [isConnected, isReady]);
 
   useEffect(() => {
     // backend port used for socket.io
@@ -82,6 +95,11 @@ function Editor(props: { sessionId: string }) {
 
     socket.on('receive-changes', handler);
 
+    const handleAlert = (alert: string) => {
+      setIsAlert(true);
+    };
+
+    socket.on('alert-disconnected', handleAlert);
     return () => {
       socket.off('receive-changes');
     };
@@ -101,15 +119,22 @@ function Editor(props: { sessionId: string }) {
   }, [socket, value]);
 
   return (
-    <ReactQuill
-      theme='snow'
-      modules={modules}
-      onChange={(content: any, delta: any, source: any, editor: any) =>
-        handleVal(content, delta, source, editor)
-      }
-      value={value}
-      readOnly={isDisabled}
-    />
+    <CardContent>
+      <Snackbar open={isAlert} autoHideDuration={6000} onClose={handleClose}>
+        <Alert onClose={handleClose} severity='warning' sx={{ width: '100%' }}>
+          The other user has left the room
+        </Alert>
+      </Snackbar>
+      <ReactQuill
+        theme='snow'
+        modules={modules}
+        onChange={(content: any, delta: any, source: any, editor: any) =>
+          handleVal(content, delta, source, editor)
+        }
+        value={value}
+        readOnly={isDisabled}
+      />
+    </CardContent>
   );
 }
 

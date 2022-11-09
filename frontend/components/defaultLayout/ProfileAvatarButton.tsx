@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import { STATUS_CODE_LOGGED_OUT } from '@/lib/constants';
-import { getJwtCookie, clearJwt } from '@/lib/cookies';
+import { clearJwt } from '@/lib/cookies';
 import { Settings, Logout, Route } from '@mui/icons-material';
 import { Menu, MenuItem, ListItemIcon, Avatar, Grid, IconButton, Tooltip } from '@mui/material';
 import router from 'next/router';
@@ -14,9 +13,8 @@ const ProfileAvatarButton = () => {
   }));
 
   const handleLogout = async () => {
-    const currToken = getJwtCookie();
-    const res = await logout(currToken);
-    if (res?.status === STATUS_CODE_LOGGED_OUT) {
+    const res = await logout();
+    if (res) {
       router.push('/login');
       clearJwt();
     }

@@ -4,10 +4,16 @@ import 'dotenv/config.js';
 // Set up mongoose connection
 import mongoose from 'mongoose';
 
-const mongoDB = process.env.ENV == 'PROD' ? process.env.DB_CLOUD_URI : process.env.DB_LOCAL_URI;
+const isProd = process.env.ENV === 'PROD';
+const isTest = process.env.ENV === 'test';
+const isProdOrTest = isProd || isTest;
+
+const mongoDB = isProdOrTest ? process.env.DB_CLOUD_URI : process.env.DB_LOCAL_URI;
+
+const dbName = isTest ? 'testQuestionServiceDb' : 'questionServiceDb';
 
 mongoose.connect(mongoDB, {
-  dbname: 'QuestionsDb',
+  dbname: dbName,
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });

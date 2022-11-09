@@ -32,9 +32,12 @@ export const URL_COMMUNICATION_MESSAGE = `${URL_COMMUNICATION_SVC}/message`;
 
 const PREFIX_QUESTION_SVC = '/api/question';
 export const URL_QUESTION_SVC = URI_QUESTION_SVC + PREFIX_QUESTION_SVC;
+export const URL_QUESTION_QUESTIONS = `${URL_QUESTION_SVC}/question`;
 
 const PREFIX_HISTORY_SVC = '/api/history';
 export const URL_HISTORY_SVC = URI_HISTORY_SVC + PREFIX_HISTORY_SVC;
 export const URL_HISTORY_RECORD = `${URL_HISTORY_SVC}/records/:username`;
 export const URL_HISTORY_COMPLETED = `${URL_HISTORY_SVC}/completed/:username`;
+export const URL_HISTORY_COMPLETED_DIFFICULTY_COUNT = `${URL_HISTORY_SVC}/completed/difficultyCount/:username`;
+export const URL_HISTORY_COMPLETED_MONTHS_COUNT = `${URL_HISTORY_SVC}/completed/monthCount/:username`;
 export const URL_HISTORY_EXPERIENCE = `${URL_HISTORY_SVC}/experience/:username`;

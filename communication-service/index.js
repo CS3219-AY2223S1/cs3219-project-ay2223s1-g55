@@ -6,6 +6,7 @@ import {
   fetchAllMessages,
 } from "./controller/message-controller.js";
 import {createSocketIOServer} from "./socket/index.js";
+import verifyToken from "./utils/verifyToken.js";
 const app = express();
 app.use(express.urlencoded({extended: true}));
 app.use(express.json());
@@ -17,8 +18,9 @@ router.get("/", (_, res) => {
   res.send("Hello World from communication-service");
 });
 
-router.post("/message", createMessage);
-router.get("/message/:sessionId", fetchAllMessages);
+// Protected Routes
+router.post("/message", verifyToken, createMessage);
+router.get("/message/:sessionId", verifyToken, fetchAllMessages);
 
 app.use("/api/communication", router).all((_, res) => {
   res.setHeader("content-type", "application/json");

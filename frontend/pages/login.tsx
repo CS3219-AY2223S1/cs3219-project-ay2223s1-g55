@@ -10,7 +10,6 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { STATUS_CODE_LOGIN_FAILED, STATUS_CODE_LOGGED_IN } from '@/lib/constants';
 import router from 'next/router';
 import useUserStore from '@/lib/store';
 import DefaultLayout from '@/layouts/DefaultLayout';
@@ -41,14 +40,13 @@ function LoginPage() {
   }));
   const handleLogin = async () => {
     const currToken = getJwtCookie() as string;
-    const res = await loginUser(username, password, currToken);
-    if (res && res.status === STATUS_CODE_LOGGED_IN) {
-      setSuccessDialog('Successfully logged in!');
-      saveJwtCookie(res.data.token);
+    const { error, ...res } = await loginUser(username, password, currToken);
+    if (error) {
+      setErrorDialog(error);
+      return;
     }
-    if (res.error) {
-      setErrorDialog(res.error);
-    }
+    setSuccessDialog('Successfully logged in!');
+    saveJwtCookie(res.token);
   };
 
   const closeDialog = () => {
