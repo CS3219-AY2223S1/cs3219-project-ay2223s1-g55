@@ -7,6 +7,7 @@ import {
   cancelMatchRequest,
   getMatchSession,
 } from './controller/matching-controller.js';
+import verifyToken from './utils/verifyToken.js';
 
 const app = express();
 app.use(express.urlencoded({ extended: true }));
@@ -19,10 +20,11 @@ router.get('/', (_, res) => {
   res.send('Hello World from matching-service');
 });
 
-router.post('/request', findMatchRequest);
-router.delete('/request', deleteMatchRequest);
-router.get('/sessions/:sessionId', getMatchSession);
-router.post('/cancel', cancelMatchRequest);
+// Protected Routes
+router.post('/request', verifyToken, findMatchRequest);
+router.delete('/request', verifyToken, deleteMatchRequest);
+router.get('/sessions/:sessionId', verifyToken, getMatchSession);
+router.post('/cancel', verifyToken, cancelMatchRequest);
 
 app.use('/api/match', router).all((_, res) => {
   res.setHeader('content-type', 'application/json');

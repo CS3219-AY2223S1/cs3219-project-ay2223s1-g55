@@ -2,7 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import { createServer } from 'http';
 import socketInitializer from './socket.js';
-
+import verifyToken from './utils/verifyToken.js';
 const app = express();
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());

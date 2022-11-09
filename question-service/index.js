@@ -12,9 +12,10 @@ import {
   getQuestionByTitle,
   addComment,
 } from './controller/question-controller.js';
+import verifyToken from './utils/verifyToken.js';
 
 const router = express.Router();
-
+// TODO: Add protected routes later
 // Controller will contain all the User-defined Routes
 router.get('/', (_, res) => res.send('Hello World from question-service'));
 router.get('/question', getQuestions);
