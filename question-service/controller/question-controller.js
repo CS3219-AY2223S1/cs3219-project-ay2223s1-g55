@@ -45,9 +45,9 @@ export const getQuestionByTitle = async (req, res) => {
 };
 
 export const addQuestion = async (req, res) => {
-  const { title, description, difficulty, examples, constraints } = req.body;
+  const { title, description, difficulty } = req.body;
 
-  if (!title || !description || !examples || !constraints)
+  if (!title || !description || !difficulty)
     return res.status(400).json({ message: 'Missing fields' });
 
   const titleExists = await _checkQuestionExists(title);
@@ -59,13 +59,7 @@ export const addQuestion = async (req, res) => {
   if (difficulty !== 'Easy' && difficulty !== 'Medium' && difficulty !== 'Hard')
     return res.status(400).json({ message: 'Invalid difficulty' });
 
-  if (examples.length === 0 || constraints.length === 0) {
-    return res
-      .status(400)
-      .json({ message: examples.length === 0 ? 'No examples given' : 'No constraints given' });
-  }
-
-  const resp = await _addQuestion({ title, description, difficulty, examples, constraints });
+  const resp = await _addQuestion({ title, description, difficulty });
   if (resp.err) return res.status(400).json({ message: 'Could not add question' });
   return res.status(200).json({ message: `'${title}' successfully added` });
 };

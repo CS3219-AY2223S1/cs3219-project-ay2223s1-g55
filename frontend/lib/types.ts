@@ -12,6 +12,10 @@ export interface Message {
   sessionId: string;
   createdAt: Date;
   id: string;
+
+  // Types from backend
+  _id?: string;
+  message?: string;
 }
 
 // Interface for socket typescript
@@ -77,6 +81,7 @@ export interface QuestionType {
   title: string;
   description: string;
   difficulty: Difficulty;
+  comments?: QuestionCommentType[];
 }
 export interface QuestionCommentType {
   user: string;

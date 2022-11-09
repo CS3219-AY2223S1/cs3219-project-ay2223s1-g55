@@ -1,8 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Chart from 'chart.js/auto';
-import axios from 'axios';
-import { URL_HISTORY_COMPLETED_MONTHS_COUNT } from '@/lib/configs';
-import { get } from '../../api/base';
+import { getQuestionsCompletedByMonthCount } from '../../api/index';
 
 export default function LineChart(props) {
   const [graphData, setGraphData] = useState(null);
@@ -24,14 +22,10 @@ export default function LineChart(props) {
     'Nov',
     'Dec',
   ];
-  const fetchQnsCompletedByMonths = async () => {
-    const res = await get(URL_HISTORY_COMPLETED_MONTHS_COUNT, { urlParams: { username } });
-    return res;
-  };
   useEffect(() => {
     let unsubscribed = false;
     setLoading(true);
-    fetchQnsCompletedByMonths()
+    getQuestionsCompletedByMonthCount(username)
       .then((res) => {
         console.log(res);
         if (!unsubscribed) {
@@ -97,8 +91,6 @@ export default function LineChart(props) {
     const myLineChart = new Chart(ctx, config);
 
     return function cleanup() {
-      console.log('cleaning up');
-      console.log(myLineChart);
       if (myLineChart) {
         myLineChart.destroy();
       }

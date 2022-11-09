@@ -32,6 +32,9 @@ const socketInitializer = (httpServer) => {
       clientSocket.on('send-changes', (delta) => {
         clientSocket.broadcast.to(editorId).emit('receive-changes', delta);
       });
+      clientSocket.on('alert-disconnected', (msg) => {
+        clientSocket.broadcast.to(editorId).emit('alert-disconnected', msg);
+      });
 
       clientSocket.on('save-editor', async (data) => {
         await ormFindEditorAndUpdate(editorId, data);

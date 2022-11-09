@@ -1,11 +1,11 @@
 import { useRouter } from 'next/router';
-import axios from 'axios';
-import { URL_QUESTION_SVC } from '@/lib/configs';
 import { useEffect, useState } from 'react';
 import { Container, Divider } from '@mui/material';
 import { QuestionType } from '@/lib/types';
 import QuestionDiscussion from '@/components/Question/QuestionDiscussion';
 import QuestionDescription from '@/components/Question/QuestionDescription';
+import { getQuestionByTitle } from 'api';
+import DefaultLayout from '@/layouts/DefaultLayout';
 
 const Question = () => {
   const router = useRouter();
@@ -13,16 +13,13 @@ const Question = () => {
   const [question, setQuestion] = useState<QuestionType>();
   const [commentsAdded, setCommentsAdded] = useState<boolean>(false);
 
-  const getQuestionByTitle = async () => {
-    const res = await axios.get(`${URL_QUESTION_SVC}/${questionTitle}`);
-    return res.data;
-  };
-
   useEffect(() => {
+    const fetchQuestion = async () => {
+      const _question = await getQuestionByTitle(questionTitle as string);
+      if (_question) setQuestion(_question);
+    };
     if (!router.isReady) return;
-    getQuestionByTitle().then((res) => {
-      if (res.question) setQuestion(res.question[0]);
-    });
+    fetchQuestion();
   }, [questionTitle, router.isReady, commentsAdded]);
 
   useEffect(() => {
@@ -32,11 +29,13 @@ const Question = () => {
   return !router.isReady ? (
     <div />
   ) : (
-    <Container>
-      <QuestionDescription question={question} />
-      <Divider />
-      <QuestionDiscussion isReady={router.isReady} title={questionTitle ?? ''} />
-    </Container>
+    <DefaultLayout>
+      <Container>
+        <QuestionDescription question={question} />
+        <Divider />
+        <QuestionDiscussion isReady={router.isReady} title={(questionTitle ?? '') as string} />
+      </Container>
+    </DefaultLayout>
   );
 };
 

@@ -14,7 +14,7 @@ import {
   ormFindSessionById as _findSessionById,
 } from '../model/match-session-orm.js';
 import { sleep } from '../utils/sleep.js';
-import { URL_QUESTION_SVC } from '../utils/configs.js';
+import { URL_QUESTION_QUESTIONS } from '../utils/configs.js';
 import axios from 'axios';
 
 export async function createMatchRequest(req, res) {
@@ -133,7 +133,7 @@ export async function findMatchRequest(req, res) {
           console.log('Updated match request successfully');
           // TODO: Figure out algorithm for selecting question, and also according to difficulty.
           const axiosResp = await axios.get(
-            `${URL_QUESTION_SVC}?difficulty=${difficulty.toLowerCase()}`
+            `${URL_QUESTION_QUESTIONS}?difficulty=${difficulty.toLowerCase()}`
           );
           const qns = axiosResp.data.questions;
           const numQn = qns.length;
@@ -275,7 +275,7 @@ export const getMatchSession = async (req, res) => {
   if (!sessionId) return res.status(400).send({ message: 'Session id not found' });
 
   const resp = await _findSessionById(sessionId);
-  if (!resp) return res.status(400).send({ message: 'Failed to retrieve question' });
+  if (!resp) return res.status(400).send({ message: 'Failed to retrieve session' });
 
   return res.status(200).json({ data: resp });
 };

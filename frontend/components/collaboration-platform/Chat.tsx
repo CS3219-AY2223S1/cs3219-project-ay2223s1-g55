@@ -21,6 +21,7 @@ import UnauthorizedDialog from '@/components/UnauthorizedDialog';
 import { blue } from '@mui/material/colors';
 import { v4 as uuidv4 } from 'uuid';
 import SendIcon from '@mui/icons-material/Send';
+import { createMessage, getMessages } from 'api';
 
 function ChatMessage(props: { message: Message; username: string }) {
   const { message, username } = props;
@@ -71,12 +72,19 @@ function ChatWindow(props: { messageList: Array<Message>; username: string }) {
   return (
     <Box
       sx={{
+        backgroundColor: 'white',
         pr: '0.5%',
         pl: '0.5%',
-        width: '100%',
+        // width: '100%',
       }}
     >
-      <Box style={{ height: '50vh', overflow: 'auto', overscrollBehavior: 'contain' }}>
+      <Box
+        sx={{
+          height: '50vh',
+          overflow: 'auto',
+          overscrollBehavior: 'contain',
+        }}
+      >
         <List>
           {messageList.map((message) => (
             <ChatMessage key={message.id} message={message} username={username} />
@@ -127,38 +135,6 @@ const SendMessageButton = styled(Button)({
     color: 'black',
   },
 });
-const fetchAllMessages = async (sessionId: string) => {
-  console.log('Fetch all messages for : ', sessionId);
-  if (!sessionId) {
-    return null;
-  }
-  try {
-    const res = await axios.get(`${URL_COMMUNICATION_MESSAGE}/${sessionId}`);
-    if (res.status === 200 || res.status === 201) {
-      return res;
-    }
-    throw new Error('Error fetching messages');
-  } catch (err: any) {
-    console.error(err);
-    // throw err;
-    return null;
-  }
-};
-
-const createMessage = async (
-  sessionId: string,
-  senderName: string,
-  senderId: string,
-  message: string
-) => {
-  const res = await axios.post(URL_COMMUNICATION_MESSAGE, {
-    sessionId,
-    senderName,
-    senderId,
-    message,
-  });
-  return res;
-};
 
 let socket: Socket<ServerToClientEvents, ClientToServerEvents>;
 
@@ -180,31 +156,14 @@ export default function Chat(props: { sessionId: string }) {
       if (!sessionId) {
         return;
       }
-      const res = await fetchAllMessages(sessionId);
-      if (res === null) {
-        setMessages([]);
-      } else if (res.status === 200 || res.status === 201) {
-        if (res.data.messages.length === 0) {
-          setMessages([]);
-        }
-        const messageResults: Array<Message> = [];
-        res.data.messages.forEach((item: any) => {
-          messageResults.push({
-            senderName: item.senderName,
-            senderId: item.senderId,
-            content: item.message,
-            createdAt: new Date(item.createdAt),
-            sessionId: item.sessionId,
-            id: item._id,
-          });
-        });
-        if (messages.length !== 0) {
-          messageResults.push(...messages);
-        }
-        setMessages(messageResults);
-      } else {
-        throw new Error('Something went wrong');
-      }
+      const _messages = await getMessages(sessionId);
+      const messageResults = _messages.map((message) => ({
+        ...message,
+        content: message.message ?? '',
+        createdAt: new Date(message.createdAt),
+        id: message._id ?? '',
+      }));
+      setMessages((previousMessages) => [...messageResults, ...previousMessages]);
     } catch (err: any) {
       console.log('error message is: ', err);
     }
@@ -215,19 +174,6 @@ export default function Chat(props: { sessionId: string }) {
     return uid;
   };
 
-  const handleCreateMessage = async (
-    sessionId: string,
-    senderName: string,
-    senderId: string,
-    message: string
-  ) => {
-    try {
-      const res = await createMessage(sessionId, senderName, senderId, message);
-      return res;
-    } catch (err: any) {
-      return { status: 500, error: 'Error creating message', data: null };
-    }
-  };
   const handleMessageInput = (event: React.ChangeEvent<HTMLInputElement>) => {
     setMessageInput(event.target.value);
   };
@@ -291,19 +237,6 @@ export default function Chat(props: { sessionId: string }) {
       setMessages((messages) => [...messages, joinMessage]);
     });
 
-    // socket.on('leaveRoom', async (room, socketId) => {
-    //   console.log('leaveRoom on socket:', socketId);
-    //   const leaveMessage: Message = {
-    //     content: 'The user has left the room',
-    //     senderId: socketId,
-    //     senderName: '',
-    //     sessionId,
-    //     createdAt: new Date(Date.now()),
-    //     id: await randomiseId(),
-    //   };
-    //   setMessages((messages) => [...messages, leaveMessage]);
-    // });
-
     return () => {
       console.log('offing join and message event');
       socket.off('joinRoomSuccess');
@@ -342,14 +275,22 @@ export default function Chat(props: { sessionId: string }) {
       return;
     }
     setLoading(true);
-    const res = await handleCreateMessage(sessionId, user.username, uuidv4(), message);
-    if (res && res.status === 201) {
-      const { message, senderId, senderName, sessionId, createdAt, _id } = res.data.data;
+    const res = await createMessage(sessionId, user.username, uuidv4(), message);
+    if (res) {
+      const { message, senderId, senderName, sessionId, createdAt, _id } = res.data;
       setIsMessageSent(false);
-      socket.emit('roomMessage', message, senderId, senderName, sessionId, createdAt, _id);
+      socket.emit(
+        'roomMessage',
+        message ?? '',
+        senderId,
+        senderName,
+        sessionId,
+        createdAt,
+        _id ?? ''
+      );
       setLoading(false);
       setIsMessageSent(true);
-    } else if (res && res.status === 500) {
+    } else {
       setIsMessageSent(false);
       setLoading(false);
       return;
@@ -369,6 +310,7 @@ export default function Chat(props: { sessionId: string }) {
         boxShadow: 4,
         borderRadius: '10px',
         width: 'inherit',
+        backgroundColor: 'white',
       }}
     >
       {/* <Typography sx={{ fontSize: 'h4', alignSelf: 'center', fontWeight: 900 }}>Chat</Typography> */}

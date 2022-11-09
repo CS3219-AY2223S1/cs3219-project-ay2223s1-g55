@@ -1,40 +1,32 @@
-import { URL_QUESTION_SVC } from '@/lib/configs';
 import useUserStore from '@/lib/store';
 import { QuestionCommentType } from '@/lib/types';
 import { Box, Button, Container, Divider, Grid, TextField, Typography } from '@mui/material';
-import axios from 'axios';
 import { useEffect, useState } from 'react';
 import dayjs from 'dayjs';
+import { addComment, getComments } from 'api';
 
-const QuestionDiscussion = ({ isReady, title }: { isReady: boolean; title: string | string[] }) => {
+const QuestionDiscussion = ({ isReady, title }: { isReady: boolean; title: string }) => {
   const [currComments, setCurrComments] = useState<QuestionCommentType[]>([]);
   const [comment, setComment] = useState<string>('');
-  const { user } = useUserStore((state) => ({
-    user: state.user,
-  }));
+  const { user } = useUserStore((state) => ({ user: state.user }));
   const username = user?.username;
 
-  const addComment = async (createdComment: QuestionCommentType) => {
-    const res = await axios.post(`${URL_QUESTION_SVC}/${title}`, createdComment);
-    return res.data;
-  };
-
   const fetchComments = async () => {
-    const res = await axios.get(`${URL_QUESTION_SVC}/${title}`);
-    return res.data?.question[0].comments;
+    const comments = await getComments(title);
+    setCurrComments(comments);
   };
 
   const handleClick = async () => {
-    const createdComment: QuestionCommentType = { user: username, comment };
-    console.log('Created comment', createdComment);
-    const res = await addComment(createdComment);
+    await addComment(title, { user: username, comment });
+    console.log('Created comment', comment);
     setComment('');
+    await fetchComments();
   };
 
   useEffect(() => {
     if (!isReady) return;
-    fetchComments().then((res) => setCurrComments(res));
-  }, [isReady, currComments]);
+    fetchComments();
+  }, [isReady, title]);
 
   return (
     <Container
