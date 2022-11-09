@@ -3,6 +3,8 @@ import useUserStore from '@/lib/store';
 import React, { useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { getJwtCookie } from '@/lib/cookies';
+import { Box, Grid } from '@mui/material';
+import { styled } from '@mui/material/styles';
 
 interface DefaultLayoutProps {
   children: React.ReactNode;
@@ -30,7 +32,7 @@ function DefaultLayout({ children }: DefaultLayoutProps) {
     <>
       <AppBar />
 
-      {children}
+      <Box sx={{ padding: '40px 0px' }}>{children}</Box>
     </>
   );
 }

@@ -17,14 +17,13 @@ function MyApp({ Component, pageProps }: AppProps) {
       return;
     }
     const cookie = getJwtCookie();
-
     updateUser(cookie);
   }, [documentIsReady]);
 
   return (
     <>
       <Head>
-        <title>Leet Deez Nutz</title>
+        <title>Leet Warriors | G55 CS3219</title>
         <meta name='viewport' content='initial-scale=1.0, width=device-width' />
       </Head>
       <Component {...pageProps} />

@@ -100,16 +100,14 @@ export async function loginUser(req, res) {
 
 export async function logoutUser(req, res) {
   try {
-    const { token } = req.body;
+    const user = decodeBearerToken(req);
 
-    const decode = jwt.verify(token, process.env.JWT_SECRET);
-
-    if (!decode.username) {
-      console.log('Missing username!');
-      return res.status(401).json({ message: 'Missing username!' });
+    if (!user) {
+      console.log('You are not authorized to perform this action!');
+      return res.status(401).json({ message: 'You are not authorized to perform this action!' });
     }
 
-    const username = decode.username;
+    const username = user.username;
 
     const resp = await _logoutUser(username);
 

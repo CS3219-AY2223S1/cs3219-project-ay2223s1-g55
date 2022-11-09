@@ -1,13 +1,8 @@
-import DefaultLayout from '@/layouts/DefaultLayout';
 import { Button, TextField, Container } from '@mui/material';
-import axios from 'axios';
 import { useState } from 'react';
 import router from 'next/router';
-import { URL_USER_SVC } from '@/lib/configs';
-import { STATUS_CODE_CONFLICT, STATUS_CODE_SUCCESS } from '@/lib/constants';
-import { getJwtCookie } from '@/lib/cookies';
-import useUserStore from '@/lib/store';
 import { validatePassword } from '@/lib/helpers';
+import { changePassword } from 'api';
 
 const ChangePasswordPage = () => {
   const [oldPassword, setOldPassword] = useState('');
@@ -19,25 +14,12 @@ const ChangePasswordPage = () => {
 
   const handlePasswordChange = async (e: any) => {
     e.preventDefault();
-    const token = getJwtCookie();
-    const res = await axios
-      .put(
-        URL_USER_SVC,
-        { oldPassword, newPassword },
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      )
-      .catch((err) => {
-        if (err.response.status === STATUS_CODE_CONFLICT) {
-          setOldPasswordErr(true);
-        } else {
-          setOldPasswordErr(false);
-        }
-      });
-    if (res && res.status === STATUS_CODE_SUCCESS) {
+    try {
+      const res = await changePassword(oldPassword, newPassword);
       setOldPasswordErr(false);
       router.push('/dashboard');
+    } catch (err) {
+      setOldPasswordErr(true);
     }
   };
 

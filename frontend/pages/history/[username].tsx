@@ -1,5 +1,7 @@
 import DefaultLayout from '@/layouts/DefaultLayout';
 import { formatDate } from '@/lib/helpers';
+import useUserStore from '@/lib/store';
+import { IHistoryRecord } from '@/lib/types';
 import {
   Container,
   Divider,
@@ -10,10 +12,19 @@ import {
   TextField,
 } from '@mui/material';
 import { getAllRecords } from 'api';
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 
-const UserHistory = ({ records }) => {
+const UserHistory = ({ username }) => {
   const [search, setSearch] = useState('');
+  const [records, setRecords] = useState<IHistoryRecord[]>([]);
+
+  useEffect(() => {
+    const fetchRecords = async () => {
+      const records = await getAllRecords(username);
+      setRecords(records);
+    };
+    fetchRecords();
+  }, []);
 
   const filteredRecords = useMemo(
     () =>
@@ -60,10 +71,8 @@ const UserHistory = ({ records }) => {
   );
 };
 
-export const getServerSideProps = async (ctx) => {
-  const username = ctx.params.username as string;
-  const records = await getAllRecords(username);
-  return { props: { records } };
-};
+export async function getServerSideProps(context) {
+  return { props: { username: context.params.username } };
+}
 
 export default UserHistory;

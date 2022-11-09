@@ -1,4 +1,3 @@
-import { STATUS_CODE_DELETED } from '@/lib/constants';
 import { getJwtCookie, clearJwt } from '@/lib/cookies';
 import useUserStore from '@/lib/store';
 import {
@@ -34,9 +33,8 @@ const DeleteAccount = () => {
 
   const handleDeleteUser = async () => {
     if (isValidInput) {
-      const currToken = getJwtCookie();
-      const res = await deleteUser(currToken);
-      if (res?.status === STATUS_CODE_DELETED) {
+      const res = await deleteUser();
+      if (res) {
         router.push('/signup');
         clearJwt();
         return;

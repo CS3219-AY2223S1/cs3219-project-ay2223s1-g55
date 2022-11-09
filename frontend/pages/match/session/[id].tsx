@@ -2,13 +2,12 @@ import { useRouter } from 'next/router';
 import { Box, Card, Grid, CardContent, Stack, Button, Drawer } from '@mui/material';
 import Editor from '@/components/collaboration-platform/editor';
 import Chat from '@/components/collaboration-platform/Chat';
-import { URL_MATCHING_SESSION, URL_QUESTION_QUESTIONS } from '@/lib/configs';
 import useUserStore from '@/lib/store';
 import { QuestionType } from '@/lib/types';
-import axios from 'axios';
 import { useState, useEffect } from 'react';
 import QuestionDescription from '@/components/Question/QuestionDescription';
 import DefaultLayout from '@/layouts/DefaultLayout';
+import { getQuestionByTitle, getQuestionTitle } from 'api';
 import NameCard from '@/components/collaboration-platform/NameCard';
 
 export default function CollaborationPlatform() {
@@ -16,49 +15,29 @@ export default function CollaborationPlatform() {
   const { id: sessionId }: { id?: string } = router.query;
   const [questionTitle, setQuestionTitle] = useState<string>();
   const [question, setQuestion] = useState<QuestionType>();
-
   const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(true);
+  const { user } = useUserStore((state) => ({
+    user: state.user,
+  }));
 
   const toggleDrawer = () => {
     setIsDrawerOpen(!isDrawerOpen);
   };
 
-  const { user } = useUserStore((state) => ({
-    user: state.user,
-  }));
-
-  const getSessionDetails = async () => {
-    const res = await axios.get(`${URL_MATCHING_SESSION}/${sessionId}`);
-    return res.data.data;
-  };
-
-  const getQuestion = async () => {
-    const convertedTitle = questionTitle?.replaceAll(' ', '-').toLocaleLowerCase();
-    const res = await axios.get(`${URL_QUESTION_QUESTIONS}/${convertedTitle}`);
-    return res.data.question;
-  };
-
   useEffect(() => {
+    const fetchData = async () => {
+      const _questionTitle = await getQuestionTitle(sessionId ?? '');
+      setQuestionTitle(_questionTitle);
+
+      const convertedTitle = _questionTitle?.replaceAll(' ', '-').toLocaleLowerCase();
+      const _question = await getQuestionByTitle(convertedTitle);
+      setQuestion(_question);
+      console.log(_questionTitle);
+    };
+
     if (!router.isReady) return;
-    getSessionDetails()
-      .then((res) => {
-        setQuestionTitle(res.question);
-      })
-      .then(() => {
-        getQuestion().then((res) => {
-          setQuestion(res[0]);
-        });
-      })
-      .finally(() => {
-        console.log(questionTitle);
-      });
+    fetchData();
   }, [router.isReady]);
-
-  useEffect(() => {
-    getQuestion().then((res) => {
-      setQuestion(res[0]);
-    });
-  }, [questionTitle]);
 
   return (
     <DefaultLayout>
