@@ -1,6 +1,11 @@
-name: Cloud Run Deploy Editor-Service
+name: Editor-Service
 
 on:
+  pull_request:
+    branches: [ main ]
+    paths: 
+      - 'editor-service/**'
+      - '.github/workflows/editor.yml'
   push:
     branches: [ main ]
     paths: 
@@ -12,8 +17,28 @@ env:
   SERVICE: editor-service
 
 jobs:
-    deploy_2:
-        name: Editor-Service
+    test:
+        if: ${{ github.event_name == 'pull_request' }}
+        runs-on: ubuntu-latest
+        steps:
+        - name: Checkout repository
+          uses: actions/checkout@v2
+        - name: Use Node.js
+          uses: actions/setup-node@v3
+          with:
+            node-version: '14.x'
+
+        - name: Install dependencies
+          working-directory: ${{ env.SERVICE }}
+          run: npm install
+        - name: Run CI tests
+          working-directory: ${{ env.SERVICE }}
+          run: npm run test
+          env:
+            ENV: test
+            DB_CLOUD_URI: ${{ secrets.DB_CLOUD_URI }}
+    deploy:
+        if: ${{ github.event_name == 'push' }}
         runs-on: ubuntu-latest
         steps:
         - name: Checkout repository
