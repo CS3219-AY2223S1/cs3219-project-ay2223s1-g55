@@ -2,7 +2,7 @@ import jwt from 'jsonwebtoken';
 import 'dotenv/config.js';
 
 function verifyToken(req, res, next) {
-  if (process.env.ENV === 'TEST') {
+  if (process.env.ENV === 'test') {
     next();
     return;
   }
