@@ -16,10 +16,6 @@ Finally, start running the frontend service by following this [guide](./frontend
 
 The application should start locally at http://localhost:3000.
 
-## Deploying LeetWarriors
-
-To deploy LeetWarriors in your Google Cloud environment, please refer to the [Deployment Guide](./docs/deployment_guide.md).
-
 ## Production Deployments
 frontend url: https://frontend-lemon-one.vercel.app/signup/
 
@@ -45,4 +41,4 @@ editor-service url: https://editor-service-q563p73okq-as.a.run.app/
   
 
 ## Final Report
-Please refer to the [report folder](./docs/report) for our final report.
+Please refer to the [report folder](./docs/55-ProjectReport.pdf) for our final report.
