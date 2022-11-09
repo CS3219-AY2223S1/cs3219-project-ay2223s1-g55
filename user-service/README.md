@@ -16,7 +16,7 @@ Run `npm install` to install dependencies
 
 ## Running Locally
 
-1. After installing dependencies, run `npm start` to start the application.
+1. After installing dependencies, run `npm run dev` to start the application.
 2. The service should be started on http://localhost:8000.
 
 
