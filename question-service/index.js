@@ -18,10 +18,10 @@ const router = express.Router();
 // TODO: Add protected routes later
 // Controller will contain all the User-defined Routes
 router.get('/', (_, res) => res.send('Hello World from question-service'));
-router.get('/question', getQuestions);
+router.get('/question', verifyToken, getQuestions);
 router.post('/question', addQuestion);
-router.get('/question/:title', getQuestionByTitle);
-router.post('/question/:title', addComment);
+router.get('/question/:title', verifyToken, getQuestionByTitle);
+router.post('/question/:title', verifyToken, addComment);
 
 app.use('/api/question', router).all((_, res) => {
   res.setHeader('content-type', 'application/json');
