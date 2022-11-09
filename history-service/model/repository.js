@@ -1,7 +1,8 @@
 import 'dotenv/config.js';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import RecordModel from './record-model.js';
-import { EXPERIENCE_LEVEL, EXPERIENCE_POINTS } from '../lib/constants.js';
+import { EXPERIENCE_POINTS } from '../lib/constants.js';
+import { calculateUserExperienceLevel } from '../lib/helpers.js'
 
 // Set up mongoose connection
 import mongoose from 'mongoose';
@@ -36,17 +37,8 @@ export async function getUserExperienceLevel(username) {
     return prevExperience + EXPERIENCE_POINTS[`${difficultyCount._id}`] * difficultyCount.count;
   }, 0);
 
-  let experienceLevel;
-  if (experiencePoints > 1200) {
-    experienceLevel = EXPERIENCE_LEVEL.elite;
-  } else if (experiencePoints > 600) {
-    experienceLevel = EXPERIENCE_LEVEL.expert;
-  } else if (experiencePoints > 200) {
-    experienceLevel = EXPERIENCE_LEVEL.novice;
-  } else {
-    experienceLevel = EXPERIENCE_LEVEL.beginner;
-  }
-  return { experienceLevel, experiencePoints };
+  const experienceLevel = calculateUserExperienceLevel(experiencePoints);
+  return { experienceLevel, experiencePoints }
 }
 
 export async function listUserRecords(username, options) {
