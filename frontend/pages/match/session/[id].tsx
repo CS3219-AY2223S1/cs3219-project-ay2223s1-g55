@@ -10,7 +10,6 @@ import DefaultLayout from '@/layouts/DefaultLayout';
 import { getQuestionByTitle, getQuestionTitle } from 'api';
 import NameCard from '@/components/collaboration-platform/NameCard';
 
-
 export default function CollaborationPlatform() {
   const router = useRouter();
   const { id: sessionId }: { id?: string } = router.query;
