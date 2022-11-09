@@ -58,7 +58,7 @@ function NameCard(props: { sessionId: string; isReady: boolean }) {
         setError(error);
       });
   }, [isReady]);
-  if (error) return <p>ERROR OCCURED</p>;
+  if (error) return <p />;
   if (isLoading) return <p>Loading...</p>;
   return (
     <NameBox>

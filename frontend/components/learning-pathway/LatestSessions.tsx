@@ -44,9 +44,7 @@ const LatestSessions = () => {
             />
           </ListItem>
         ))}
-        <p style={{ textAlign: 'center', color: '#b0b0b0', fontSize: 14 }}>
-          <Link href={`/history/${user.username}`}>View More</Link>
-        </p>
+        <p style={{ textAlign: 'center', color: '#b0b0b0', fontSize: 14 }}>End of List.</p>
       </List>
     </Card>
   );
